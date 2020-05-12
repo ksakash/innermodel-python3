@@ -62,6 +62,20 @@ class InnerModelMatrix(np.ndarray):
     def set (self, value: float):
         self.fill(value)
 
+    def copy (self) -> 'InnerModelMatrix':
+        mat = InnerModelMatrix(self.shape)
+        np.copyto(mat, self)
+        return mat
+
+    def inject (self, matrix: InnerModelMatrix, foff: float, coff: float) -> 'InnerModelMatrix':
+        rows = matrix.shape[0]
+        cols = matrix.shape[1]
+        assert (rows+foff <= self.shape[0] and cols+coff <= self.shape[1])
+        self[foff:foff+rows, coff:coff+cols] = matrix
+        mat = InnerModelMatrix(self.shape)
+        np.copyto(mat, self)
+        return mat
+
     # change the diagonal elements to the given value
     def diagonal (self, value: float):
         np.fill_diagonal(self, value)
