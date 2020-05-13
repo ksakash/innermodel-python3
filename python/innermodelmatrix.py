@@ -89,9 +89,6 @@ class InnerModelMatrix(np.ndarray):
     def transpose (self) -> 'InnerModelMatrix':
         return self.transpose()
 
-    def T (self) -> 'InnerModelMatrix':
-        return self.transpose()
-
     def determinant (self) -> float:
         assert (self.shape[0] == self.shape[1])
         return np.linalg.det(self)
