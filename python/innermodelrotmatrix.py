@@ -2,6 +2,7 @@ import math
 import numpy as np
 from innermodelmatrix import InnerModelMatrix
 
+# Base class for all the rotation matrices
 class Rot3DOnAxis(InnerModelMatrix):
 
     @staticmethod
@@ -22,6 +23,7 @@ class Rot3DOnAxis(InnerModelMatrix):
     def getAlpha (self) -> float:
         return self.ang
 
+# 3D Rotation matrix around the x axis CCW
 class Rot3DOX(Rot3DOnAxis):
     @staticmethod
     def getRot3DOX(alpha: float = 0, m: Rot3DOX = None) -> 'Rot3DOX':
@@ -48,6 +50,7 @@ class Rot3DOX(Rot3DOnAxis):
         self[2][2] = math.cos(alpha)
         self.ang = alpha
 
+# 3D Rotation matrix around the x axis CW
 class Rot3DCOX(Rot3DOnAxis):
     @staticmethod
     def getRot3DCOX(alpha: float = 0, m: Rot3DCOX = None) -> 'Rot3DCOX':
@@ -74,6 +77,7 @@ class Rot3DCOX(Rot3DOnAxis):
         self[2][2] = math.cos(alpha)
         self.ang = alpha
 
+# 3D Rotation matrix around the y axis CCW
 class Rot3DOY(Rot3DOnAxis):
     @staticmethod
     def getRot3DOY(alpha: float = 0, m: Rot3DOY = None) -> 'Rot3DOY':
@@ -100,6 +104,7 @@ class Rot3DOY(Rot3DOnAxis):
         self[2][2] = math.cos(alpha)
         self.ang = alpha
 
+# 3D Rotation matrix around the x axis CW
 class Rot3DCOY(Rot3DOnAxis):
     @staticmethod
     def getRot3DCOY(alpha: float = 0, m: Rot3DCOY = None) -> 'Rot3DCOY':
@@ -126,6 +131,7 @@ class Rot3DCOY(Rot3DOnAxis):
         self[2][2] = math.cos(alpha)
         self.ang = alpha
 
+# 3D Rotation matrix around the z axis CCW
 class Rot3DOZ(Rot3DOnAxis):
     @staticmethod
     def getRot3DOZ(alpha: float = 0, m: Rot3DOZ = None) -> 'Rot3DOZ':
@@ -152,6 +158,7 @@ class Rot3DOZ(Rot3DOnAxis):
         self[1][1] = math.cos(alpha)
         self.ang = alpha
 
+# 3D Rotation matrix around the x axis CW
 class Rot3DCOZ(Rot3DOnAxis):
     @staticmethod
     def getRot3DCOZ(alpha: float = 0, m: Rot3DCOZ = None) -> 'Rot3DCOZ':
@@ -178,6 +185,7 @@ class Rot3DCOZ(Rot3DOnAxis):
         self[1][1] = math.cos(alpha)
         self.ang = alpha
 
+# Rotation matrix CCW
 class Rot3D(InnerModelMatrix):
     @staticmethod
     def getRot3D (ox: float = 0, oy: float = 0, oz: float = 0, XCW: bool = True,
@@ -188,20 +196,11 @@ class Rot3D(InnerModelMatrix):
             mat.XC = ex.XC
             mat.YC = ex.YC
             mat.ZC = ex.ZC
-            if mat.XC:
-                mat.RX = Rot3DOX.getRot3DOX(0)
-            else:
-                mat.RX = Rot3DCOX.getRot3DCOX(0)
-            if mat.YC:
-                mat.RY = Rot3DOY.getRot3DOY(0)
-            else:
-                mat.RY = Rot3DCOY.getRot3DCOY(0)
-            if mat.ZC:
-                mat.RZ = Rot3DOZ.getRot3DOZ(0)
-            else:
-                mat.RZ = Rot3DCOZ.getRot3DCOZ(0)
-            _m  = mat.RX*mat.RY*mat.RZ
-            mat.inject (_m, 0, 0)
+
+            np.copyto(mat.RX, ex.RX)
+            np.copyto(mat.RY, ex.RY)
+            np.copyto(mat.RZ, ex.RZ)
+
             return mat
         else:
             mat = Rot3D((3,3))
@@ -221,7 +220,7 @@ class Rot3D(InnerModelMatrix):
             else:
                 mat.RZ = Rot3DCOZ.getRot3DCOZ(oz)
             _m  = mat.RX*mat.RY*mat.RZ
-            mat.inject (_m, 0, 0)
+            np.copyto(mat, _m)
             return mat
 
     def __new__(cls, *args, **kwargs):
@@ -240,8 +239,9 @@ class Rot3D(InnerModelMatrix):
         self.RY.update(oy)
         self.RZ.update(oz)
         _m  = self.RX*self.RY*self.RZ
-        self.inject (_m, 0, 0)
+        np.copyto(self, _m)
 
+# Rotation matrix CW
 class Rot3DC(InnerModelMatrix):
     @staticmethod
     def getRot3DC (ox: float = 0, oy: float = 0, oz: float = 0, XCW: bool = True,
@@ -252,20 +252,11 @@ class Rot3DC(InnerModelMatrix):
             mat.XC = ex.XC
             mat.YC = ex.YC
             mat.ZC = ex.ZC
-            if mat.XC:
-                mat.RX = Rot3DOX.getRot3DOX(0)
-            else:
-                mat.RX = Rot3DCOX.getRot3DCOX(0)
-            if mat.YC:
-                mat.RY = Rot3DOY.getRot3DOY(0)
-            else:
-                mat.RY = Rot3DCOY.getRot3DCOY(0)
-            if mat.ZC:
-                mat.RZ = Rot3DOZ.getRot3DOZ(0)
-            else:
-                mat.RZ = Rot3DCOZ.getRot3DCOZ(0)
-            _m  = mat.RX*mat.RY*mat.RZ
-            mat.inject (_m, 0, 0)
+
+            np.copyto (mat.RX, ex.RX)
+            np.copyto (mat.RY, ex.RY)
+            np.copyto (mat.RZ, ex.RZ)
+
             return mat
         else:
             mat = Rot3DC((3,3))
@@ -285,7 +276,7 @@ class Rot3DC(InnerModelMatrix):
             else:
                 mat.RZ = Rot3DCOZ.getRot3DCOZ(oz)
             _m  = mat.RX*mat.RY*mat.RZ
-            mat.inject (_m, 0, 0)
+            np.copyto(mat, _m)
             return mat
 
     def __new__(cls, *args, **kwargs):
@@ -304,7 +295,7 @@ class Rot3DC(InnerModelMatrix):
         self.RY.update(oy)
         self.RZ.update(oz)
         _m  = self.RX*self.RY*self.RZ
-        self.inject (_m, 0, 0)
+        np.copyto(self, _m)
 
 class Rot2D(InnerModelMatrix):
     @staticmethod
