@@ -26,7 +26,7 @@ class Rot3DOnAxis(InnerModelMatrix):
 # 3D Rotation matrix around the x axis CCW
 class Rot3DOX(Rot3DOnAxis):
     @staticmethod
-    def getRot3DOX(alpha: float = 0, m: Rot3DOX = None) -> 'Rot3DOX':
+    def getRot3DOX(alpha: float = 0, m = None) -> 'Rot3DOX':
         if m is not None:
             alpha = m.getAlpha()
             x = Rot3DOX((3,3))
@@ -53,7 +53,7 @@ class Rot3DOX(Rot3DOnAxis):
 # 3D Rotation matrix around the x axis CW
 class Rot3DCOX(Rot3DOnAxis):
     @staticmethod
-    def getRot3DCOX(alpha: float = 0, m: Rot3DCOX = None) -> 'Rot3DCOX':
+    def getRot3DCOX(alpha: float = 0, m = None) -> 'Rot3DCOX':
         if m is not None:
             alpha = m.getAlpha()
             x = Rot3DCOX((3,3))
@@ -80,7 +80,7 @@ class Rot3DCOX(Rot3DOnAxis):
 # 3D Rotation matrix around the y axis CCW
 class Rot3DOY(Rot3DOnAxis):
     @staticmethod
-    def getRot3DOY(alpha: float = 0, m: Rot3DOY = None) -> 'Rot3DOY':
+    def getRot3DOY(alpha: float = 0, m = None) -> 'Rot3DOY':
         if m is not None:
             alpha = m.getAlpha()
             y = Rot3DOY((3,3))
@@ -107,7 +107,7 @@ class Rot3DOY(Rot3DOnAxis):
 # 3D Rotation matrix around the x axis CW
 class Rot3DCOY(Rot3DOnAxis):
     @staticmethod
-    def getRot3DCOY(alpha: float = 0, m: Rot3DCOY = None) -> 'Rot3DCOY':
+    def getRot3DCOY(alpha: float = 0, m = None) -> 'Rot3DCOY':
         if m is not None:
             alpha = m.getAlpha()
             y = Rot3DCOY((3,3))
@@ -134,7 +134,7 @@ class Rot3DCOY(Rot3DOnAxis):
 # 3D Rotation matrix around the z axis CCW
 class Rot3DOZ(Rot3DOnAxis):
     @staticmethod
-    def getRot3DOZ(alpha: float = 0, m: Rot3DOZ = None) -> 'Rot3DOZ':
+    def getRot3DOZ(alpha: float = 0, m = None) -> 'Rot3DOZ':
         if m is not None:
             alpha = m.getAlpha()
             z = Rot3DOZ((3,3))
@@ -161,7 +161,7 @@ class Rot3DOZ(Rot3DOnAxis):
 # 3D Rotation matrix around the x axis CW
 class Rot3DCOZ(Rot3DOnAxis):
     @staticmethod
-    def getRot3DCOZ(alpha: float = 0, m: Rot3DCOZ = None) -> 'Rot3DCOZ':
+    def getRot3DCOZ(alpha: float = 0, m = None) -> 'Rot3DCOZ':
         if m is not None:
             alpha = m.getAlpha()
             y = Rot3DCOZ((3,3))
@@ -189,7 +189,7 @@ class Rot3DCOZ(Rot3DOnAxis):
 class Rot3D(InnerModelMatrix):
     @staticmethod
     def getRot3D (ox: float = 0, oy: float = 0, oz: float = 0, XCW: bool = True,
-                YCW: bool = True, ZCW: bool = True, ex: Rot3D = None) -> 'Rot3D':
+                YCW: bool = True, ZCW: bool = True, ex = None) -> 'Rot3D':
         if ex is not None:
             mat = Rot3D(ex.shape)
             np.copyto (mat, ex)
@@ -245,7 +245,7 @@ class Rot3D(InnerModelMatrix):
 class Rot3DC(InnerModelMatrix):
     @staticmethod
     def getRot3DC (ox: float = 0, oy: float = 0, oz: float = 0, XCW: bool = True,
-                YCW: bool = True, ZCW: bool = True, ex: Rot3DC = None) -> 'Rot3DC':
+                YCW: bool = True, ZCW: bool = True, ex = None) -> 'Rot3DC':
         if ex is not None:
             mat = Rot3DC(ex.shape)
             np.copyto (mat, ex)
