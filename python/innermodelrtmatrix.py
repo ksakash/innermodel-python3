@@ -7,7 +7,7 @@ from innermodelrotmatrix import Rot3DCOX, Rot3DCOY, Rot3DCOZ
 class InnerModelRTMat(InnerModelMatrix):
 
     @staticmethod
-    def getInnerModelRTMat(tx: float, ty: float, tz: float, rx: float, ry: float, rz: float):
+    def getInnerModelRTMat(tx: float, ty: float, tz: float, rx: float, ry: float, rz: float) -> 'InnerModelRTMat':
         mat = InnerModelRTMat((4,4))
         mat.Rx = Rot3DOX.getRot3DOX(alpha=rx)
         mat.Ry = Rot3DOY.getRot3DOY(alpha=ry)
@@ -15,6 +15,7 @@ class InnerModelRTMat(InnerModelMatrix):
         R = mat.Rx*mat.Ry*mat.Rz
         np.copyto(mat.R, R)
         mat.Tr = InnerModelVector.vec3d (tx, ty, tz)
+        return mat
 
     def __new__(cls, *args, **kwargs):
         return super(InnerModelRTMat, cls).__new__(cls, *args, **kwargs)
@@ -37,8 +38,8 @@ class InnerModelRTMat(InnerModelMatrix):
         self.do_inject()
 
     def do_inject (self):
-        self.inject(self.R, 0, 0)
-        self.inject(self.Tr, 0, 3)
+        np.copyto (self[:3, :3], self.R)
+        np.copyto (self[:3, 3], self.Tr)
         self[3][0] = 0.
         self[3][1] = 0.
         self[3][2] = 0.
@@ -129,14 +130,12 @@ class InnerModelRTMat(InnerModelMatrix):
         np.copyto(r.R, self.R.transpose())
         _t = r.R*self.Tr*(-1)
         np.copyto(r.Tr, _t)
-        r.inject(r.R, 0, 0)
-        r.inject(r.Tr, 0, 3)
-        r[3][3] = 1.
+        r.do_inject()
         return r
 
     def invertR(self) -> 'InnerModelMatrix':
         r = InnerModelMatrix((4,4))
-        r.inject(self.R.transpose(), 0, 0)
+        np.copyto (r[:3,:3], self.R.transpose())
         r[3][3] = 1.
         return r
 
@@ -177,8 +176,8 @@ class InnerModelRTCMat(InnerModelMatrix):
         self.do_inject()
 
     def do_inject (self):
-        self.inject(self.R, 0, 0)
-        self.inject(self.Tr, 0, 3)
+        np.copyto (self[:3, :3], self.R)
+        np.copyto (self[:3, 3], self.Tr)
         self[3][0] = 0.
         self[3][1] = 0.
         self[3][2] = 0.
@@ -261,19 +260,17 @@ class InnerModelRTCMat(InnerModelMatrix):
     def getRzValue(self) -> float:
         return self.Rz.getAlpha()
 
-    def invert(self) -> 'InnerModelRTMat':
-        r = InnerModelRTMat(self.shape)
+    def invert(self) -> 'InnerModelRTCMat':
+        r = InnerModelRTCMat(self.shape)
         np.copyto(r.R, self.R.transpose())
         _t = r.R*self.Tr*(-1)
         np.copyto(r.Tr, _t)
-        r.inject(r.R, 0, 0)
-        r.inject(r.Tr, 0, 3)
-        r[3][3] = 1.
+        r.do_inject()
         return r
 
     def invertR(self) -> 'InnerModelMatrix':
         r = InnerModelMatrix((4,4))
-        r.inject(self.R.transpose(), 0, 0)
+        np.copyto (r[:3,:3], self.R.transpose())
         r[3][3] = 1.
         return r
 
