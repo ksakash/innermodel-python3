@@ -27,11 +27,12 @@ class Rot3DOnAxis(InnerModelMatrix):
 class Rot3DOX(Rot3DOnAxis):
     @staticmethod
     def getRot3DOX(alpha: float = 0, m : 'Rot3DOX' = None) -> 'Rot3DOX':
+
         if m is not None:
-            alpha = m.getAlpha()
+            a = m.getAlpha()
             x = Rot3DOX((3,3))
             np.copyto(x, m)
-            x.update (alpha)
+            x.update (a)
             return x
 
         x = Rot3DOX((3,3))
@@ -203,7 +204,7 @@ class Rot3D(InnerModelMatrix):
             mat.RX = Rot3DOX.getRot3DOX(ox)
             mat.RY = Rot3DOY.getRot3DOY(oy)
             mat.RZ = Rot3DOZ.getRot3DOZ(oz)
-            _m  = mat.RX*mat.RY*mat.RZ
+            _m  = mat.RX.dot(mat.RY.dot(mat.RZ))
             np.copyto(mat, _m)
             return mat
 
@@ -211,22 +212,21 @@ class Rot3D(InnerModelMatrix):
         return super(Rot3D, cls).__new__(cls, *args, **kwargs)
 
     def __init__(self, *args, **kwargs):
-        self.RX = None
-        self.RY = None
-        self.RZ = None
+        self.RX = Rot3DOX.getRot3DOX(0)
+        self.RY = Rot3DOY.getRot3DOY(0)
+        self.RZ = Rot3DOZ.getRot3DOZ(0)
 
     def update (self, ox: float, oy: float, oz: float):
         self.RX.update(ox)
         self.RY.update(oy)
         self.RZ.update(oz)
-        _m  = self.RX*self.RY*self.RZ
+        _m  = self.RX.dot(self.RY.dot(self.RZ))
         np.copyto(self, _m)
 
 # Rotation matrix CW
 class Rot3DC(InnerModelMatrix):
     @staticmethod
-    def getRot3DC (ox: float = 0, oy: float = 0, oz: float = 0, XCW: bool = True,
-                YCW: bool = True, ZCW: bool = True, ex = None) -> 'Rot3DC':
+    def getRot3DC (ox: float = 0, oy: float = 0, oz: float = 0, ex = None) -> 'Rot3DC':
         if ex is not None:
             mat = Rot3DC(ex.shape)
             np.copyto (mat, ex)
@@ -241,7 +241,7 @@ class Rot3DC(InnerModelMatrix):
             mat.RX = Rot3DOX.getRot3DOX(ox)
             mat.RY = Rot3DOY.getRot3DOY(oy)
             mat.RZ = Rot3DOZ.getRot3DOZ(oz)
-            _m  = mat.RX*mat.RY*mat.RZ
+            _m  = mat.RX.dot(mat.RY.dot(mat.RZ))
             np.copyto(mat, _m)
             return mat
 
@@ -249,17 +249,18 @@ class Rot3DC(InnerModelMatrix):
         return super(Rot3DC, cls).__new__(cls, *args, **kwargs)
 
     def __init__(self, *args, **kwargs):
-        self.RX = None
-        self.RY = None
-        self.RZ = None
+        self.RX = Rot3DCOX.getRot3DCOX(0)
+        self.RY = Rot3DCOY.getRot3DCOY(0)
+        self.RZ = Rot3DCOZ.getRot3DCOZ(0)
 
     def update (self, ox: float, oy: float, oz: float):
         self.RX.update(ox)
         self.RY.update(oy)
         self.RZ.update(oz)
-        _m  = self.RX*self.RY*self.RZ
+        _m  = self.RX.dot(self.RY.dot(self.RZ))
         np.copyto(self, _m)
 
+# rotation in a plane
 class Rot2D(InnerModelMatrix):
     @staticmethod
     def getRot2D(alpha: float) -> 'Rot2D':
