@@ -12,7 +12,7 @@ class InnerModelRTMat(InnerModelMatrix):
         mat.Rx = Rot3DOX.getRot3DOX(alpha=rx)
         mat.Ry = Rot3DOY.getRot3DOY(alpha=ry)
         mat.Rz = Rot3DOZ.getRot3DOZ(alpha=rz)
-        R = mat.Rx*mat.Ry*mat.Rz
+        R = mat.Rx.dot(mat.Ry.dot(mat.Rz))
         np.copyto(mat.R, R)
         mat.Tr = InnerModelVector.vec3d (tx, ty, tz)
         return mat
@@ -33,7 +33,7 @@ class InnerModelRTMat(InnerModelMatrix):
         self.Rx.update(ox)
         self.Ry.update(oy)
         self.Rz.update(oz)
-        R = self.Rx*self.Ry*self.Rz
+        R = self.Rx.dot(self.Ry.dot(self.Rz))
         np.copyto(self.R, R)
         self.do_inject()
 
@@ -54,7 +54,7 @@ class InnerModelRTMat(InnerModelMatrix):
         self.Ry.update(oy)
         self.Rz.update(oz)
 
-        R = self.Rx*self.Ry*self.Rz
+        R = self.Rx.dot(self.Ry.dot(self.Rz))
         np.copyto(self.R, R)
         self.do_inject()
 
@@ -66,25 +66,25 @@ class InnerModelRTMat(InnerModelMatrix):
             self.Rx.update(ox)
             self.Ry.update(oy)
             self.Rz.update(oz)
-            R = self.Rx*self.Ry*self.Rz
+            R = self.Rx.dot(self.Ry.dot(self.Rz))
             np.copyto(self.R, R)
         self.do_inject()
 
     def setRX(self, ox: float):
         self.Rx.update(ox)
-        R = self.Rx*self.Ry*self.Rz
+        R = self.Rx.dot(self.Ry.dot(self.Rz))
         np.copyto(self.R, R)
         self.do_inject()
 
     def setRY(self, oy: float):
         self.Ry.update(oy)
-        R = self.Rx*self.Ry*self.Rz
+        R = self.Rx.dot(self.Ry.dot(self.Rz))
         np.copyto(self.R, R)
         self.do_inject()
 
     def setRZ(self, oz: float):
         self.Rz.update(oz)
-        R = self.Rx*self.Ry*self.Rz
+        R = self.Rx.dot(self.Ry.dot(self.Rz))
         np.copyto(self.R, R)
         self.do_inject()
 
@@ -97,7 +97,8 @@ class InnerModelRTMat(InnerModelMatrix):
         self.Rx.update(ox)
         self.Ry.update(oy)
         self.Rz.update(oz)
-        self.R = self.Rx*self.Ry*self.Rz
+        R = self.Rx.dot(self.Ry.dot(self.Rz))
+        np.copyto (self.R, R)
         np.copyto(self.Tr, t)
         self.do_inject()
 
@@ -128,7 +129,7 @@ class InnerModelRTMat(InnerModelMatrix):
     def invert(self) -> 'InnerModelRTMat':
         r = InnerModelRTMat(self.shape)
         np.copyto(r.R, self.R.transpose())
-        _t = r.R*self.Tr*(-1)
+        _t = r.R.dot(self.Tr)*(-1)
         np.copyto(r.Tr, _t)
         r.do_inject()
         return r
@@ -151,7 +152,7 @@ class InnerModelRTCMat(InnerModelMatrix):
         mat.Rx = Rot3DCOX.getRot3DCOX(alpha=ox)
         mat.Ry = Rot3DCOY.getRot3DCOY(alpha=oy)
         mat.Rz = Rot3DCOZ.getRot3DCOZ(alpha=oz)
-        R = mat.Rx*mat.Ry*mat.Rz
+        R = mat.Rx.dot(mat.Ry.dot(mat.Rz))
         np.copyto(mat.R, R)
         mat.Tr = InnerModelVector.vec3d (x, y, z)
 
@@ -171,7 +172,7 @@ class InnerModelRTCMat(InnerModelMatrix):
         self.Rx.update(ox)
         self.Ry.update(oy)
         self.Rz.update(oz)
-        R = self.Rx*self.Ry*self.Rz
+        R = self.Rx.dot(self.Ry.dot(self.Rz))
         np.copyto(self.R, R)
         self.do_inject()
 
@@ -192,7 +193,7 @@ class InnerModelRTCMat(InnerModelMatrix):
         self.Ry.update(oy)
         self.Rz.update(oz)
 
-        R = self.Rx*self.Ry*self.Rz
+        R = self.Rx.dot(self.Ry.dot(self.Rz))
         np.copyto(self.R, R)
         self.do_inject()
 
@@ -200,25 +201,25 @@ class InnerModelRTCMat(InnerModelMatrix):
         self.Rx.update(ox)
         self.Ry.update(oy)
         self.Rz.update(oz)
-        R = self.Rx*self.Ry*self.Rz
+        R = self.Rx.dot(self.Ry.dot(self.Rz))
         np.copyto(self.R, R)
         self.do_inject()
 
     def setRX(self, ox: float):
         self.Rx.update(ox)
-        R = self.Rx*self.Ry*self.Rz
+        R = self.Rx.dot(self.Ry.dot(self.Rz))
         np.copyto(self.R, R)
         self.do_inject()
 
     def setRY(self, oy: float):
         self.Ry.update(oy)
-        R = self.Rx*self.Ry*self.Rz
+        R = self.Rx.dot(self.Ry.dot(self.Rz))
         np.copyto(self.R, R)
         self.do_inject()
 
     def setRZ(self, oz: float):
         self.Rz.update(oz)
-        R = self.Rx*self.Ry*self.Rz
+        R = self.Rx.dot(self.Ry.dot(self.Rz))
         np.copyto(self.R, R)
         self.do_inject()
 
@@ -231,7 +232,7 @@ class InnerModelRTCMat(InnerModelMatrix):
         self.Rx.update(ox)
         self.Ry.update(oy)
         self.Rz.update(oz)
-        R = self.Rx*self.Ry*self.Rz
+        R = self.Rx.dot(self.Ry.dot(self.Rz))
         np.copyto(self.R, R)
         np.copyto(self.Tr, t)
         self.do_inject()
@@ -263,7 +264,7 @@ class InnerModelRTCMat(InnerModelMatrix):
     def invert(self) -> 'InnerModelRTCMat':
         r = InnerModelRTCMat(self.shape)
         np.copyto(r.R, self.R.transpose())
-        _t = r.R*self.Tr*(-1)
+        _t = r.R.dot(self.Tr)*(-1)
         np.copyto(r.Tr, _t)
         r.do_inject()
         return r
