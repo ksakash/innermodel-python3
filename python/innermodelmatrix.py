@@ -3,6 +3,7 @@ import numpy as np
 from innermodelvector import InnerModelVector
 from scipy.spatial.transform import Rotation as R
 
+# most of the methods are written specifically for a square matrix
 class InnerModelMatrix(np.ndarray):
 
     # empty matrix
