@@ -2,5 +2,18 @@
 
 import xml.etree.ElementTree as ET
 
-class InnerModelrReader (object):
-    pass
+class InnerModelReader (object):
+    def __init__ (self):
+        pass
+
+    def load (self):
+        pass
+
+    def include (self):
+        pass
+
+    def recursive (self):
+        pass
+
+    def getValidNodeAttributes (self):
+        pass
