@@ -3,6 +3,7 @@ from innermodelmatrix import InnerModelMatrix
 from innermodeltransform import InnerModelTransform
 from innermodelmesh import InnerModelMesh
 from innermodelrtmatrix import InnerModelRTMat
+from innermodelvector import InnerModelVector
 
 class InnerModel(object):
     def __init__ (self, xmlFilePath: str = None, im: 'InnerModel' = None):
@@ -85,10 +86,10 @@ class InnerModel(object):
     def getTransformationMatrix (self, destId: str, origId: str) -> 'InnerModelRTMat':
         pass
 
-    def getRotationMatrixTo (self, to: str, from: str) -> 'InnerModelMatrix':
+    def getRotationMatrixTo (self, to: str, fr: str):
         pass
 
-    def getTranslationVectorTo (self, to: str, from: str) -> 'InnerModelVector':
+    def getTranslationMatrixTo (self, to: str, fr: str):
         pass
 
     def rotationAngles (self, destId: str, origId: str) -> 'InnerModelVector':

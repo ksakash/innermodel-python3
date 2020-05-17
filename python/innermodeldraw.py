@@ -1,0 +1,2 @@
+class InnerModelDraw (object):
+    pass
