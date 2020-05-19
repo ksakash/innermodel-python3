@@ -1,4 +1,5 @@
 from innermodelnode import InnerModelNode
 
 class InnerModelIMU (InnerModelNode):
-    pass
+    def __init__ (self, id, port, parent):
+        pass

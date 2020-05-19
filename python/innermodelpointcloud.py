@@ -1,4 +1,5 @@
 from innermodelnode import InnerModelNode
 
 class InnerModelPointCloud (InnerModelNode):
-    pass
+    def __init__ (self, id, parent):
+        pass

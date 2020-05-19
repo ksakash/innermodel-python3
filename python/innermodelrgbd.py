@@ -1,5 +1,6 @@
 from innermodelcamera import InnerModelCamera
 
 class InnerModelRGBD (InnerModelCamera):
-    pass
+    def __init__(self, id, width, height, focal, noise, port, ifconfig, innermodel, parent):
+        pass
 

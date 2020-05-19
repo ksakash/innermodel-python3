@@ -1,4 +1,5 @@
 from innermodeltransform import InnerModelTransform
 
 class InnerModelOmniRobot (InnerModelTransform):
-    pass
+    def __init__ (self, id, tx, ty, tz, rx, ry, rz, port, noise, collide, parent):
+        pass
