@@ -2,7 +2,7 @@ from innermodelnode import InnerModelNode
 from innermodelrtmatrix import InnerModelRTMat
 
 class InnerModelTransform(InnerModelNode):
-    def __init__ (self, id, engine, tx, ty, tz, rx, ry, rz, mass, parent):
+    def __init__ (self, id, engine, tx, ty, tz, rx, ry, rz, mass=0, parent=None):
         super (InnerModelTransform, self).__init__(id, parent)
         self.rtmat = InnerModelRTMat.getInnerModelRTMat (tx=tx, ty=ty, tz=tz, rx=rx, ry=ry, rz=rz)
         self.mass = mass

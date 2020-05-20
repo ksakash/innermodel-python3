@@ -66,16 +66,24 @@ class InnerModelReader (object):
         attrList = ["id", "length", "width", "lengthx", "widthx", "lengthy", "widthy", "lengthz", "widthz"]
         self.validAttr["axes"] = attrList
 
-    def load (self, file: str, model: 'InnerModel') -> bool:
+    @staticmethod
+    def load (file: str, model: 'InnerModel') -> bool:
         tree = ET.parse (file)
         root = tree.getroot()
         model = InnerModel()
-        self.recursive (root, model, model.root)
+        InnerModelReader.recursive (root, model, model.root)
 
-    def include (self, file: str, model: 'InnerModel', node: 'InnerModelNode') -> bool:
-        pass
+    @staticmethod
+    def include (file: str, model: 'InnerModel', node: 'InnerModelNode') -> bool:
+        tree = ET.parse (file)
+        root = tree.getroot ()
+        model = InnerModel ()
+        InnerModelReader.recursive (root, model, model.root)
+        return True
 
-    def getClass (self, model, node, tag, attr):
+    # need a bit modification for the tags having dimensions
+    @staticmethod
+    def getClass (model, node, tag, attr):
             if tag.lower() == 'rotation':
                 tr = model.newTransform (id=attr['id'], engine=attr['engine'], parent=node,
                                     tx=0, ty=0, tz=0, rx=attr['rx'], ry=attr['ry'], rz=attr['rz'],
@@ -158,7 +166,7 @@ class InnerModelReader (object):
                                     parent=node)
                 return plane
             elif tag.lower() == 'include':
-                self.include (attr['path'], model, node)
+                InnerModelReader.include (attr['path'], model, node)
             elif tag.lower() == 'axes':
                 defaultLength = attr['length']
                 defaultWidth = attr['width']
@@ -233,12 +241,13 @@ class InnerModelReader (object):
                 print ("%s is not a valid tag name", tag)
                 return None
 
-    def recursive (self, parentDomNode: 'ET', model: 'InnerModel', imNode: 'InnerModelNode'):
+    @staticmethod
+    def recursive (parentDomNode: 'ET', model: 'InnerModel', imNode: 'InnerModelNode'):
         for child in parentDomNode:
-            node = self.getClass (model, imNode, child.tag, child.attrib)
+            node = InnerModelReader.getClass (model, imNode, child.tag, child.attrib)
             imNode.addChild (node)
             node.innerModel = model
-            self.recursive (child, model, node)
+            InnerModelReader.recursive (child, model, node)
 
     def getValidNodeAttributes (self):
         return self.validAttr
