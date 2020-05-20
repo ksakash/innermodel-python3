@@ -7,14 +7,12 @@ class InnerModelTransform(InnerModelNode):
         self.rtmat = InnerModelRTMat.getInnerModelRTMat (tx=tx, ty=ty, tz=tz, rx=rx, ry=ry, rz=rz)
         self.mass = mass
 
-        self.backtX = tx
-        self.backtY = ty
-        self.backtZ = tz
-        self.backrX = rx
-        self.backrY = ry
-        self.backrZ = rz
-
-        self.tx = self.ty = self.tz = self.rx = self.ry = self.rz = None
+        self.tx = tx
+        self.ty = ty
+        self.tz = tz
+        self.rx = rx
+        self.ry = ry
+        self.rz = rz
 
         self.gui_translation = True
         self.gui_rotation = True
@@ -52,36 +50,21 @@ class InnerModelTransform(InnerModelNode):
 
     def update (self, tx=None, ty=None, tz=None, rx=None, ry=None, rz=None):
         if tx is None:
-            if (not self.fixed):
-                if (self.tx) is not None:
-                    self.backtX = self.tx
-                if (self.ty) is not None:
-                    self.backtY = self.ty
-                if (self.tz) is not None:
-                    self.backtZ = self.tz
-                if (self.rx) is not None:
-                    self.backrX = self.rx
-                if (self.ry) is not None:
-                    self.backrY = self.ry
-                if (self.rz) is not None:
-                    self.backrZ = self.rz
-                self.rtmat.set (ox=self.backrX, oy=self.backrY, oz=self.backrZ,
-                                x=self.backtX, y=self.backtY, z=self.backtZ)
             self.updateChildren()
         else:
-            self.backtX = tx
-            self.backtY = ty
-            self.backtZ = tz
-            self.backrX = rx
-            self.backrY = ry
-            self.backrZ = rz
-            self.rtmat.set (ox=self.backrX, oy=self.backrY, oz=self.backrZ,
-                            x=self.backtX, y=self.backtY, z=self.backtZ)
+            self.tx = tx
+            self.ty = ty
+            self.tz = tz
+            self.rx = rx
+            self.ry = ry
+            self.rz = rz
+            self.rtmat.set (ox=self.rx, oy=self.ry, oz=self.rz,
+                            x=self.tx, y=self.ty, z=self.tz)
             self.fixed = True
 
     def copyNode (self, hash, parent) -> 'InnerModelNode':
-        ret = InnerModelTransform (self.id, self.engine, self.backtX, self.backtY, self.backtZ,
-                                 self.backrX, self.backrY, self.backrZ, self.mass, self.parent)
+        ret = InnerModelTransform (self.id, self.engine, self.tx, self.ty, self.tz,
+                                self.rx, self.ry, self.rz, self.mass, self.parent)
         ret.level = self.level
         ret.fixed = self.fixed
         ret.children = []
