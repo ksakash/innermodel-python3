@@ -1,4 +1,4 @@
-from innermodeldisplay import InnerModelNode
+from innermodelnode import InnerModelNode
 from innermodelvector import InnerModelVector
 
 class InnerModelDisplay (InnerModelNode):

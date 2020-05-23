@@ -4,9 +4,12 @@ import copy
 
 from innermodelnode import InnerModelNode
 from innermodelvector import InnerModelVector
-from innermodel import InnerModel
+# from innermodel import InnerModel
 from innermodelcam import InnerModelCam
 from innermodelmatrix import InnerModelMatrix
+
+class InnerModel (object):
+    pass
 
 class InnerModelCamera (InnerModelNode):
     def __init__ (self, id: str, width: float, height: float, focal: float, innermodel: 'InnerModel',

@@ -5,6 +5,7 @@ class InnerModelPlane (InnerModelNode):
     def __init__ (self, id: str, texture: str, width: float, height: float, depth: float, repeat: int,
                   nx: float, ny: float, nz: float, px: float, py: float, pz: float, collidable: bool,
                   parent: 'InnerModelNode' = None):
+        super (InnerModelPlane, self).__init__(id, parent)
         self.normal = InnerModelVector.vec3d (nx, ny, nz)
         self.point = InnerModelVector.vec3d (px, py, pz)
         self.texture = texture

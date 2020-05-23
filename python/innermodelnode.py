@@ -10,7 +10,7 @@ class InnerModelNode (object):
             self.level = 0
         self.children = []
         self.attributes = None
-        self.fixed = None
+        self.fixed = None # don't know what the purpose of fixed is
 
     # can also use __repr__ instead
     def printTree (self, s: str, verbose: bool):
@@ -43,7 +43,7 @@ class InnerModelNode (object):
 
     def addChild (self, child: 'InnerModelNode'):
         child.innerModel = self.innerModel
-        if child in self.children:
+        if child not in self.children:
             self.children.append(child)
         child.parent = self
 

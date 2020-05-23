@@ -1,7 +1,10 @@
 import math
 from innermodelnode import InnerModelNode
-from innermodel import InnerModel
+# from innermodel import InnerModel
 from innermodelvector import InnerModelVector
+
+class InnerModel (object):
+    pass
 
 class InnerModelLaser (InnerModelNode):
     def __init__ (self, id: str, port: int, min: int, max: int, angle: float, measures: int,

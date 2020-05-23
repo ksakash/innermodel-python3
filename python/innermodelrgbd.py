@@ -1,5 +1,8 @@
 from innermodelcamera import InnerModelCamera
-from innermodel import InnerModel
+# from innermodel import InnerModel
+
+class InnerModel (object):
+    pass
 
 class InnerModelRGBD (InnerModelCamera):
     def __init__(self, id: str, width: float, height: float, focal: float, noise: float, port: int,

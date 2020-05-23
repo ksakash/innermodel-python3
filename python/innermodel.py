@@ -16,7 +16,7 @@ from innermodelrgbd import InnerModelRGBD
 from innermodelimu import InnerModelIMU
 from innermodellaser import InnerModelLaser
 from innermodelplane import InnerModelPlane
-from innermodeldisplay import InnerModelDispay
+from innermodeldisplay import InnerModelDisplay
 from innermodelmesh import InnerModelMesh
 from innermodelpointcloud import InnerModelPointCloud
 from innermodelreader import InnerModelReader
@@ -28,12 +28,12 @@ class InnerModel(object):
         self.hash = dict()
 
         if self.path is not None:
-            InnerModelReader.load (file=self.path, model=self)
             self.root = None
+            InnerModelReader.load (file=self.path, model=self)
         elif im is not None:
             self.root = InnerModelTransform ('root', 'static', 0, 0, 0, 0, 0, 0)
             self.setRoot (self.root)
-            self.root = self
+            self.root.innerModel = self
             self.hash['root'] = self.root
             for child in im.root.children:
                 self.root.addChild (child.copyNode (self.hash, self.root))
@@ -251,7 +251,7 @@ class InnerModel(object):
         if (id in self.hash):
             raise Exception ("InnerModel.newDisplay: Error: Trying to insert a node with an \
                               already-existing key: %s", id)
-        newnode = InnerModelDispay (id, port, texture, width, height, depth, repeat, nx, ny, nz,
+        newnode = InnerModelDisplay (id, port, texture, width, height, depth, repeat, nx, ny, nz,
                                     px, py, pz, collidable, parent)
         self.hash[id] = newnode
         return newnode
