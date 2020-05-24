@@ -2,7 +2,8 @@ from innermodelnode import InnerModelNode
 from innermodelrtmatrix import InnerModelRTMat
 
 class InnerModelTransform(InnerModelNode):
-    def __init__ (self, id, engine, tx, ty, tz, rx, ry, rz, mass=0, parent=None):
+    def __init__ (self, id: str, engine: str, tx: float, ty: float, tz: float, rx: float, ry: float,
+                  rz: float, mass: float = 0, parent: 'InnerModelNode' = None):
         super (InnerModelTransform, self).__init__(id, parent)
         self.rtmat = InnerModelRTMat.getInnerModelRTMat (tx=tx, ty=ty, tz=tz, rx=rx, ry=ry, rz=rz)
         self.mass = mass
@@ -42,25 +43,22 @@ class InnerModelTransform(InnerModelNode):
         self.tx = tx
         self.ty = ty
         self.tz = tz
+        self.fixed = False
 
     def updateRotationPointers (self, rx, ry, rz):
         self.rx = rx
         self.ry = ry
         self.rz = rz
+        self.fixed = False
 
     def update (self, tx=None, ty=None, tz=None, rx=None, ry=None, rz=None):
-        if tx is None:
-            self.updateChildren()
-        else:
-            self.tx = tx
-            self.ty = ty
-            self.tz = tz
-            self.rx = rx
-            self.ry = ry
-            self.rz = rz
-            self.rtmat.set (ox=self.rx, oy=self.ry, oz=self.rz,
-                            x=self.tx, y=self.ty, z=self.tz)
-            self.fixed = True
+        if tx is None and self.fixed:
+            self.updateChildren(); return
+        self.tx = tx; self.ty = ty; self.tz = tz
+        self.rx = rx; self.ry = ry; self.rz = rz
+
+        self.rtmat.set (ox=self.rx, oy=self.ry, oz=self.rz,
+                        x=self.tx, y=self.ty, z=self.tz)
 
     def copyNode (self, hash, parent) -> 'InnerModelNode':
         ret = InnerModelTransform (self.id, self.engine, self.tx, self.ty, self.tz,
