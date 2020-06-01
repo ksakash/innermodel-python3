@@ -1,3 +1,8 @@
+'''
+Class representing a complete innermodel scene
+Author: ksakash@github.com (Akash Kumar Singh)
+'''
+
 import copy
 
 from innermodelnode import InnerModelNode
@@ -23,7 +28,14 @@ from innermodelreader import InnerModelReader
 from innermodelrotmatrix import Rot3D
 
 class InnerModel(object):
+    '''Class representing a scene'''
+
     def __init__ (self, xmlFilePath: str = None, im: 'InnerModel' = None):
+        '''Constrcutor
+        param xmlFilePath: path of the xml file representing innermodel
+        param im: InnerModel object to copy from
+        '''
+
         self.path = xmlFilePath
         self.hash = dict()
 
@@ -50,64 +62,88 @@ class InnerModel(object):
         self.listB = []
 
     def open (self, xmlFilePath: str) -> bool:
+        '''Read the xml file'''
+
         return InnerModelReader.load (file=xmlFilePath, model=self)
 
     # TODO
     def save (self, path: str) -> bool:
+        '''Save the info into a file'''
+
         pass
 
     def copy (self) -> 'InnerModel':
+        '''Returns a copy of the object'''
+
         inner = InnerModel()
         for child in self.root.children:
             inner.root.addChild (child.copyNode (inner.hash, inner.root))
 
     def changeHash (self, new_id: str, node: 'InnerModelNode'):
-        self.hash[id] = node
+        '''Map another node corresponding to the given new_id'''
+
+        self.hash[new_id] = node
 
     def setRoot (self, node: 'InnerModelNode'):
+        '''Set the root of the model'''
+
         self.root = node
         self.hash['root'] = self.root
         self.root.parent = None
 
     def update (self):
+        '''update parameters of all the nodes in the innermodel'''
+
         self.root.update()
         self.cleanUpTables()
 
-    def updateRotation (self, rotationId: str, rx: float, ry: float, rz: float):
+    def updateRotation (self, id: str, rx: float, ry: float, rz: float):
+        '''Update rotation paramters of the node with the given id'''
+
         if self.hash[id] is None:
-            print ("There is no such %s node", rotationId)
+            print ("There is no such %s node", id)
         else:
             aux = self.hash[id]
             aux.updateRotationPointers (rx, ry, ry)
 
-    def updateTranslation (self, translationId: str, tx: float, ty: float, tz: float):
+    def updateTranslation (self, id: str, tx: float, ty: float, tz: float):
+        '''Update translation parameters of the node with the given id'''
+
         if self.hash[id] is None:
-            print ("There is no such %s node", translationId)
+            print ("There is no such %s node", id)
         else:
             aux = self.hash[id]
             aux.updateTranslationPointers (tx, ty, ty)
 
-    def updatePlane (self, planeId: str, nx: float, ny: float, nz: float,
+    def updatePlane (self, id: str, nx: float, ny: float, nz: float,
                                          px: float, py: float, pz: float):
+        '''Update paramters of the plane with given id'''
+
         if self.hash[id] is None:
-            print ("There is no such %s node", planeId)
+            print ("There is no such %s node", id)
         else:
             aux = self.hash[id]
             aux.updatePointers (nx, ny, nz, px, py, pz)
 
-    def updateTransform (self, transformId: str, tx: float, ty: float, tz: float,
+    def updateTransform (self, id: str, tx: float, ty: float, tz: float,
                                                  rx: float, ry: float, rz: float):
+        '''Update transformation parameters'''
+
         if self.hash[id] is None:
-            print ("There is no such %s node", transformId)
+            print ("There is no such %s node", id)
         else:
             aux = self.hash[id]
             aux.updateTransformPointers (tx, ty, tz, rx, ry, ry)
 
     def cleanUpTables (self):
+        '''Clear the hash tables'''
+
         self.localHashRot.clear()
         self.localHashTr.clear()
 
     def updateJointValue (self, jointId: str, angle: float, force: bool = False):
+        '''Update the joint node parameters'''
+
         self.cleanUpTables()
         joint = self.hash[jointId]
 
@@ -117,6 +153,8 @@ class InnerModel(object):
             print ("There is no such %s node", jointId)
 
     def updatePrismaticJointPosition (self, jointId: str, position: float):
+        '''Update the prismatric joint position'''
+
         self.cleanUpTables()
         pj = self.hash[jointId]
 
@@ -128,6 +166,8 @@ class InnerModel(object):
     def newTransform (self, id: str, engine: str, parent: 'InnerModelNode',
                     mass: float, tx: float, ty: float, tz: float, rx: float,
                     ry: float, rz: float) -> 'InnerModelTransform':
+        '''Returns a new transform node with the given parameters'''
+
         if (id in self.hash):
             raise Exception ("InnerModel.newTransform: Error: Trying to insert a node with an \
                               already-existing key: %s", id)
@@ -138,7 +178,10 @@ class InnerModel(object):
         return newnode
 
     def newTouchSensor (self, id: str, parent: 'InnerModelTransform', stype: str,
-                        nx: float, ny: float, nz: float, min: float, max: float, port: int):
+                        nx: float, ny: float, nz: float, min: float, max: float,
+                        port: int) -> 'InnerModelTouchSensor':
+        '''Returns a touch sensor with the given arguments'''
+
         if (id in self.hash):
             raise Exception ("InnerModel.newTouchSensor: Error: Trying to insert a node with an \
                               already-existing key: %s", id)
@@ -147,9 +190,12 @@ class InnerModel(object):
         self.hash[id] = newnode
         return newnode
 
-    def newJoint (self, id: str, parent: 'InnerModelTransform', lx: float, ly: float, lz: float,
-                  hx:float, hy: float, hz: float, tx: float, ty: float, tz: float, rx: float, ry: float,
-                  rz: float, min: float, max: float, port: int, axis: str, home: float):
+    def newJoint (self, id: str, parent: 'InnerModelTransform', lx: float, ly: float,
+                  lz: float, hx:float, hy: float, hz: float, tx: float, ty: float,
+                  tz: float, rx: float, ry: float, rz: float, min: float, max: float,
+                  port: int, axis: str, home: float) -> 'InnerModelJoint':
+        '''Returns a joint object with the given paramter'''
+
         if (id in self.hash):
             raise Exception ("InnerModel.newJoint: Error: Trying to insert a node with an \
                               already-existing key: %s", id)
@@ -159,7 +205,11 @@ class InnerModel(object):
         self.hash[id] = newnode
         return newnode
 
-    def newPrismaticJoint (self, id, min, max, value, offset, port, axis, home, parent):
+    def newPrismaticJoint (self, id: str, min: float, max: float, value: float,
+                           offset: float, port: int, axis: str, home: float,
+                           parent: 'InnerModelTransform') -> 'InnerModelPrismaticJoint':
+        '''Returns a new prismatic joint object with the given parameters'''
+
         if (id in self.hash):
             raise Exception ("InnerModel.newPrismaticJoint: Error: Trying to insert a node with an \
                               already-existing key: %s", id)
@@ -167,7 +217,11 @@ class InnerModel(object):
         self.hash[id] = newnode
         return newnode
 
-    def newDifferentialRobot (self, id, tx, ty, tz, rx, ry, rz, port, noise, collide, parent):
+    def newDifferentialRobot (self, id: str, tx: float, ty: float, tz: float, rx: float,
+                              ry: float, rz: float, port: int, noise: float, collide: bool,
+                              parent: 'InnerModelNode') -> 'InnerModelDifferentialRobot':
+        '''Returns a new differential robot object with the given parameters'''
+
         if (id in self.hash):
             raise Exception ("InnerModel.newDifferentialRobot: Error: Trying to insert a node with \
                               an already-existing key: %s", id)
@@ -175,7 +229,11 @@ class InnerModel(object):
         self.hash[id] = newnode
         return newnode
 
-    def newOmniRobot (self, id, tx, ty, tz, rx, ry, rz, port, noise, collide, parent):
+    def newOmniRobot (self, id: str, tx: float, ty: float, tz: float,
+                      rx: float, ry: float, rz: float, port: int, noise: float,
+                      collide: bool, parent) -> 'InnerModelOmniRobot':
+        '''Returns a new omni robot with the given parameters'''
+
         if (id in self.hash):
             raise Exception ("InnerModel.newOmniRobot: Error: Trying to insert a node with an \
                               already-existing key: %s", id)
@@ -183,7 +241,9 @@ class InnerModel(object):
         self.hash[id] = newnode
         return newnode
 
-    def newCamera (self, id, width, height, focal):
+    def newCamera (self, id: str, width: float, height: float, focal: float) -> 'InnerModelCamera':
+        '''Returns a new camera object'''
+
         if (id in self.hash):
             raise Exception ("InnerModel.newCamera: Error: Trying to insert a node with an \
                               already-existing key: %s", id)
@@ -191,7 +251,10 @@ class InnerModel(object):
         self.hash[id] = newnode
         return newnode
 
-    def newRGBD (self, id, width, height, focal, noise, port, ifconfig, parent):
+    def newRGBD (self, id: str, width: float, height: float, focal: float, noise: float, port: int,
+                 ifconfig: str, parent: 'InnerModelNode') -> 'InnerModelRGBD':
+        '''Returns a RGBD object'''
+
         if (noise < 0):
             raise Exception ("InnerModel.newRGBD: noise can't have negative values")
         if (id in self.hash):
@@ -201,7 +264,9 @@ class InnerModel(object):
         self.hash[id] = newnode
         return newnode
 
-    def newIMU (self, id, port, parent):
+    def newIMU (self, id: str, port: int, parent: 'InnerModelNode') -> 'InnerModelIMU':
+        '''Returns a new IMU object'''
+
         if (id in self.hash):
             raise Exception ("InnerModel.newIMU: Error: Trying to insert a node with an \
                               already-existing key: %s", id)
@@ -209,7 +274,10 @@ class InnerModel(object):
         self.hash[id] = newnode
         return newnode
 
-    def newLaser (self, id, port, min, max, angle, measures, ifconfig, parent):
+    def newLaser (self, id: str, port: int, min: float, max: float, angle: float,
+                  measures: float, ifconfig: str, parent: 'InnerModelNode') -> 'InnerModelLaser':
+        '''Returns a new laser object'''
+
         if (id in self.hash):
             raise Exception ("InnerModel.newLaser: Error: Trying to insert a node with an \
                               already-existing key: %s", id)
@@ -218,8 +286,11 @@ class InnerModel(object):
         return newnode
 
     def newMesh (self, id: str, parent: 'InnerModelNode', path: str,
-                scalex: float, scaley: float, scalez: float, render: int, tx: float, ty: float,
-                tz: float, rx: float, ry: float, rz: float, collidable: bool) -> 'InnerModelMesh':
+                scalex: float, scaley: float, scalez: float, render: int,
+                tx: float, ty: float, tz: float, rx: float, ry: float,
+                rz: float, collidable: bool) -> 'InnerModelMesh':
+        '''Returns a new mesh object'''
+
         if (id in self.hash):
             raise Exception ("InnerModel.newMesh: Error: Trying to insert a node with an \
                               already-existing key: %s", id)
@@ -228,7 +299,9 @@ class InnerModel(object):
         self.hash[id] = newnode
         return newnode
 
-    def newPointCloud (self, id, parent):
+    def newPointCloud (self, id: str, parent: 'InnerModelNode') -> 'InnerModelPointCloud':
+        '''Returns a new point cloud object'''
+
         if (id in self.hash):
             raise Exception ("InnerModel.newPointCloud: Error: Trying to insert a node with an \
                               already-existing key: %s", id)
@@ -236,8 +309,11 @@ class InnerModel(object):
         self.hash[id] = newnode
         return newnode
 
-    def newPlane (self, id, texture, width, height, depth, repeat, nx, ny, nz, px, py, pz, collidable,
-                  parent):
+    def newPlane (self, id: str, texture: str, width: float, height: float, depth: float,
+                  repeat: int, nx: float, ny: float, nz: float, px: float, py: float, pz: float,
+                  collidable: bool, parent: 'InnerModelNode') -> 'InnerModelPlane':
+        '''Returns a new plane object'''
+
         if (id in self.hash):
             raise Exception ("InnerModel.newPlane: Error: Trying to insert a node with an \
                               already-existing key: %s", id)
@@ -246,8 +322,12 @@ class InnerModel(object):
         self.hash[id] = newnode
         return newnode
 
-    def newDisplay (self, id, port, texture, width, height, depth, repeat, nx, ny, nz, px, py, pz,
-                    collidable, parent):
+    def newDisplay (self, id: str, port: int, texture: str, width: float,
+                    height: float, depth: float, repeat: int, nx: float,
+                    ny: float, nz: float, px: float, py: float, pz: float,
+                    collidable: bool, parent: 'InnerModelNode') -> 'InnerModelDisplay':
+        '''Returns a new display object'''
+
         if (id in self.hash):
             raise Exception ("InnerModel.newDisplay: Error: Trying to insert a node with an \
                               already-existing key: %s", id)
@@ -257,46 +337,74 @@ class InnerModel(object):
         return newnode
 
     def getTransform (self, id: str) -> 'InnerModelTransform':
+        '''Returns transform corresponding to the given id'''
+
         return self.getNode (id)
 
     def getMesh (self, id: str) -> 'InnerModelMesh':
+        '''Returns mesh corresponding to the given id'''
+
         return self.getNode (id)
 
     def getJoint (self, id: str) -> 'InnerModelJoint':
+        '''Returns joint corresponding to the given id'''
+
         return self.getNode (id)
 
     def getPrismaticJoint (self, id: str) -> 'InnerModelPrismaticJoint':
+        '''Returns prismatic joint corresponding to the given id'''
+
         return self.getNode (id)
 
     def getTouchSensor (self, id: str) -> 'InnerModelTouchSensor':
+        '''Returns touch sensor corresponding to the given id'''
+
         return self.getNode (id)
 
     def getDifferentialRobot (self, id: str) -> 'InnerModelDifferentialRobot':
+        '''Returns differential robot corresponding to the given id'''
+
         return self.getNode (id)
 
     def getOmniRobot (self, id: str) -> 'InnerModelOmniRobot':
+        '''Returns omni robot corresponding to the given id'''
+
         return self.getNode (id)
 
     def getCamera (self, id: str) -> 'InnerModelCamera':
+        '''Returns camera corresponding to the given id'''
+
         return self.getNode (id)
 
     def getRGBD (self, id: str) -> 'InnerModelRGBD':
+        '''Returns RGBD object corresponding to the given id'''
+
         return self.getNode (id)
 
     def getIMU (self, id: str) -> 'InnerModelIMU':
+        '''Returns IMU corresponding to the given id'''
+
         return self.getNode (id)
 
     def getLaser (self, id: str) -> 'InnerModelLaser':
+        '''Returns laser object corresponding to the given id'''
+
         return self.getNode (id)
 
     def getPlane (self, id: str) -> 'InnerModelPlane':
+        '''Returns plane corresponding to the given id'''
+
         return self.getNode (id)
 
     def getPointCloud (self, id: str) -> 'InnerModelPointCloud':
+        '''Returns point cloud corresponding to the given id'''
+
         return self.getNode (id)
 
     def transform (self, destId: str, origId: str,
                    origVec: 'InnerModelVector' = None) -> 'InnerModelVector':
+        '''Get the transformation between two nodes with given ids'''
+
         if origVec is None:
             origVec = InnerModelVector.vec3d (0, 0, 0)
 
@@ -317,6 +425,8 @@ class InnerModel(object):
 
     def transform6D (self, destId: str, orgId: str,
                     origVec: 'InnerModelVector' = None) -> 'InnerModelVector':
+        '''Get the transformation between two nodes with given ids'''
+
         if origVec is not None:
             assert (origVec.size() == 6)
             return self.transform (destId, orgId, origVec)
@@ -357,6 +467,8 @@ class InnerModel(object):
             b = b.parent
 
     def getTransformationMatrix (self, to: str, fr: str) -> 'InnerModelRTMat':
+        '''Get transformation matrix betwn two nodes with given ids'''
+
         ret = InnerModelRTMat.getInnerModelRTMat (0, 0, 0, 0, 0, 0)
         if ((to, fr) in self.localHashTr):
             ret = self.localHashTr[(to, fr)]
@@ -369,7 +481,9 @@ class InnerModel(object):
             self.localHashTr[(to, fr)] = ret
         return ret
 
-    def getRotationMatrixTo (self, to: str, fr: str):
+    def getRotationMatrixTo (self, to: str, fr: str) -> 'Rot3D':
+        '''Get rotation matrix betwn two nodes with given ids'''
+
         rret = InnerModelMatrix.identity (3)
 
         if ((to, fr) in self.localHashTr):
@@ -384,23 +498,33 @@ class InnerModel(object):
 
         return rret
 
-    def getTranslationVectorTo (self, to: str, fr: str):
+    def getTranslationVectorTo (self, to: str, fr: str) -> 'InnerModelVector':
+        '''Get translation vector betwn two nodes with the given ids'''
+
         m = self.getTransformationMatrix (to, fr)
         return m.getCol (3)
 
     def rotationAngles (self, destId: str, origId: str) -> 'InnerModelVector':
+        '''Get rotation angles betwn two nodes with the given ids'''
+
         return self.getTransformationMatrix(destId, origId).extractAnglesR()
 
     def getIDKeys (self):
+        '''Get keys of the hash map'''
+
         return self.hash.keys()
 
     def getNode (self, id: str):
+        '''Get node with the given id'''
+
         if id in self.hash:
             return self.hash[id]
         else:
             return None
 
     def removeSubTree (self, node: 'InnerModeNode', l: list):
+        '''Remove a subtree'''
+
         for child in node.children:
             self.removeSubTree (child, l)
         node.parent.children.removeOne (node)
@@ -408,6 +532,8 @@ class InnerModel(object):
         self.removeNode (node.id)
 
     def removeNode (self, id):
+        '''Remove node with the given id'''
+
         self.hash.pop(id)
 
     def moveSubTree (self, nodeSrc: 'InnerModelNode', nodeDst: 'InnerModeNode'):
@@ -428,9 +554,13 @@ class InnerModel(object):
             self.computeLevels (child)
 
     def getRoot (self):
+        '''Returns a pointer to the root'''
+
         return self.root
 
     def getParentIdentifier (self, id: str) -> str:
+        '''Returns id of the parent of node with given id'''
+
         n = self.getNode (id)
         if n is not None:
             if n.parent is not None:
@@ -440,4 +570,6 @@ class InnerModel(object):
         return ""
 
     def printTree (self, s: str = '', verbose: bool = False):
+        '''Print the whole innermodel tree'''
+
         self.root.printTree (s, verbose)

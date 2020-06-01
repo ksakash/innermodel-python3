@@ -1,5 +1,17 @@
+'''
+Base class for all the elements in an innermodel
+Author: ksakash@github.com (Akash Kumar Singh)
+'''
+
 class InnerModelNode (object):
+    '''Base class for all the elements in an innermodel'''
+
     def __init__ (self, id: str, parent: 'InnerModelNode'):
+        '''
+        param id: identifier for the node
+        param parent: parent of the node, None if root
+        '''
+
         self.rtmat = None
         self.id = id
         self.innerModel = None
@@ -10,10 +22,11 @@ class InnerModelNode (object):
             self.level = 0
         self.children = []
         self.attributes = None
-        self.fixed = None # don't know what the purpose of fixed is
 
     # can also use __repr__ instead
     def printTree (self, s: str, verbose: bool):
+        '''Print the whole tree from the current node'''
+
         print (s, self.id, self.level, len(self.children))
 
         for child in self.children:
@@ -23,36 +36,44 @@ class InnerModelNode (object):
 
     # abstract
     def printT (self, verbose: bool):
-        pass
+        '''Print info about the current node'''
+
+        raise NotImplementedError
 
     # abstract
     def update (self):
-        pass
+        '''Update paramters of the node'''
+
+        raise NotImplementedError
 
     # abstract
     def copyNode (self, hash, parent):
-        pass
+        '''Return a copy of this node'''
+
+        raise NotImplementedError
 
     # abstract
     def save (self, out, tabs):
-        pass
+        '''Save the current ndoe into a file'''
+
+        raise NotImplementedError
 
     def setParent (self, parent: 'InnerModelNode'):
+        '''Set the parent of the node to the given parent'''
+
         self.parent = parent
         self.level = parent.level + 1
 
     def addChild (self, child: 'InnerModelNode'):
+        '''Add a child to the current node'''
+
         child.innerModel = self.innerModel
         if child not in self.children:
             self.children.append(child)
         child.parent = self
 
-    def setFixed (self, f: bool):
-        self.fixed = f
-
-    def isFixed (self) -> bool:
-        return self.fixed
-
     def updateChildren (self):
+        '''Update parameters of the children'''
+
         for child in self.children:
             child.update()
