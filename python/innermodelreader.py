@@ -16,9 +16,10 @@ class InnerModelReader (object):
 
     validAttr = dict()
     def __init__ (self):
-        self.intNodeAttributes()
+        self.initNodeAttributes()
 
-    def intNodeAttributes (self):
+    @staticmethod
+    def initNodeAttributes ():
         '''Method to store valid attributes for a tag'''
 
         attrList = []
@@ -84,6 +85,7 @@ class InnerModelReader (object):
     def load (file: str, model: 'InnerModel') -> bool:
         '''Method to load an innermoel doc'''
 
+        InnerModelReader.initNodeAttributes()
         tree = ET.parse (file)
         root = tree.getroot()
         if root.tag.lower() != 'innermodel':

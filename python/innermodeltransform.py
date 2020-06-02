@@ -41,7 +41,7 @@ class InnerModelTransform(InnerModelNode):
         '''Print info about object'''
 
         if verbose:
-            print ("{} ({}, {})".format(self.id, self.rtmat.shape[0], self.rtmat.shape[1]))
+            print ("{} {}".format(self.id, self.rtmat.shape))
             print (self.rtmat)
 
     # TODO: to save the model in a file

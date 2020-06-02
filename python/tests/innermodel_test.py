@@ -6,7 +6,7 @@ sys.path.append('..')
 
 from innermodel import InnerModel
 
-im = InnerModel (xmlFilePath='../thefile.xml')
+im = InnerModel (xmlFilePath='/home/robocomp/robocomp/files/innermodel/simplesimpleworld.xml')
 
 # def DFS (root):
 #     print (root.id)
