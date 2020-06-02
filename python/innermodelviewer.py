@@ -4,6 +4,7 @@ Author: ksakash@github.com (Akash Kumar Singh)
 '''
 
 import math
+import time
 import pybullet as p
 import pybullet_data
 
@@ -41,11 +42,17 @@ class MultiLinkedBody (object):
         self.linkJointTypes = []
         self.linkJointAxis = []
 
+    # TODO
     def eulerFromNormal (self, normal):
         '''Returns rotation angles from normal vector of a plane'''
 
         euler = [0,0,0]
         return euler
+
+    # TODO
+    def readTexture (self, texture):
+        color = [0, 0, 0, 1]
+        return color
 
     def includeBody (self, mass, visual, collision, position, orientation, parentId, joint):
         '''Include a body with given parameters to the list'''
@@ -59,13 +66,14 @@ class MultiLinkedBody (object):
         self.linkInertialFrameOrientations.append ([0,0,0,1])
         self.linkParentIndices.append (parentId)
         self.linkJointTypes.append (joint)
-        self.linkJointAxis.append ([0,0,0])
+        self.linkJointAxis.append ([0,0,1])
 
     def recursiveConstructor (self, node, tr, parentId):
         '''Recursively construct all the parts in a body'''
 
         if isinstance (node, InnerModelMesh):
-            linkMass = node.mass
+            linkMass = 1
+            self.baseMass += linkMass
             meshScale = [node.scalex, node.scaley, node.scalez]
             visualShapeId = p.createVisualShape (shapeType=p.GEOM_MESH,
                                                  fileName=node.meshPath,
@@ -80,22 +88,26 @@ class MultiLinkedBody (object):
             self.includeBody (linkMass, visualShapeId, collisionShapeId, linkPosition,
                               linkOrientation, parentId, linkJointType)
         elif isinstance (node, InnerModelPlane):
-            linkMass = node.mass
+            linkMass = 1
+            self.baseMass += linkMass
             size = [node.width/2,node.height/2,node.depth/2]
+            print (size)
             visualShapeId = p.createVisualShape (shapeType=p.GEOM_BOX,
                                                  halfExtents=size)
             collisionShapeId = p.createCollisionShape (shapeType=p.GEOM_BOX,
                                                        halfExtents=size)
-            linkPosition = [node.px + tr.x(), node.py + tr.y(), node.pz + tr.z()]
+            linkPosition = [node.point[0] + tr.x(), node.point[1] + tr.y(), node.point[2] + tr.z()]
             euler = self.eulerFromNormal (node.normal)
             linkOrientation = p.getQuaternionFromEuler (euler)
             linkJointType = p.JOINT_FIXED
             self.includeBody (linkMass, visualShapeId, collisionShapeId, linkPosition,
                               linkOrientation, parentId, linkJointType)
         else:
+            self.baseMass += node.mass
             tr_ = InnerModelVector.vec6d (node.tx + tr.x(), node.ty + tr.y(), node.tz + tr.z(),
                                           node.rx + tr.rx(), node.ry + tr.ry(), node.rz + tr.rz())
-            self.recursiveConstructor (node, tr_, parentId)
+            for child in node.children:
+                self.recursiveConstructor (child, tr_, parentId)
 
     def getClassType (self, node):
         '''Returns if an object is transform type or node type'''
@@ -117,7 +129,7 @@ class MultiLinkedBody (object):
         tr = InnerModelVector.vec6d (0, 0, 0, 0, 0, 0)
         parentId = 0
 
-        for child in node.chilren:
+        for child in node.children:
             self.recursiveConstructor (child, tr, parentId)
 
 class InnerModelViewer (object):
@@ -162,52 +174,20 @@ class InnerModelViewer (object):
                     return True
             return False
 
-    def getRayFromTo(self, mouseX, mouseY):
-        width, height, _, _, _, camForward, horizon, vertical, _, _, dist, \
-                                                            camTarget = p.getDebugVisualizerCamera()
-        camPos = [
-            camTarget[0] - dist * camForward[0], camTarget[1] - dist * camForward[1],
-            camTarget[2] - dist * camForward[2]
-        ]
-        farPlane = 10000
-        rayForward = [(camTarget[0] - camPos[0]), (camTarget[1] - camPos[1]), (camTarget[2] - camPos[2])]
-        invLen = farPlane * 1. / (math.sqrt(rayForward[0] * rayForward[0] + rayForward[1] *
-                                            rayForward[1] + rayForward[2] * rayForward[2]))
-        rayForward = [invLen * rayForward[0], invLen * rayForward[1], invLen * rayForward[2]]
-        rayFrom = camPos
-        oneOverWidth = float(1) / float(width)
-        oneOverHeight = float(1) / float(height)
-        dHor = [horizon[0] * oneOverWidth, horizon[1] * oneOverWidth, horizon[2] * oneOverWidth]
-        dVer = [vertical[0] * oneOverHeight, vertical[1] * oneOverHeight, vertical[2] * oneOverHeight]
-        rayToCenter = [
-            rayFrom[0] + rayForward[0], rayFrom[1] + rayForward[1], rayFrom[2] + rayForward[2]
-        ]
-        rayTo = [
-            rayToCenter[0] - 0.5 * horizon[0] + 0.5 * vertical[0] + float(mouseX) * dHor[0] -
-            float(mouseY) * dVer[0], rayToCenter[1] - 0.5 * horizon[1] + 0.5 * vertical[1] +
-            float(mouseX) * dHor[1] - float(mouseY) * dVer[1], rayToCenter[2] - 0.5 * horizon[2] +
-            0.5 * vertical[2] + float(mouseX) * dHor[2] - float(mouseY) * dVer[2]
-        ]
-        return rayFrom, rayTo
-
     def render (self):
         '''Render the scene'''
 
-        cid = p.connect(p.SHARED_MEMORY)
-        if (cid < 0):
-            p.connect(p.GUI)
+        p.connect(p.GUI)
 
         p.setAdditionalSearchPath(pybullet_data.getDataPath())
-        p.setPhysicsEngineParameter(numSolverIterations=10)
-        p.setTimeStep(1. / 120.)
-        logId = p.startStateLogging(p.STATE_LOGGING_PROFILE_TIMINGS, "visualShapeBench.json")
-        #useMaximalCoordinates is much faster then the default reduced coordinates (Featherstone)
-        p.loadURDF("plane100.urdf", useMaximalCoordinates=True)
-        #disable rendering during creation.
-        p.configureDebugVisualizer(p.COV_ENABLE_RENDERING, 0)
-        p.configureDebugVisualizer(p.COV_ENABLE_GUI, 0)
-        #disable tinyrenderer, software (CPU) renderer, we don't use it here
-        p.configureDebugVisualizer(p.COV_ENABLE_TINY_RENDERER, 0)
+        p.setAdditionalSearchPath(pybullet_data.getDataPath())
+
+        p.loadURDF("plane.urdf")
+
+        self.MakeWorld()
+        p.setGravity(0, 0, -10)
+        p.setRealTimeSimulation(1)
+        print (len(self.bodies))
 
         for body in self.bodies:
             p.createMultiBody(baseMass=body.baseMass,
@@ -224,30 +204,10 @@ class InnerModelViewer (object):
                             linkInertialFrameOrientations=body.linkInertialFrameOrientations,
                             linkParentIndices=body.linkParentIndices,
                             linkJointTypes=body.linkJointTypes,
-                            linkJointAxis=body.axis)
-
-        p.configureDebugVisualizer(p.COV_ENABLE_RENDERING, 1)
-        p.stopStateLogging(logId)
-        p.setGravity(0, 0, -10)
-        p.setRealTimeSimulation(1)
-
-        colors = [[1, 0, 0, 1], [0, 1, 0, 1], [0, 0, 1, 1], [1, 1, 1, 1]]
-        currentColor = 0
+                            linkJointAxis=body.linkJointAxis)
 
         while (1):
-            mouseEvents = p.getMouseEvents()
-            for e in mouseEvents:
-                if ((e[0] == 2) and (e[3] == 0) and (e[4] & p.KEY_WAS_TRIGGERED)):
-                    mouseX = e[1]
-                    mouseY = e[2]
-                    rayFrom, rayTo = self.getRayFromTo(mouseX, mouseY)
-                    rayInfo = p.rayTest(rayFrom, rayTo)
+            p.stepSimulation()
+            time.sleep(1. / 240.)
 
-                    for l in range(len(rayInfo)):
-                        hit = rayInfo[l]
-                        objectUid = hit[0]
-                        if (objectUid >= 1):
-                            p.changeVisualShape(objectUid, -1, rgbaColor=colors[currentColor])
-                            currentColor += 1
-                            if (currentColor >= len(colors)):
-                                currentColor = 0
+InnerModelViewer()
