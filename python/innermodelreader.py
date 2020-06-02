@@ -1,7 +1,9 @@
-#!/usr/bin/env python3
+'''
+Class to read a innermodel doc
+Author: ksakash@github.com (Akash Kumar Singh)
+'''
 
 import xml.etree.ElementTree as ET
-# from innermodel import InnerModel
 from innermodelnode import InnerModelNode
 from innermodeltransform import InnerModelTransform
 from innermodelcamera import InnerModelCamera
@@ -10,11 +12,15 @@ class InnerModel (object):
     pass
 
 class InnerModelReader (object):
+    '''Class to read an innermodel doc'''
+
     validAttr = dict()
     def __init__ (self):
         self.intNodeAttributes()
 
     def intNodeAttributes (self):
+        '''Method to store valid attributes for a tag'''
+
         attrList = []
         InnerModelReader.validAttr["innermodel"] = attrList
 
@@ -76,6 +82,8 @@ class InnerModelReader (object):
 
     @staticmethod
     def load (file: str, model: 'InnerModel') -> bool:
+        '''Method to load an innermoel doc'''
+
         tree = ET.parse (file)
         root = tree.getroot()
         if root.tag.lower() != 'innermodel':
@@ -90,6 +98,8 @@ class InnerModelReader (object):
 
     @staticmethod
     def include (file: str, model: 'InnerModel', node: 'InnerModelNode') -> bool:
+        '''Method to load innermodel doc included in other innermodel doc'''
+
         tree = ET.parse (file)
         root = tree.getroot ()
         if root.tag.lower() != 'innermodel':
@@ -105,6 +115,8 @@ class InnerModelReader (object):
     # need a bit modification for the tags having dimensions
     @staticmethod
     def getClass (model, node, domnode):
+        '''Get the class for the corresponding tag element'''
+
         attr = domnode.attrib
         tag = domnode.tag
         list1 = attr.keys()
@@ -346,6 +358,8 @@ class InnerModelReader (object):
 
     @staticmethod
     def isValidTag (tag):
+        '''To find out if a tag is valid or not'''
+
         if ((tag == 'innermodel') or
             (tag == 'transform') or
             (tag == 'rotation') or
@@ -361,6 +375,8 @@ class InnerModelReader (object):
 
     @staticmethod
     def recursive (parentDomNode: 'ET', model: 'InnerModel', imNode: 'InnerModelNode'):
+        '''Recursively read the xml doc'''
+
         if (not InnerModelReader.isValidTag (parentDomNode.tag.lower()) and len(parentDomNode) > 0):
             print (parentDomNode.tag)
             raise Exception ("Not a valid tag")
@@ -371,6 +387,6 @@ class InnerModelReader (object):
             InnerModelReader.recursive (child, model, node)
 
     def getValidNodeAttributes (self):
-        return InnerModelReader.validAttr
+        '''Returns the valid attributes for all the tag elements'''
 
-InnerModelReader()
+        return InnerModelReader.validAttr

@@ -1,3 +1,8 @@
+'''
+Class representing InnerModelJoint
+Author: ksakash@github.com (Akash Kumar Singh)
+'''
+
 from innermodeltransform import InnerModelTransform
 from innermodelvector import InnerModelVector
 
@@ -6,6 +11,19 @@ class InnerModelJoint (InnerModelTransform):
                   tx: float, ty: float, tz: float, rx: float, ry: float, rz: float, min: float =-float("inf"),
                   max: float = float("inf"), port: int = 0, axis: str = "z", home: float = 0,
                   parent: 'InnerModelTransform' = None):
+        '''Constructor
+        param id: identifier of the joint
+        param lx, ly, lz: lower limit of the joint
+        param hx, hy, hz: higher limit of the joint
+        param tx, ty, tz: translation of the joint
+        param rx, ry, rz: rotation of the joint
+        param min: minimum value of the joint rotation
+        param max: maximum value of the joint rotation
+        param port: port of the joint
+        param axis: axis around which it revolves
+        param parent: parent of the given node
+        '''
+
         super (InnerModelJoint, self).__init__ (id, 'static', tx, ty, tz, rx, ry, rz, 0, parent)
         self.min = min
         self.max = max
@@ -30,6 +48,8 @@ class InnerModelJoint (InnerModelTransform):
         self.backh = None
 
     def printT (self, verbose: bool):
+        '''Print info about the given node'''
+
         print ("Joint: %s", self.id)
         if verbose:
             print (self.rtmat)
@@ -39,6 +59,8 @@ class InnerModelJoint (InnerModelTransform):
         pass
 
     def update (self, lx: float, ly: float, lz: float, hx: float, hy: float, hz: float):
+        '''Update parameters about the given parameters'''
+
         if self.axis is 'x':
             self.backl = lx
             self.backh = hx
@@ -51,6 +73,8 @@ class InnerModelJoint (InnerModelTransform):
         self.fixed = True
 
     def getAngle (self) -> float:
+        '''Returns the angle of rotation about the given axis'''
+
         if (self.axis is 'x'):
             return self.rx
         elif (self.axis is 'y'):
@@ -59,6 +83,8 @@ class InnerModelJoint (InnerModelTransform):
             return self.rz
 
     def setAngle (self, angle: float, force: bool = False) -> float:
+        '''Set angle of rotation'''
+
         ret = angle
 
         if (angle > self.max):
@@ -93,6 +119,8 @@ class InnerModelJoint (InnerModelTransform):
         return InnerModelVector.vec3d (0, 0, 0)
 
     def copyNode (self, hash: dict, parent: 'InnerModelNode') -> 'InnerModelNode':
+        '''Returns copy of the current node'''
+
         if self.axis is 'x':
             ret = InnerModelJoint (id, self.backl, 0, 0, self.backh, 0, 0, self.tx, self.ty, self.tz,
                                    self.rx, 0, 0, self.min, self.max, self.port, self.axis, self.home,
