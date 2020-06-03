@@ -2,34 +2,32 @@
 	<transform id="world">
 		<transform id="floor" >
 
-		    <plane id="ddG" ny="1" px="0" py="0" pz="0" size="5000,5000,10" texture="#ffffff" />
+		    <plane id="ddG" nz="1" px="0" py="0" pz="0" size="600,600,10" texture="#ffffff" />
 
-			<plane id="ddR" nx="1" px="2500" py="200" pz="0" size="5000,500,10" texture="#eeeeee" />
-			<plane id="ddL" nx="1" px="-2500" py="200" pz="0" size="5000,500,10" texture="#eeeeee" />
+			<plane id="ddR" nx="-1" px="295" py="0" pz="25" size="600,40,10" texture="#eeeeee" />
+			<plane id="ddL" nx="1" px="-295" py="0" pz="25" size="600,40,10" texture="#eeeeee" />
 
-			<plane id="ddF" nz="1" pz="2500" py="200" px="0" size="5000,500,10" texture="#555555" />
-			<plane id="ddB" nz="1" pz="-2500" py="200" px="0" size="5000,500,10" texture="#555555" />
+			<plane id="ddF" ny="-1" py="295" pz="25" px="0" size="600,40,10" texture="#555555" />
+			<plane id="ddB" ny="1" py="-295" pz="25" px="0" size="600,40,10" texture="#555555" />
 
 		</transform>
 
 		<!--OBSTACLES-->
-		<transform id="caja1" tx="1" ty="1" tz="2">
-			<plane id="cajaMesh1" size="1,1,1" />
+		<transform id="caja1" tx="150" ty="150" tz="35">
+			<plane id="cajaMesh1" nz="1" size="60,60,60" texture="#000055" />
 		</transform>
 
-		<transform id="caja2" tx="1300" tz="1200" ty="0" >
-			<plane id="cajaMesh2" nx="1" size="400,400,400" texture="#550055" />
+		<transform id="caja2" tx="-150" tz="35" ty="-150" >
+			<plane id="cajaMesh2" nz="1" size="60,60,60" texture="#550055" />
 		</transform>
 
-		<differentialrobot id="base"  tx="0" ty="0" tz="5" port="10004">
+		<differentialrobot id="base"  tx="0" ty="0" tz="500" port="10004">
 			<mesh id="base_robex" file="/home/ksakash/.local/lib/python3.6/site-packages/pybullet_data/duck.obj" scale="0.5" />
-			<translation id="laserPose" tx="0" ty="0.14" tz="0.2">
-				<!-- <laser id="laser" port="10003" measures="100" min="100" max="30000" angle="3" ifconfig="10000" /> -->
-				<plane id="sensorL" px="0" py="0" pz="1" size="0.5,0.5,0.5" />
+			<translation id="laserPose" tx="0" ty="14" tz="20">
+				<plane id="sensorL" px="-40" py="80" pz="0" size="10,10,10" texture="#000000" />
 			</translation>
-			<transform id="camera" ty="210" tz="200">
-				<!-- <rgbd id="rgbd" focal="490" width="640" height="480" port="10096" noise="0.00" ifconfig="40000,50000" /> -->
-				<plane id="rgbd_mesh1" nz="1" pz="-200" size="200,50,10" repeat="1" texture="#550000" />
+			<transform id="camera" tx="0" ty="14" tz="20">
+				<plane id="rgbd_mesh1" px="-40" py="80" pz="-20" size="10,10,10" texture="#550055" />
 			</transform>
 		</differentialrobot>
 	</transform>

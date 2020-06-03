@@ -43,9 +43,9 @@ class MultiLinkedBody (object):
         self.linkJointTypes = []
         self.linkJointAxis = []
 
-    # TODO
     def eulerFromNormal (self, normal):
         '''Returns rotation angles from normal vector of a plane'''
+        normal = [normal[0], normal[1], normal[2]]
         if normal == [0, 0, 1]:
             euler = [0, 0, 0]
         elif normal == [0, 0, -1]:
@@ -82,7 +82,6 @@ class MultiLinkedBody (object):
             print (c)
             raise Exception ("invalid character")
 
-    # TODO
     def readTexture (self, texture):
         '''Convert the texture into the color format taken by pybullet'''
 
@@ -129,7 +128,9 @@ class MultiLinkedBody (object):
             linkMass = 1
             self.baseMass += linkMass
             size = [node.width/2,node.height/2,node.depth/2]
+            color = self.readTexture (node.texture)
             visualShapeId = p.createVisualShape (shapeType=p.GEOM_BOX,
+                                                 rgbaColor=color,
                                                  halfExtents=size)
             collisionShapeId = p.createCollisionShape (shapeType=p.GEOM_BOX,
                                                        halfExtents=size)
@@ -162,7 +163,8 @@ class MultiLinkedBody (object):
 
         assert (self.getClassType (node) == 'Transform')
         self.id = node.id
-        self.baseMass = node.mass
+        # self.baseMass = node.mass
+        self.baseMass = 10
         self.basePosition = [node.tx/100.0, node.ty/100.0, node.tz/100.0]
         self.baseOrientation = p.getQuaternionFromEuler ([node.rx, node.ry, node.rz])
         tr = InnerModelVector.vec6d (0, 0, 0, 0, 0, 0)
