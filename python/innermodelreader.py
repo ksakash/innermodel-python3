@@ -244,16 +244,16 @@ class InnerModelReader (object):
         elif tag.lower() == 'plane':
             size = domnode.get ('size', '2500')
             li = size.split (',')
-            width = float(li[0])
+            width = float(li[0])/100
             height = width
-            depth = height/100
+            depth = height
 
             if len(li) == 2:
-                height = float(li[1])
+                height = float(li[1])/100
                 depth = min (width, height)/100
             elif len(li) == 3:
-                height = float(li[1])
-                depth = float(li[2])
+                height = float(li[1])/100
+                depth = float(li[2])/100
             elif len(li) > 3:
                 raise Exception ("too many numbers in plane definitions")
 

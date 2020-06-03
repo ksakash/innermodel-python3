@@ -5,6 +5,7 @@ Author: ksakash@github.com (Akash Kumar Singh)
 
 import math
 import time
+import numpy as np
 import pybullet as p
 import pybullet_data
 
@@ -45,13 +46,50 @@ class MultiLinkedBody (object):
     # TODO
     def eulerFromNormal (self, normal):
         '''Returns rotation angles from normal vector of a plane'''
-
-        euler = [0,0,0]
+        if normal == [0, 0, 1]:
+            euler = [0, 0, 0]
+        elif normal == [0, 0, -1]:
+            euler = [np.pi, 0, 0]
+        elif normal == [1, 0, 0]:
+            euler = [-np.pi/2, 0, -np.pi/2]
+        elif normal == [-1, 0, 0]:
+            euler = [-np.pi/2, 0, np.pi/2]
+        elif normal == [0, 1, 0]:
+            euler = [-np.pi/2, 0, 0]
+        elif normal == [0, -1, 0]:
+            euler = [np.pi/2, 0, 0]
+        else:
+            euler = [0, 0, 0]
         return euler
+
+    def hexToInt (self, c):
+        if (c == '1' or c == '2' or c == '3' or c == '4' or c == '5' \
+            or c == '6' or c == '7' or c == '8' or c == '9' or c == '0'):
+            return int (c)
+        elif (c == 'A' or c == 'a'):
+            return 10
+        elif (c == 'B' or c == 'b'):
+            return 11
+        elif (c == 'C' or c == 'c'):
+            return 12
+        elif (c == 'D' or c == 'd'):
+            return 13
+        elif (c == 'E' or c == 'e'):
+            return 14
+        elif (c == 'F' or c == 'f'):
+            return 15
+        else:
+            print (c)
+            raise Exception ("invalid character")
 
     # TODO
     def readTexture (self, texture):
-        color = [0, 0, 0, 1]
+        '''Convert the texture into the color format taken by pybullet'''
+
+        r = float (self.hexToInt(texture[1])*16 + self.hexToInt(texture[2]))/255.0
+        g = float (self.hexToInt(texture[3])*16 + self.hexToInt(texture[4]))/255.0
+        b = float (self.hexToInt(texture[5])*16 + self.hexToInt(texture[5]))/255.0
+        color = [r, g, b, 1]
         return color
 
     def includeBody (self, mass, visual, collision, position, orientation, parentId, joint):
@@ -81,7 +119,7 @@ class MultiLinkedBody (object):
             collisionShapeId = p.createCollisionShape (shapeType=p.GEOM_MESH,
                                                        fileName=node.meshPath,
                                                        meshScale=meshScale)
-            linkPosition = [node.tx + tr.x(), node.ty + tr.y(), node.tz + tr.z()]
+            linkPosition = [node.tx/100.0 + tr.x(), node.ty/100.0 + tr.y(), node.tz/100.0 + tr.z()]
             linkOrientation = p.getQuaternionFromEuler ([node.rx + tr.rx(), node.ry + tr.ry(),
                                                          node.rz + tr.rz()])
             linkJointType = p.JOINT_FIXED
@@ -91,12 +129,12 @@ class MultiLinkedBody (object):
             linkMass = 1
             self.baseMass += linkMass
             size = [node.width/2,node.height/2,node.depth/2]
-            print (size)
             visualShapeId = p.createVisualShape (shapeType=p.GEOM_BOX,
                                                  halfExtents=size)
             collisionShapeId = p.createCollisionShape (shapeType=p.GEOM_BOX,
                                                        halfExtents=size)
-            linkPosition = [node.point[0] + tr.x(), node.point[1] + tr.y(), node.point[2] + tr.z()]
+            linkPosition = [node.point[0]/100.0 + tr.x(), node.point[1]/100.0 + tr.y(),
+                            node.point[2]/100.0 + tr.z()]
             euler = self.eulerFromNormal (node.normal)
             linkOrientation = p.getQuaternionFromEuler (euler)
             linkJointType = p.JOINT_FIXED
@@ -104,8 +142,9 @@ class MultiLinkedBody (object):
                               linkOrientation, parentId, linkJointType)
         else:
             self.baseMass += node.mass
-            tr_ = InnerModelVector.vec6d (node.tx + tr.x(), node.ty + tr.y(), node.tz + tr.z(),
-                                          node.rx + tr.rx(), node.ry + tr.ry(), node.rz + tr.rz())
+            tr_ = InnerModelVector.vec6d (node.tx/100.0 + tr.x(), node.ty/100.0 + tr.y(),
+                                          node.tz/100.0 + tr.z(), node.rx + tr.rx(),
+                                          node.ry + tr.ry(), node.rz + tr.rz())
             for child in node.children:
                 self.recursiveConstructor (child, tr_, parentId)
 
@@ -124,7 +163,7 @@ class MultiLinkedBody (object):
         assert (self.getClassType (node) == 'Transform')
         self.id = node.id
         self.baseMass = node.mass
-        self.basePosition = [node.tx, node.ty, node.tz]
+        self.basePosition = [node.tx/100.0, node.ty/100.0, node.tz/100.0]
         self.baseOrientation = p.getQuaternionFromEuler ([node.rx, node.ry, node.rz])
         tr = InnerModelVector.vec6d (0, 0, 0, 0, 0, 0)
         parentId = 0
