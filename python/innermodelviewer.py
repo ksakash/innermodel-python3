@@ -28,6 +28,7 @@ class MultiLinkedBody (object):
         '''Constructor having all the paramters for multibody in pybullet'''
 
         self.id = ''
+        self.bodyId = None
         self.baseMass = 0
         self.baseCollisionShapeIndex = -1
         self.baseVisualShapeIndex = -1
@@ -43,10 +44,16 @@ class MultiLinkedBody (object):
         self.linkParentIndices = []
         self.linkJointTypes = []
         self.linkJointAxis = []
-        self.cameraViewMatrix = []
-        self.cameraProjectionMatrix = []
-        self.cameraImageSize = []
+        self.cameraViewMatrices = []
+        self.cameraProjectionMatrices = []
+        self.cameraEyePositions = []
+        self.cameraTargetPositions = []
+        self.cameraUpVectors = []
+        self.cameraImageSizes = []
         self.linkTextures = []
+        self.linkNames = []
+        self.hasCamera = False
+
 
     def eulerFromNormal (self, normal):
         '''Returns rotation angles from normal vector of a plane'''
@@ -90,7 +97,7 @@ class MultiLinkedBody (object):
     def readTexture (self, texture):
         '''Convert the texture into the color format taken by pybullet'''
 
-        if (texture[0] == '#')
+        if (texture[0] == '#'):
             r = float (self.hexToInt(texture[1])*16 + self.hexToInt(texture[2]))/255.0
             g = float (self.hexToInt(texture[3])*16 + self.hexToInt(texture[4]))/255.0
             b = float (self.hexToInt(texture[5])*16 + self.hexToInt(texture[5]))/255.0
@@ -100,7 +107,7 @@ class MultiLinkedBody (object):
             textId = p.loadTexture (texture)
             return textId
 
-    def includeBody (self, mass, visual, collision, position, orientation, parentId, joint, txt):
+    def includeLink (self, mass, visual, collision, position, orientation, parentId, joint, txt, name):
         '''Include a body with given parameters to the list'''
 
         self.linkMasses.append (mass)
@@ -114,6 +121,7 @@ class MultiLinkedBody (object):
         self.linkJointTypes.append (joint)
         self.linkJointAxis.append ([0,0,1])
         self.linkTextures.append (txt)
+        self.linkNames.append (name)
 
     def recursiveConstructor (self, node, tr, parentId):
         '''Recursively construct all the parts in a body'''
@@ -132,8 +140,8 @@ class MultiLinkedBody (object):
             linkOrientation = p.getQuaternionFromEuler ([node.rx + tr.rx(), node.ry + tr.ry(),
                                                          node.rz + tr.rz()])
             linkJointType = p.JOINT_FIXED
-            self.includeBody (linkMass, visualShapeId, collisionShapeId, linkPosition,
-                              linkOrientation, parentId, linkJointType, None)
+            self.includeLink (linkMass, visualShapeId, collisionShapeId, linkPosition,
+                              linkOrientation, parentId, linkJointType, None, node.id)
         elif isinstance (node, InnerModelPlane):
             linkMass = 1
             self.baseMass += linkMass
@@ -155,20 +163,23 @@ class MultiLinkedBody (object):
             euler = self.eulerFromNormal (node.normal)
             linkOrientation = p.getQuaternionFromEuler (euler)
             linkJointType = p.JOINT_FIXED
-            self.includeBody (linkMass, visualShapeId, collisionShapeId, linkPosition,
-                              linkOrientation, parentId, linkJointType, texture)
+            self.includeLink (linkMass, visualShapeId, collisionShapeId, linkPosition,
+                              linkOrientation, parentId, linkJointType, texture, node.id)
         elif isinstance (node, InnerModelRGBD):
-            self.cameraImageSize.append ([node.width, node.height])
+            self.hasCamera = True
+            self.cameraImageSizes.append ([int(node.width), int(node.height)])
             viewMatrix = p.computeViewMatrix (cameraEyePosition=[tr.x(), tr.y(), tr.z()],
                                               cameraTargetPosition=[tr.x(), tr.y() + 10, tr.z()],
                                               cameraUpVector=[0, 0, 1])
-
-            projectionMatrix = p.computeProjectionMatrix (fov=node.focal,
-                                                          aspect=node.width/node.height,
-                                                          nearVal=0.1,
-                                                          farVal=10.1)
-            self.cameraViewMatrix.append (viewMatrix)
-            self.cameraProjectionMatrix.append (projectionMatrix)
+            self.cameraEyePositions.append ([tr.x(), tr.y(), tr.z()])
+            self.cameraTargetPositions.append ([tr.x(), tr.y()+10, tr.z()])
+            self.cameraUpVectors.append ([0, 0, 1])
+            projectionMatrix = p.computeProjectionMatrixFOV (fov=node.focal,
+                                                             aspect=node.width/node.height,
+                                                             nearVal=0.1,
+                                                             farVal=10.1)
+            self.cameraViewMatrices.append (viewMatrix)
+            self.cameraProjectionMatrices.append (projectionMatrix)
         else:
             self.baseMass += node.mass
             tr_ = InnerModelVector.vec6d (node.tx/100.0 + tr.x(), node.ty/100.0 + tr.y(),
@@ -209,9 +220,22 @@ class InnerModelViewer (object):
 
         self.innerModel = innermodel
         self.bodies = []
-        self.worldNode = innermodel.root
+        self.worldNode = None
         if self.innerModel is not None:
+            self.worldNode = self.innerModel.root
             self.construct (self.innerModel.root)
+
+        self.initPyBullet()
+
+    def initPyBullet (self):
+        p.connect(p.GUI)
+
+        p.setAdditionalSearchPath(pybullet_data.getDataPath())
+        p.setAdditionalSearchPath(pybullet_data.getDataPath())
+
+        p.loadURDF("plane.urdf")
+        p.setGravity(0, 0, -10)
+        p.setRealTimeSimulation(1)
 
     def MakeMultiLinkedBody (self, node):
         '''Method to make a multilinked body'''
@@ -233,25 +257,39 @@ class InnerModelViewer (object):
 
     def construct (self, node):
         '''Find the node representing the world'''
-        for child in self.innerModel.root:
+        for child in self.innerModel.root.children:
             if (child.id == 'world'):
                 self.worldNode = child
                 break
 
+    def renderImage (self):
+        for body in self.bodies:
+            if body.hasCamera:
+                for i in range (len(body.cameraViewMatrices)):
+                    (base_pos, orien) = p.getBasePositionAndOrientation (body.bodyId)
+                    mat = p.getMatrixFromQuaternion (orien)
+                    mat = np.transpose (np.array (mat))
+                    cam_pos = mat.dot(np.array(body.cameraEyePositions[i]))
+                    cameraEyePosition = [base_pos[0] + cam_pos[0],
+                                         base_pos[1] + cam_pos[1],
+                                         base_pos[2] + cam_pos[2]]
+                    cam_target_pos = mat.dot(np.array(body.cameraTargetPositions[i]))
+                    cameraTargetPosition = [cam_target_pos[0] + base_pos[0],
+                                            cam_target_pos[1] + base_pos[1],
+                                            cam_target_pos[2] + base_pos[2]]
+                    cameraUpVector = mat.dot(np.array(body.cameraUpVectors))
+                    viewMatrix = p.computeViewMatrix (cameraEyePosition=cameraEyePosition,
+                                                      cameraTargetPosition=cameraTargetPosition,
+                                                      cameraUpVector=cameraUpVector)
+                    _ = p.getCameraImage (width=body.cameraImageSizes[i][0],
+                                          height=body.cameraImageSizes[i][1],
+                                          viewMatrix=viewMatrix,
+                                          projectionMatrix=body.cameraProjectionMatrices[i])
+
     def render (self):
         '''Render the scene'''
 
-        p.connect(p.GUI)
-
-        p.setAdditionalSearchPath(pybullet_data.getDataPath())
-        p.setAdditionalSearchPath(pybullet_data.getDataPath())
-
-        p.loadURDF("plane.urdf")
-
         self.MakeWorld()
-        p.setGravity(0, 0, -10)
-        p.setRealTimeSimulation(1)
-        print (len(self.bodies))
 
         for body in self.bodies:
             bodyId = p.createMultiBody(baseMass=body.baseMass,
@@ -269,14 +307,19 @@ class InnerModelViewer (object):
                             linkParentIndices=body.linkParentIndices,
                             linkJointTypes=body.linkJointTypes,
                             linkJointAxis=body.linkJointAxis)
-            for i in range (len(body.linkMasses)):
+            body.bodyId = bodyId
+
+            for i in range (len(body.linkTextures)):
                 if (body.linkTextures[i] is not None):
-                    linkId = body.linkVisualShapeIndices[i]
                     textId = body.linkTextures[i]
-                    p.changeVisualShape (bodyId, linkId, textId)
+                    p.changeVisualShape (bodyId, i, textureUniqueId=textId)
+
+            for i in range (len(body.cameraViewMatrices)):
+                _ = p.getCameraImage(width=body.cameraImageSizes[i][0],
+                                     height=body.cameraImageSizes[i][1],
+                                     viewMatrix=body.cameraViewMatrices[i],
+                                     projectionMatrix=body.cameraProjectionMatrices[i])
 
         while (1):
             p.stepSimulation()
             time.sleep(1. / 240.)
-
-InnerModelViewer()
