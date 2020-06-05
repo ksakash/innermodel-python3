@@ -78,7 +78,8 @@ class InnerModelReader (object):
         attrList = ["path"]
         InnerModelReader.validAttr["include"] = attrList
 
-        attrList = ["id", "length", "width", "lengthx", "widthx", "lengthy", "widthy", "lengthz", "widthz"]
+        attrList = ["id", "length", "width", "lengthx", "widthx", "lengthy", "widthy", "lengthz",
+                    "widthz"]
         InnerModelReader.validAttr["axes"] = attrList
 
     @staticmethod
@@ -137,7 +138,8 @@ class InnerModelReader (object):
         elif tag.lower() == 'translation':
             tr = model.newTransform (id=domnode.get('id'), engine=domnode.get('engine', 'static'),
                         parent=node, tx=float(domnode.get('tx', 0)), ty=float(domnode.get('ty', 0)),
-                        tz=float(domnode.get('tz', 0)), rx=0, ry=0, rz=0, mass=float(domnode.get('mass', 0)))
+                        tz=float(domnode.get('tz', 0)), rx=0, ry=0, rz=0,
+                        mass=float(domnode.get('mass', 0)))
             tr.gui_rotation = False
             return tr
         elif tag.lower() == 'transform':
@@ -167,11 +169,12 @@ class InnerModelReader (object):
                                 axis=domnode.get('axis', "z"), home=float(domnode.get('home', 0)))
             return jr
         elif tag.lower() == 'prismaticjoint':
-            jr = model.newPrismaticJoint (id=domnode.get('id'), min=float(domnode.get('min', -1*float("inf"))),
+            jr = model.newPrismaticJoint (id=domnode.get('id'), port=int(domnode.get('port', 0)),
+                                          min=float(domnode.get('min', -1*float("inf"))),
                                           max=float(domnode.get('max', float("inf"))),
                                           position=float(domnode.get('position', 0)),
                                           offset=float(domnode.get('offset', 0)),
-                                          port=int(domnode.get('port', 0)), axis=domnode.get('axis', "z"),
+                                          axis=domnode.get('axis', "z"),
                                           home=float(domnode.get('home', 0)), parent=node)
             return jr
         elif tag.lower() == 'differentialrobot':
@@ -195,10 +198,14 @@ class InnerModelReader (object):
                     height=float(domnode.get('height', 0)), focal=float(domnode.get('focal', 0)))
             return cam
         elif tag.lower() == 'rgbd':
-            rgbd = model.newRGBD (id=domnode.get('id'), width=float(domnode.get('width', 0)),
-                                  height=float(domnode.get('height', 0)), focal=float(domnode.get('focal', 0)),
-                                  noise=float(domnode.get('noise', 0)), port=int(domnode.get('pose', 0)),
-                                  ifconfig=domnode.get('ifconfig', ''), parent=node)
+            rgbd = model.newRGBD (id=domnode.get('id'),
+                                  width=float(domnode.get('width', 0)),
+                                  height=float(domnode.get('height', 0)),
+                                  focal=float(domnode.get('focal', 0)),
+                                  noise=float(domnode.get('noise', 0)),
+                                  port=int(domnode.get('pose', 0)),
+                                  ifconfig=domnode.get('ifconfig', ''),
+                                  parent=node)
             return rgbd
         elif tag.lower() == 'imu':
             imu = model.newIMU (id=domnode.get('id'), port=int(domnode.get('port', 0)), parent=node)
