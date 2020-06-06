@@ -12,6 +12,7 @@ import pybullet_data
 from innermodel import InnerModel
 from innermodelrgbd import InnerModelRGBD
 from innermodelnode import InnerModelNode
+from innermodellaser import InnerModelLaser
 from innermodelvector import InnerModelVector
 from innermodelmesh import InnerModelMesh
 from innermodelplane import InnerModelPlane
@@ -21,7 +22,16 @@ from innermodeljoint import InnerModelJoint
 from innermodelomnirobot import InnerModelOmniRobot
 from innermodelprismaticjoint import InnerModelPrismaticJoint
 
-class MultiLinkedBody (object):
+class BodyLink (object):
+    pass
+
+class BodyCamera (object):
+    pass
+
+class BodyLaser (object):
+    pass
+
+class MultiLinkBody (object):
     '''Class to represent a Multi Linked Body'''
 
     def __init__(self):
@@ -53,7 +63,13 @@ class MultiLinkedBody (object):
         self.linkTextures = []
         self.linkNames = []
         self.hasCamera = False
-
+        self.hasLaser = False
+        self.laserPositions = []
+        self.laserNumRays = []
+        self.laserRayLength = []
+        self.laserRayBatchFrom = []
+        self.laserRayBatchTo = []
+        self.laserRayBatchIds = []
 
     def eulerFromNormal (self, normal):
         '''Returns rotation angles from normal vector of a plane'''
@@ -124,6 +140,15 @@ class MultiLinkedBody (object):
         self.linkTextures.append (txt)
         self.linkNames.append (name)
 
+    def makeLink (self, node, tr, parentId):
+        pass
+
+    def makeCamera (self, node, tr, parentId):
+        pass
+
+    def makeLaser (self, node, tr, parentId):
+        pass
+
     def recursiveConstructor (self, node, tr, parentId):
         '''Recursively construct all the parts in a body'''
 
@@ -181,6 +206,24 @@ class MultiLinkedBody (object):
                                                              farVal=10.1)
             self.cameraViewMatrices.append (viewMatrix)
             self.cameraProjectionMatrices.append (projectionMatrix)
+        elif isinstance (node, InnerModelLaser):
+            self.hasLaser = True
+            self.laserPositions.append ([tr.x(), tr.y(), tr.z()])
+            self.laserNumRays.append (node.measure)
+            self.laserRayLength.append (node.max)
+            rayFrom = []
+            rayTo = []
+            rayIds = []
+            for i in range(node.measure):
+                rayFrom.append([tr.x(), tr.y(), tr.z()])
+                rayTo.append([
+                    tr.x() + node.max * math.sin(2. * math.pi * float(i) / node.measure),
+                    tr.y() + node.max * math.cos(2. * math.pi * float(i) / node.measure), tr.z()
+                ])
+                rayIds.append(p.addUserDebugLine(rayFrom[i], rayTo[i], [1,0,0]))
+            self.laserRayBatchFrom.append (rayFrom)
+            self.laserRayBatchTo.append (rayTo)
+            self.laserRayBatchIds.append (rayIds)
         else:
             self.baseMass += node.mass
             tr_ = InnerModelVector.vec6d (node.tx/100.0 + tr.x(), node.ty/100.0 + tr.y(),
@@ -241,7 +284,7 @@ class InnerModelViewer (object):
     def MakeMultiLinkedBody (self, node):
         '''Method to make a multilinked body'''
 
-        body = MultiLinkedBody()
+        body = MultiLinkBody()
         body.createBody (node)
         return body
 
@@ -358,6 +401,28 @@ class InnerModelViewer (object):
                                           viewMatrix=viewMatrix,
                                           projectionMatrix=body.cameraProjectionMatrices[i])
 
+    def detectLaserCollisions (self):
+        '''Detect collision of laser rays and render it on GUI'''
+
+        for body in self.bodies:
+            if body.hasLaser:
+                for i in range (len(body.laserPositions)):
+                    rayFrom = body.laserRayBatchFrom[i]
+                    rayTo = body.laserRayBatchTo[i]
+                    rayIds = body.laserRayBatchIds[i]
+
+                    results = p.rayTestBatch(rayFrom, rayTo, parentObjectUniqueId=body.bodyId)
+
+                    for j in range(len(body.laserNumRays)):
+                        hitObjectUid = results[j][0]
+
+                        if (hitObjectUid < 0):
+                            hitPosition = [0, 0, 0]
+                            p.addUserDebugLine(rayFrom[i], rayTo[i], [1, 0, 0], replaceItemUniqueId=rayIds[i])
+                        else:
+                            hitPosition = results[i][3]
+                            p.addUserDebugLine(rayFrom[i], hitPosition, [0, 1, 0], replaceItemUniqueId=rayIds[i])
+
     def render (self):
         '''Render the scene'''
 
@@ -389,4 +454,5 @@ class InnerModelViewer (object):
         while (1):
             p.stepSimulation()
             self.renderImage ()
+            self.detectLaserCollisions ()
             time.sleep(1. / 240.)
