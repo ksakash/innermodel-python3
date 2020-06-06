@@ -150,7 +150,7 @@ class MultiLinkedBody (object):
             color = None
             if (len(node.texture) != 0 and node.texture[0] == '#'):
                 color = self.readTexture(node.texture)
-            else:
+            elif (len(node.texture) != 0):
                 texture = self.readTexture(node.texture)
 
             visualShapeId = p.createVisualShape (shapeType=p.GEOM_BOX,
@@ -173,7 +173,7 @@ class MultiLinkedBody (object):
                                               cameraUpVector=[0, 0, 1])
             self.cameraEyePositions.append ([tr.x(), tr.y(), tr.z()])
             self.cameraTargetPositions.append ([tr.x(), tr.y()+10, tr.z()])
-            self.cameraUpVectors.append ([0, 0, 1])
+            self.cameraUpVectors.append ([1, 0, 0])
             projectionMatrix = p.computeProjectionMatrixFOV (fov=node.focal,
                                                              aspect=node.width/node.height,
                                                              nearVal=0.1,
@@ -268,16 +268,16 @@ class InnerModelViewer (object):
                 for i in range (len(body.cameraViewMatrices)):
                     (base_pos, orien) = p.getBasePositionAndOrientation (body.bodyId)
                     mat = p.getMatrixFromQuaternion (orien)
-                    mat = np.transpose (np.array (mat))
-                    cam_pos = mat.dot(np.array(body.cameraEyePositions[i]))
+                    mat = np.transpose (np.array (mat).reshape ((3,3)))
+                    cam_pos = mat.dot(np.array(body.cameraEyePositions[i]).reshape((3,)))
                     cameraEyePosition = [base_pos[0] + cam_pos[0],
                                          base_pos[1] + cam_pos[1],
                                          base_pos[2] + cam_pos[2]]
-                    cam_target_pos = mat.dot(np.array(body.cameraTargetPositions[i]))
+                    cam_target_pos = mat.dot(np.array(body.cameraTargetPositions[i]).reshape((3,)))
                     cameraTargetPosition = [cam_target_pos[0] + base_pos[0],
                                             cam_target_pos[1] + base_pos[1],
                                             cam_target_pos[2] + base_pos[2]]
-                    cameraUpVector = mat.dot(np.array(body.cameraUpVectors))
+                    cameraUpVector = mat.dot(np.array(body.cameraUpVectors).reshape((3,)))
                     viewMatrix = p.computeViewMatrix (cameraEyePosition=cameraEyePosition,
                                                       cameraTargetPosition=cameraTargetPosition,
                                                       cameraUpVector=cameraUpVector)
@@ -314,12 +314,7 @@ class InnerModelViewer (object):
                     textId = body.linkTextures[i]
                     p.changeVisualShape (bodyId, i, textureUniqueId=textId)
 
-            for i in range (len(body.cameraViewMatrices)):
-                _ = p.getCameraImage(width=body.cameraImageSizes[i][0],
-                                     height=body.cameraImageSizes[i][1],
-                                     viewMatrix=body.cameraViewMatrices[i],
-                                     projectionMatrix=body.cameraProjectionMatrices[i])
-
         while (1):
             p.stepSimulation()
+            self.renderImage ()
             time.sleep(1. / 240.)
