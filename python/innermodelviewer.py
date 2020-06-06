@@ -69,7 +69,6 @@ class MultiLinkBody (object):
         self.laserRayLength = []
         self.laserRayBatchFrom = []
         self.laserRayBatchTo = []
-        self.laserRayBatchIds = []
 
     def eulerFromNormal (self, normal):
         '''Returns rotation angles from normal vector of a plane'''
@@ -209,21 +208,19 @@ class MultiLinkBody (object):
         elif isinstance (node, InnerModelLaser):
             self.hasLaser = True
             self.laserPositions.append ([tr.x(), tr.y(), tr.z()])
-            self.laserNumRays.append (node.measure)
-            self.laserRayLength.append (node.max)
+            self.laserNumRays.append (node.measures)
+            length = node.max/100
+            self.laserRayLength.append (length)
             rayFrom = []
             rayTo = []
-            rayIds = []
-            for i in range(node.measure):
+            for i in range(node.measures):
                 rayFrom.append([tr.x(), tr.y(), tr.z()])
                 rayTo.append([
-                    tr.x() + node.max * math.sin(2. * math.pi * float(i) / node.measure),
-                    tr.y() + node.max * math.cos(2. * math.pi * float(i) / node.measure), tr.z()
+                    tr.x() + length * math.sin(2. * math.pi * float(i) / node.measures),
+                    tr.y() + length * math.cos(2. * math.pi * float(i) / node.measures), tr.z()
                 ])
-                rayIds.append(p.addUserDebugLine(rayFrom[i], rayTo[i], [1,0,0]))
             self.laserRayBatchFrom.append (rayFrom)
             self.laserRayBatchTo.append (rayTo)
-            self.laserRayBatchIds.append (rayIds)
         else:
             self.baseMass += node.mass
             tr_ = InnerModelVector.vec6d (node.tx/100.0 + tr.x(), node.ty/100.0 + tr.y(),
@@ -407,21 +404,31 @@ class InnerModelViewer (object):
         for body in self.bodies:
             if body.hasLaser:
                 for i in range (len(body.laserPositions)):
+                    (pos, _) = p.getBasePositionAndOrientation (body.bodyId)
                     rayFrom = body.laserRayBatchFrom[i]
                     rayTo = body.laserRayBatchTo[i]
-                    rayIds = body.laserRayBatchIds[i]
 
-                    results = p.rayTestBatch(rayFrom, rayTo, parentObjectUniqueId=body.bodyId)
+                    newFrom = []
+                    newTo = []
 
-                    for j in range(len(body.laserNumRays)):
+                    for k in range (len(rayFrom)):
+                        newFrom.append ([rayFrom[k][0] + pos[0], rayFrom[k][1] + pos[1],
+                                         rayFrom[k][2] + pos[2]])
+                        newTo.append ([rayTo[k][0] + pos[0], rayTo[k][1] + pos[1],
+                                       rayTo[k][2] + pos[2]])
+
+                    results = p.rayTestBatch(newFrom, newTo)
+
+                    for j in range(len(rayFrom)):
                         hitObjectUid = results[j][0]
 
                         if (hitObjectUid < 0):
-                            hitPosition = [0, 0, 0]
-                            p.addUserDebugLine(rayFrom[i], rayTo[i], [1, 0, 0], replaceItemUniqueId=rayIds[i])
+                            p.addUserDebugLine(newFrom[j], newTo[j], lineColorRGB=[1, 0, 0],
+                                               lifeTime=0.1)
                         else:
-                            hitPosition = results[i][3]
-                            p.addUserDebugLine(rayFrom[i], hitPosition, [0, 1, 0], replaceItemUniqueId=rayIds[i])
+                            hitPosition = results[j][3]
+                            p.addUserDebugLine(newFrom[j], hitPosition, lineColorRGB=[0, 1, 0],
+                                               lifeTime=0.1)
 
     def render (self):
         '''Render the scene'''
