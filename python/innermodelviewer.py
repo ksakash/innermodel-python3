@@ -107,7 +107,8 @@ class MultiLinkedBody (object):
             textId = p.loadTexture (texture)
             return textId
 
-    def includeLink (self, mass, visual, collision, position, orientation, parentId, joint, txt, name):
+    def includeLink (self, mass, visual, collision, position,
+                     orientation, parentId, joint, txt, name):
         '''Include a body with given parameters to the list'''
 
         self.linkMasses.append (mass)
@@ -257,12 +258,83 @@ class InnerModelViewer (object):
 
     def construct (self, node):
         '''Find the node representing the world'''
+
         for child in self.innerModel.root.children:
             if (child.id == 'world'):
                 self.worldNode = child
                 break
 
+    # github.com/bulletphysics/bullet3/blob/master/examples/pybullet/examples/pointCloudFromCameraImage.py
+    def getRayFromTo(self, mouseX, mouseY):
+        '''Given a point on the GUI, get a ray from the current position to infinity and beyond'''
+
+        width, height, _, _, _, camForward, horizon, \
+                                    vertical, _, _, dist, camTarget = p.getDebugVisualizerCamera()
+        camPos = [
+            camTarget[0] - dist * camForward[0],
+            camTarget[1] - dist * camForward[1],
+            camTarget[2] - dist * camForward[2]
+        ]
+        farPlane = 10000
+        rayForward = [(camTarget[0] - camPos[0]), (camTarget[1] - camPos[1]),
+                      (camTarget[2] - camPos[2])]
+        lenFwd = math.sqrt(rayForward[0] * rayForward[0] + rayForward[1] * rayForward[1] +
+                            rayForward[2] * rayForward[2])
+        invLen = farPlane * 1. / lenFwd
+        rayForward = [invLen * rayForward[0], invLen * rayForward[1], invLen * rayForward[2]]
+        rayFrom = camPos
+        oneOverWidth = float(1) / float(width)
+        oneOverHeight = float(1) / float(height)
+
+        dHor = [horizon[0]*oneOverWidth, horizon[1]*oneOverWidth, horizon[2]*oneOverWidth]
+        dVer = [vertical[0]*oneOverHeight, vertical[1]*oneOverHeight, vertical[2]*oneOverHeight]
+        _ = [
+            rayFrom[0] + rayForward[0], rayFrom[1] + rayForward[1], rayFrom[2] + rayForward[2]
+        ]
+        ortho = [
+        -0.5 * horizon[0] + 0.5 * vertical[0] + float(mouseX) * dHor[0] - float(mouseY) * dVer[0],
+        -0.5 * horizon[1] + 0.5 * vertical[1] + float(mouseX) * dHor[1] - float(mouseY) * dVer[1],
+        -0.5 * horizon[2] + 0.5 * vertical[2] + float(mouseX) * dHor[2] - float(mouseY) * dVer[2]
+        ]
+
+        rayTo = [
+            rayFrom[0] + rayForward[0] + ortho[0], rayFrom[1] + rayForward[1] + ortho[1],
+            rayFrom[2] + rayForward[2] + ortho[2]
+        ]
+        lenOrtho = math.sqrt(ortho[0] * ortho[0] + ortho[1] * ortho[1] + ortho[2] * ortho[2])
+        alpha = math.atan(lenOrtho / farPlane)
+        return rayFrom, rayTo, alpha
+
+    # github.com/bulletphysics/bullet3/blob/master/examples/pybullet/examples/pointCloudFromCameraImage.py
+    def getPointCloud (self, near, far, width, height, stepX, stepY, depthImg):
+        '''Method to get point cloud from depth image
+        params near, far: range of the fov,
+        params width, height: dimensions of the GUI,
+        param depthImg: depth image,
+        params stepX, stepY: resolution of point cloud
+        '''
+        imgW = depthImg.shape[1]
+        imgH = depthImg.shape[0]
+        pointcloud = []
+
+        for w in range(0, imgW, stepX):
+            for h in range(0, imgH, stepY):
+                rayFrom, rayTo, alpha = self.getRayFromTo(w * (width / imgW), h * (height / imgH))
+                rf = np.array(rayFrom)
+                rt = np.array(rayTo)
+                vec = rt - rf
+                l = np.sqrt(np.dot(vec, vec))
+                depthImg = float(depthImg[h, w])
+                depth = far * near / (far - (far - near) * depthImg)
+                depth /= math.cos(alpha)
+                newTo = (depth / l) * vec + rf
+                pointcloud.append ([rayFrom, newTo])
+
+        return pointcloud
+
     def renderImage (self):
+        '''Render the image for bodies having camera'''
+
         for body in self.bodies:
             if body.hasCamera:
                 for i in range (len(body.cameraViewMatrices)):
