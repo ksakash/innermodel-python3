@@ -22,13 +22,14 @@
 		</transform>
 
 		<differentialrobot id="base"  tx="0" ty="0" tz="500" port="10004">
-			<mesh id="base_robex" file="/home/ksakash/.local/lib/python3.6/site-packages/pybullet_data/duck.obj" scale="0.5" />
-			<translation id="laserPose" tx="0" ty="14" tz="20">
-				<plane id="sensorL" px="-40" py="80" pz="0" size="10,10,10" texture="#000000" />
+			<mesh id="base_robex" rx="1.57" rz="-1.57" file="/home/ksakash/.local/lib/python3.6/site-packages/pybullet_data/duck.obj" scale="0.5" />
+			<translation id="laserPose" tx="-20" ty="40" tz="70">
+				<laser id="laser" port="10003" measures="100" min="100" max="1000" angle="3" ifconfig="10000" />
+				<plane id="sensorL" size="10,10,10" texture="#000000" />
 			</translation>
-			<transform id="camera" tx="0" ty="14" tz="20">
+			<transform id="camera" tx="0" ty="40" tz="70">
 				<rgbd id="rgbd" focal="490" width="640" height="480" port="10096" noise="0.00" ifconfig="40000,50000" />
-				<plane id="rgbd_mesh1" px="-40" py="80" pz="-20" size="10,10,10" texture="#550055" />
+				<plane id="rgbd_mesh1" size="10,10,10" texture="#550055" />
 			</transform>
 		</differentialrobot>
 	</transform>

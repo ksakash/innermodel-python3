@@ -12,24 +12,55 @@ import pybullet_data
 from innermodel import InnerModel
 from innermodelrgbd import InnerModelRGBD
 from innermodelnode import InnerModelNode
-from innermodellaser import InnerModelLaser
-from innermodelvector import InnerModelVector
 from innermodelmesh import InnerModelMesh
+from innermodellaser import InnerModelLaser
 from innermodelplane import InnerModelPlane
-from innermodeldifferentialrobot import InnerModelDifferentialRobot
-from innermodeltransform import InnerModelTransform
 from innermodeljoint import InnerModelJoint
+from innermodelvector import InnerModelVector
+from innermodeltransform import InnerModelTransform
 from innermodelomnirobot import InnerModelOmniRobot
+from innermodeltouchsensor import InnerModelTouchSensor
 from innermodelprismaticjoint import InnerModelPrismaticJoint
+from innermodeldifferentialrobot import InnerModelDifferentialRobot
 
 class BodyLink (object):
-    pass
+    '''Class containing all the info related to a link'''
+
+    def __init__ (self, mass, collisionShapeIndex, visualShapeIndex, pos, orient, inertialFramePos,
+                  inertialFrameOrient, parentIndex, jointType, jointAxis, texture, name):
+        self.linkMass = mass
+        self.linkCollisionShapeIndex = collisionShapeIndex
+        self.linkVisualShapeIndex = visualShapeIndex
+        self.linkPosition = pos
+        self.linkOrientation = orient
+        self.linkInertialFramePosition = inertialFramePos
+        self.linkInertialFrameOrientation = inertialFrameOrient
+        self.linkParentIndex = parentIndex
+        self.linkJointType = jointType
+        self.linkJointAxis = jointAxis
+        self.linkTexture = texture
+        self.linkName = name
 
 class BodyCamera (object):
-    pass
+    '''Class containing all the info related to a camera'''
+
+    def __init__ (self, viewMatrix, projectionMatrix, eyePos, targetPos, upVector, imageSize):
+        self.cameraViewMatrix = viewMatrix
+        self.cameraProjectionMatrix = projectionMatrix
+        self.cameraEyePosition = eyePos
+        self.cameraTargetPosition = targetPos
+        self.cameraUpVector = upVector
+        self.cameraImageSize = imageSize
 
 class BodyLaser (object):
-    pass
+    '''Class containing all the info about a laser'''
+
+    def __init__ (self, pos, numRays, rayLength, rayBatchFrom, rayBatchTo):
+        self.laserPosition = pos
+        self.laserNumRays = numRays
+        self.laserRayLength = rayLength
+        self.laserRayBatchFrom = rayBatchFrom
+        self.laserRayBatchTo = rayBatchTo
 
 class MultiLinkBody (object):
     '''Class to represent a Multi Linked Body'''
@@ -44,31 +75,37 @@ class MultiLinkBody (object):
         self.baseVisualShapeIndex = -1
         self.basePosition = [0,0,0]
         self.baseOrientation = p.getQuaternionFromEuler([0,0,0])
-        self.linkMasses = []
-        self.linkCollisionShapeIndices = []
-        self.linkVisualShapeIndices = []
-        self.linkPositions = []
-        self.linkOrientations = []
-        self.linkInertialFramePositions = []
-        self.linkInertialFrameOrientations = []
-        self.linkParentIndices = []
-        self.linkJointTypes = []
-        self.linkJointAxis = []
-        self.cameraViewMatrices = []
-        self.cameraProjectionMatrices = []
-        self.cameraEyePositions = []
-        self.cameraTargetPositions = []
-        self.cameraUpVectors = []
-        self.cameraImageSizes = []
-        self.linkTextures = []
-        self.linkNames = []
+        # self.linkMasses = []
+        # self.linkCollisionShapeIndices = []
+        # self.linkVisualShapeIndices = []
+        # self.linkPositions = []
+        # self.linkOrientations = []
+        # self.linkInertialFramePositions = []
+        # self.linkInertialFrameOrientations = []
+        # self.linkParentIndices = []
+        # self.linkJointTypes = []
+        # self.linkJointAxis = []
+        # self.linkTextures = []
+        # self.linkNames = []
+        # self.cameraViewMatrices = []
+        # self.cameraProjectionMatrices = []
+        # self.cameraEyePositions = []
+        # self.cameraTargetPositions = []
+        # self.cameraUpVectors = []
+        # self.cameraImageSizes = []
         self.hasCamera = False
         self.hasLaser = False
-        self.laserPositions = []
-        self.laserNumRays = []
-        self.laserRayLength = []
-        self.laserRayBatchFrom = []
-        self.laserRayBatchTo = []
+        # self.laserPositions = []
+        # self.laserNumRays = []
+        # self.laserRayLength = []
+        # self.laserRayBatchFrom = []
+        # self.laserRayBatchTo = []
+        self.hasTouchSensor = False
+        self.touchSensorLink = []
+
+        self.links = []
+        self.cameras = []
+        self.lasers = []
 
     def eulerFromNormal (self, normal):
         '''Returns rotation angles from normal vector of a plane'''
@@ -126,101 +163,191 @@ class MultiLinkBody (object):
                      orientation, parentId, joint, txt, name):
         '''Include a body with given parameters to the list'''
 
-        self.linkMasses.append (mass)
-        self.linkCollisionShapeIndices.append (collision)
-        self.linkVisualShapeIndices.append (visual)
-        self.linkPositions.append (position)
-        self.linkOrientations.append (orientation)
-        self.linkInertialFramePositions.append ([0,0,0])
-        self.linkInertialFrameOrientations.append ([0,0,0,1])
-        self.linkParentIndices.append (parentId)
-        self.linkJointTypes.append (joint)
-        self.linkJointAxis.append ([0,0,1])
-        self.linkTextures.append (txt)
-        self.linkNames.append (name)
+        # self.linkMasses.append (mass)
+        # self.linkCollisionShapeIndices.append (collision)
+        # self.linkVisualShapeIndices.append (visual)
+        # self.linkPositions.append (position)
+        # self.linkOrientations.append (orientation)
+        # self.linkInertialFramePositions.append ([0,0,0])
+        # self.linkInertialFrameOrientations.append ([0,0,0,1])
+        # self.linkParentIndices.append (parentId)
+        # self.linkJointTypes.append (joint)
+        # self.linkJointAxis.append ([0,0,1])
+        # self.linkTextures.append (txt)
+        # self.linkNames.append (name)
 
-    def makeLink (self, node, tr, parentId):
-        pass
+        link = BodyLink (mass, collision, visual, position, orientation, [0,0,0], [0,0,0,1],
+                         parentId, joint, [0,0,1], txt, name)
+        self.links.append (link)
+
+    def makeMesh (self, node, tr, parentId):
+        linkMass = 1
+        self.baseMass += linkMass
+        meshScale = [node.scalex, node.scaley, node.scalez]
+        visualShapeId = p.createVisualShape (shapeType=p.GEOM_MESH,
+                                                fileName=node.meshPath,
+                                                meshScale=meshScale)
+        collisionShapeId = p.createCollisionShape (shapeType=p.GEOM_MESH,
+                                                    fileName=node.meshPath,
+                                                    meshScale=meshScale)
+        linkPosition = [node.tx/100.0 + tr.x(), node.ty/100.0 + tr.y(), node.tz/100.0 + tr.z()]
+        linkOrientation = p.getQuaternionFromEuler ([node.rx + tr.rx(), node.ry + tr.ry(),
+                                                        node.rz + tr.rz()])
+        linkJointType = p.JOINT_FIXED
+
+        self.includeLink (linkMass, visualShapeId, collisionShapeId, linkPosition,
+                          linkOrientation, parentId, linkJointType, None, node.id)
+
+    def makePlane (self, node, tr, parentId):
+        linkMass = 1
+        self.baseMass += linkMass
+        size = [node.width/2,node.height/2,node.depth/2]
+        texture = None
+        color = None
+        if (len(node.texture) != 0 and node.texture[0] == '#'):
+            color = self.readTexture(node.texture)
+        elif (len(node.texture) != 0):
+            texture = self.readTexture(node.texture)
+
+        visualShapeId = p.createVisualShape (shapeType=p.GEOM_BOX,
+                                                rgbaColor=color,
+                                                halfExtents=size)
+        collisionShapeId = p.createCollisionShape (shapeType=p.GEOM_BOX,
+                                                    halfExtents=size)
+        linkPosition = [node.point[0]/100.0 + tr.x(), node.point[1]/100.0 + tr.y(),
+                        node.point[2]/100.0 + tr.z()]
+        euler = self.eulerFromNormal (node.normal)
+        linkOrientation = p.getQuaternionFromEuler (euler)
+        linkJointType = p.JOINT_FIXED
+        self.includeLink (linkMass, visualShapeId, collisionShapeId, linkPosition,
+                          linkOrientation, parentId, linkJointType, texture, node.id)
 
     def makeCamera (self, node, tr, parentId):
-        pass
+        self.hasCamera = True
+        imageSize = [int(node.width), int(node.height)]
+        # self.cameraImageSizes.append (imageSize)
+        viewMatrix = p.computeViewMatrix (cameraEyePosition=[tr.x(), tr.y(), tr.z()],
+                                            cameraTargetPosition=[tr.x(), tr.y() + 10, tr.z()],
+                                            cameraUpVector=[0, 0, 1])
+        eyePos = [tr.x(), tr.y()-0.6, tr.z()]
+        # self.cameraEyePositions.append (eyePos)
+        targetPos = [tr.x(), tr.y()-5, tr.z()]
+        # self.cameraTargetPositions.append ([tr.x(), tr.y()-5, tr.z()])
+        upVector = [0, 0, 1]
+        # self.cameraUpVectors.append (upVector)
+        projectionMatrix = p.computeProjectionMatrixFOV (fov=node.focal,
+                                                            aspect=node.width/node.height,
+                                                            nearVal=0.3,
+                                                            farVal=5.1)
+        # self.cameraViewMatrices.append (viewMatrix)
+        # self.cameraProjectionMatrices.append (projectionMatrix)
+
+        camera = BodyCamera (viewMatrix, projectionMatrix, eyePos, targetPos, upVector, imageSize)
+        self.cameras.append (camera)
 
     def makeLaser (self, node, tr, parentId):
-        pass
+        self.hasLaser = True
+        pos = [tr.x(), tr.y(), tr.z()]
+        # self.laserPositions.append (pos)
+        numRays = node.measures
+        # self.laserNumRays.append (numRays)
+        length = node.max/100
+        # self.laserRayLength.append (length)
+        rayFrom = []
+        rayTo = []
+        for i in range(node.measures):
+            rayFrom.append([tr.x(), tr.y(), tr.z()])
+            rayTo.append([
+                tr.x() + length * math.sin(2. * math.pi * float(i) / node.measures),
+                tr.y() + length * math.cos(2. * math.pi * float(i) / node.measures), tr.z()
+            ])
+        # self.laserRayBatchFrom.append (rayFrom)
+        # self.laserRayBatchTo.append (rayTo)
+
+        laser = BodyLaser (pos, numRays, length, rayFrom, rayTo)
+        self.lasers.append (laser)
 
     def recursiveConstructor (self, node, tr, parentId):
         '''Recursively construct all the parts in a body'''
 
         if isinstance (node, InnerModelMesh):
-            linkMass = 1
-            self.baseMass += linkMass
-            meshScale = [node.scalex, node.scaley, node.scalez]
-            visualShapeId = p.createVisualShape (shapeType=p.GEOM_MESH,
-                                                 fileName=node.meshPath,
-                                                 meshScale=meshScale)
-            collisionShapeId = p.createCollisionShape (shapeType=p.GEOM_MESH,
-                                                       fileName=node.meshPath,
-                                                       meshScale=meshScale)
-            linkPosition = [node.tx/100.0 + tr.x(), node.ty/100.0 + tr.y(), node.tz/100.0 + tr.z()]
-            linkOrientation = p.getQuaternionFromEuler ([node.rx + tr.rx(), node.ry + tr.ry(),
-                                                         node.rz + tr.rz()])
-            linkJointType = p.JOINT_FIXED
-            self.includeLink (linkMass, visualShapeId, collisionShapeId, linkPosition,
-                              linkOrientation, parentId, linkJointType, None, node.id)
+            # linkMass = 1
+            # self.baseMass += linkMass
+            # meshScale = [node.scalex, node.scaley, node.scalez]
+            # visualShapeId = p.createVisualShape (shapeType=p.GEOM_MESH,
+            #                                      fileName=node.meshPath,
+            #                                      meshScale=meshScale)
+            # collisionShapeId = p.createCollisionShape (shapeType=p.GEOM_MESH,
+            #                                            fileName=node.meshPath,
+            #                                            meshScale=meshScale)
+            # linkPosition = [node.tx/100.0 + tr.x(), node.ty/100.0 + tr.y(), node.tz/100.0 + tr.z()]
+            # linkOrientation = p.getQuaternionFromEuler ([node.rx + tr.rx(), node.ry + tr.ry(),
+            #                                              node.rz + tr.rz()])
+            # linkJointType = p.JOINT_FIXED
+            # self.includeLink (linkMass, visualShapeId, collisionShapeId, linkPosition,
+            #                   linkOrientation, parentId, linkJointType, None, node.id)
+            self.makeMesh (node, tr, parentId)
         elif isinstance (node, InnerModelPlane):
-            linkMass = 1
-            self.baseMass += linkMass
-            size = [node.width/2,node.height/2,node.depth/2]
-            texture = None
-            color = None
-            if (len(node.texture) != 0 and node.texture[0] == '#'):
-                color = self.readTexture(node.texture)
-            elif (len(node.texture) != 0):
-                texture = self.readTexture(node.texture)
+            # linkMass = 1
+            # self.baseMass += linkMass
+            # size = [node.width/2,node.height/2,node.depth/2]
+            # texture = None
+            # color = None
+            # if (len(node.texture) != 0 and node.texture[0] == '#'):
+            #     color = self.readTexture(node.texture)
+            # elif (len(node.texture) != 0):
+            #     texture = self.readTexture(node.texture)
 
-            visualShapeId = p.createVisualShape (shapeType=p.GEOM_BOX,
-                                                 rgbaColor=color,
-                                                 halfExtents=size)
-            collisionShapeId = p.createCollisionShape (shapeType=p.GEOM_BOX,
-                                                       halfExtents=size)
-            linkPosition = [node.point[0]/100.0 + tr.x(), node.point[1]/100.0 + tr.y(),
-                            node.point[2]/100.0 + tr.z()]
-            euler = self.eulerFromNormal (node.normal)
-            linkOrientation = p.getQuaternionFromEuler (euler)
-            linkJointType = p.JOINT_FIXED
-            self.includeLink (linkMass, visualShapeId, collisionShapeId, linkPosition,
-                              linkOrientation, parentId, linkJointType, texture, node.id)
+            # visualShapeId = p.createVisualShape (shapeType=p.GEOM_BOX,
+            #                                      rgbaColor=color,
+            #                                      halfExtents=size)
+            # collisionShapeId = p.createCollisionShape (shapeType=p.GEOM_BOX,
+            #                                            halfExtents=size)
+            # linkPosition = [node.point[0]/100.0 + tr.x(), node.point[1]/100.0 + tr.y(),
+            #                 node.point[2]/100.0 + tr.z()]
+            # euler = self.eulerFromNormal (node.normal)
+            # linkOrientation = p.getQuaternionFromEuler (euler)
+            # linkJointType = p.JOINT_FIXED
+            # self.includeLink (linkMass, visualShapeId, collisionShapeId, linkPosition,
+            #                   linkOrientation, parentId, linkJointType, texture, node.id)
+            self.makePlane (node, tr, parentId)
         elif isinstance (node, InnerModelRGBD):
-            self.hasCamera = True
-            self.cameraImageSizes.append ([int(node.width), int(node.height)])
-            viewMatrix = p.computeViewMatrix (cameraEyePosition=[tr.x(), tr.y(), tr.z()],
-                                              cameraTargetPosition=[tr.x(), tr.y() + 10, tr.z()],
-                                              cameraUpVector=[0, 0, 1])
-            self.cameraEyePositions.append ([tr.x(), tr.y(), tr.z()])
-            self.cameraTargetPositions.append ([tr.x(), tr.y()+10, tr.z()])
-            self.cameraUpVectors.append ([1, 0, 0])
-            projectionMatrix = p.computeProjectionMatrixFOV (fov=node.focal,
-                                                             aspect=node.width/node.height,
-                                                             nearVal=0.1,
-                                                             farVal=10.1)
-            self.cameraViewMatrices.append (viewMatrix)
-            self.cameraProjectionMatrices.append (projectionMatrix)
+            # self.hasCamera = True
+            # self.cameraImageSizes.append ([int(node.width), int(node.height)])
+            # viewMatrix = p.computeViewMatrix (cameraEyePosition=[tr.x(), tr.y(), tr.z()],
+            #                                   cameraTargetPosition=[tr.x(), tr.y() + 10, tr.z()],
+            #                                   cameraUpVector=[0, 0, 1])
+            # self.cameraEyePositions.append ([tr.x(), tr.y()-0.6, tr.z()])
+            # self.cameraTargetPositions.append ([tr.x(), tr.y()-5, tr.z()])
+            # self.cameraUpVectors.append ([0, 0, 1])
+            # projectionMatrix = p.computeProjectionMatrixFOV (fov=node.focal,
+            #                                                  aspect=node.width/node.height,
+            #                                                  nearVal=0.3,
+            #                                                  farVal=5.1)
+            # self.cameraViewMatrices.append (viewMatrix)
+            # self.cameraProjectionMatrices.append (projectionMatrix)
+            self.makeCamera (node, tr, parentId)
         elif isinstance (node, InnerModelLaser):
-            self.hasLaser = True
-            self.laserPositions.append ([tr.x(), tr.y(), tr.z()])
-            self.laserNumRays.append (node.measures)
-            length = node.max/100
-            self.laserRayLength.append (length)
-            rayFrom = []
-            rayTo = []
-            for i in range(node.measures):
-                rayFrom.append([tr.x(), tr.y(), tr.z()])
-                rayTo.append([
-                    tr.x() + length * math.sin(2. * math.pi * float(i) / node.measures),
-                    tr.y() + length * math.cos(2. * math.pi * float(i) / node.measures), tr.z()
-                ])
-            self.laserRayBatchFrom.append (rayFrom)
-            self.laserRayBatchTo.append (rayTo)
+            # self.hasLaser = True
+            # self.laserPositions.append ([tr.x(), tr.y(), tr.z()])
+            # self.laserNumRays.append (node.measures)
+            # length = node.max/100
+            # self.laserRayLength.append (length)
+            # rayFrom = []
+            # rayTo = []
+            # for i in range(node.measures):
+            #     rayFrom.append([tr.x(), tr.y(), tr.z()])
+            #     rayTo.append([
+            #         tr.x() + length * math.sin(2. * math.pi * float(i) / node.measures),
+            #         tr.y() + length * math.cos(2. * math.pi * float(i) / node.measures), tr.z()
+            #     ])
+            # self.laserRayBatchFrom.append (rayFrom)
+            # self.laserRayBatchTo.append (rayTo)
+            self.makeLaser (node, tr, parentId)
+        elif isinstance (node, InnerModelTouchSensor):
+            self.hasTouchSensor = True
+            parentId = node.parent.id
+            self.touchSensorLink.append (parentId)
         else:
             self.baseMass += node.mass
             tr_ = InnerModelVector.vec6d (node.tx/100.0 + tr.x(), node.ty/100.0 + tr.y(),
@@ -377,36 +504,37 @@ class InnerModelViewer (object):
 
         for body in self.bodies:
             if body.hasCamera:
-                for i in range (len(body.cameraViewMatrices)):
+                for i in range (len(body.cameras)):
                     (base_pos, orien) = p.getBasePositionAndOrientation (body.bodyId)
                     mat = p.getMatrixFromQuaternion (orien)
                     mat = np.transpose (np.array (mat).reshape ((3,3)))
-                    cam_pos = mat.dot(np.array(body.cameraEyePositions[i]).reshape((3,)))
+                    cam_pos = mat.dot(np.array(body.cameras[i].cameraEyePosition).reshape((3,)))
                     cameraEyePosition = [base_pos[0] + cam_pos[0],
                                          base_pos[1] + cam_pos[1],
                                          base_pos[2] + cam_pos[2]]
-                    cam_target_pos = mat.dot(np.array(body.cameraTargetPositions[i]).reshape((3,)))
+                    cam_target_pos = \
+                            mat.dot(np.array(body.cameras[i].cameraTargetPosition).reshape((3,)))
                     cameraTargetPosition = [cam_target_pos[0] + base_pos[0],
                                             cam_target_pos[1] + base_pos[1],
                                             cam_target_pos[2] + base_pos[2]]
-                    cameraUpVector = mat.dot(np.array(body.cameraUpVectors).reshape((3,)))
+                    cameraUpVector = mat.dot(np.array(body.cameras[i].cameraUpVector).reshape((3,)))
                     viewMatrix = p.computeViewMatrix (cameraEyePosition=cameraEyePosition,
                                                       cameraTargetPosition=cameraTargetPosition,
                                                       cameraUpVector=cameraUpVector)
-                    _ = p.getCameraImage (width=body.cameraImageSizes[i][0],
-                                          height=body.cameraImageSizes[i][1],
+                    _ = p.getCameraImage (width=body.cameras[i].cameraImageSize[0],
+                                          height=body.cameras[i].cameraImageSize[1],
                                           viewMatrix=viewMatrix,
-                                          projectionMatrix=body.cameraProjectionMatrices[i])
+                                          projectionMatrix=body.cameras[i].cameraProjectionMatrix)
 
     def detectLaserCollisions (self):
         '''Detect collision of laser rays and render it on GUI'''
 
         for body in self.bodies:
             if body.hasLaser:
-                for i in range (len(body.laserPositions)):
+                for i in range (len(body.lasers)):
                     (pos, _) = p.getBasePositionAndOrientation (body.bodyId)
-                    rayFrom = body.laserRayBatchFrom[i]
-                    rayTo = body.laserRayBatchTo[i]
+                    rayFrom = body.lasers[i].laserRayBatchFrom
+                    rayTo = body.lasers[i].laserRayBatchTo
 
                     newFrom = []
                     newTo = []
@@ -436,26 +564,38 @@ class InnerModelViewer (object):
         self.MakeWorld()
 
         for body in self.bodies:
+            linkMasses = [link.linkMass for link in body.links]
+            linkCollisionShapeIndices = [link.linkCollisionShapeIndex for link in body.links]
+            linkVisualShapeIndices = [link.linkVisualShapeIndex for link in body.links]
+            linkPositions = [link.linkPosition for link in body.links]
+            linkOrientations = [link.linkOrientation for link in body.links]
+            linkInertialFramePositions = [link.linkInertialFramePosition for link in body.links]
+            linkInertialFrameOrientations = \
+                                        [link.linkInertialFrameOrientation for link in body.links]
+            linkParentIndices = [link.linkParentIndex for link in body.links]
+            linkJointTypes = [link.linkJointType for link in body.links]
+            linkJointAxis = [link.linkJointType for link in body.links]
+
             bodyId = p.createMultiBody(baseMass=body.baseMass,
                             baseCollisionShapeIndex=body.baseCollisionShapeIndex,
                             baseVisualShapeIndex=body.baseVisualShapeIndex,
                             basePosition=body.basePosition,
                             baseOrientation=body.baseOrientation,
-                            linkMasses=body.linkMasses,
-                            linkCollisionShapeIndices=body.linkCollisionShapeIndices,
-                            linkVisualShapeIndices=body.linkVisualShapeIndices,
-                            linkPositions=body.linkPositions,
-                            linkOrientations=body.linkOrientations,
-                            linkInertialFramePositions=body.linkInertialFramePositions,
-                            linkInertialFrameOrientations=body.linkInertialFrameOrientations,
-                            linkParentIndices=body.linkParentIndices,
-                            linkJointTypes=body.linkJointTypes,
-                            linkJointAxis=body.linkJointAxis)
+                            linkMasses=linkMasses,
+                            linkCollisionShapeIndices=linkCollisionShapeIndices,
+                            linkVisualShapeIndices=linkVisualShapeIndices,
+                            linkPositions=linkPositions,
+                            linkOrientations=linkOrientations,
+                            linkInertialFramePositions=linkInertialFramePositions,
+                            linkInertialFrameOrientations=linkInertialFrameOrientations,
+                            linkParentIndices=linkParentIndices,
+                            linkJointTypes=linkJointTypes,
+                            linkJointAxis=linkJointAxis)
             body.bodyId = bodyId
 
-            for i in range (len(body.linkTextures)):
-                if (body.linkTextures[i] is not None):
-                    textId = body.linkTextures[i]
+            for i in range (len(body.links)):
+                if (body.links[i].linkTexture is not None):
+                    textId = body.links[i].linkTexture
                     p.changeVisualShape (bodyId, i, textureUniqueId=textId)
 
         while (1):
