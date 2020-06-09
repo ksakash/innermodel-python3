@@ -10,6 +10,7 @@ import pybullet as p
 import pybullet_data
 
 from innermodel import InnerModel
+from innermodelimu import InnerModelIMU
 from innermodelrgbd import InnerModelRGBD
 from innermodelnode import InnerModelNode
 from innermodelmesh import InnerModelMesh
@@ -17,6 +18,7 @@ from innermodellaser import InnerModelLaser
 from innermodelplane import InnerModelPlane
 from innermodeljoint import InnerModelJoint
 from innermodelvector import InnerModelVector
+from innermodelcamera import InnerModelCamera
 from innermodeltransform import InnerModelTransform
 from innermodelomnirobot import InnerModelOmniRobot
 from innermodeltouchsensor import InnerModelTouchSensor
@@ -62,6 +64,29 @@ class BodyLaser (object):
         self.laserRayBatchFrom = rayBatchFrom
         self.laserRayBatchTo = rayBatchTo
 
+class BodyIMU (object):
+    def __init__ (self, id, linkId, parentId, pos, orient):
+        # orient in euler
+        self.name = id
+        self.linkId = linkId
+        self.parentId = parentId
+        self.pos = pos
+        self.orient = orient
+        self.prev_lin_vel = [0, 0, 0]
+        self.prev_ang_vel = [0, 0, 0]
+        self.last_t = 0
+
+    def measure (self, id):
+        curr_t = time.time()
+        dt = curr_t - self.last_t
+        self.last_t = curr_t
+        lin_vel, ang_vel = p.getBaseVelocity (id)
+        lin_accln = list ((np.array(lin_vel) - np.array(self.prev_lin_vel))/dt)
+        ang_accln = list ((np.array(ang_vel) - np.array(self.prev_ang_vel))/dt)
+        self.prev_lin_vel = lin_vel
+        self.prev_ang_vel = ang_vel
+        return (ang_vel, lin_accln, ang_accln)
+
 class MultiLinkBody (object):
     '''Class to represent a Multi Linked Body'''
 
@@ -75,37 +100,17 @@ class MultiLinkBody (object):
         self.baseVisualShapeIndex = -1
         self.basePosition = [0,0,0]
         self.baseOrientation = p.getQuaternionFromEuler([0,0,0])
-        # self.linkMasses = []
-        # self.linkCollisionShapeIndices = []
-        # self.linkVisualShapeIndices = []
-        # self.linkPositions = []
-        # self.linkOrientations = []
-        # self.linkInertialFramePositions = []
-        # self.linkInertialFrameOrientations = []
-        # self.linkParentIndices = []
-        # self.linkJointTypes = []
-        # self.linkJointAxis = []
-        # self.linkTextures = []
-        # self.linkNames = []
-        # self.cameraViewMatrices = []
-        # self.cameraProjectionMatrices = []
-        # self.cameraEyePositions = []
-        # self.cameraTargetPositions = []
-        # self.cameraUpVectors = []
-        # self.cameraImageSizes = []
+
         self.hasCamera = False
         self.hasLaser = False
-        # self.laserPositions = []
-        # self.laserNumRays = []
-        # self.laserRayLength = []
-        # self.laserRayBatchFrom = []
-        # self.laserRayBatchTo = []
         self.hasTouchSensor = False
-        self.touchSensorLink = []
+        self.hasIMUs = False
 
+        self.touchSensorLink = []
         self.links = []
         self.cameras = []
         self.lasers = []
+        self.imus = []
 
     def eulerFromNormal (self, normal):
         '''Returns rotation angles from normal vector of a plane'''
@@ -241,6 +246,13 @@ class MultiLinkBody (object):
         laser = BodyLaser (pos, numRays, length, rayFrom, rayTo)
         self.lasers.append (laser)
 
+    def makeIMU (self, node, tr, parentId):
+        self.hasIMUs = True
+        pos = [tr.x(), tr.y(), tr.z()]
+        orient = [tr.rx(), tr.ry(), tr.rz()]
+        imu = BodyIMU (node.id, None, parentId, pos, orient)
+        self.imus.append (imu)
+
     def recursiveConstructor (self, node, tr, parentId):
         '''Recursively construct all the parts in a body'''
 
@@ -248,10 +260,12 @@ class MultiLinkBody (object):
             self.makeMesh (node, tr, parentId)
         elif isinstance (node, InnerModelPlane):
             self.makePlane (node, tr, parentId)
-        elif isinstance (node, InnerModelRGBD):
+        elif isinstance (node, InnerModelRGBD) or isinstance (node, InnerModelCamera):
             self.makeCamera (node, tr, parentId)
         elif isinstance (node, InnerModelLaser):
             self.makeLaser (node, tr, parentId)
+        elif isinstance (node, InnerModelIMU):
+            self.makeIMU (node, tr, parentId)
         elif isinstance (node, InnerModelTouchSensor):
             self.hasTouchSensor = True
             parentId = node.parent.id
@@ -406,6 +420,13 @@ class InnerModelViewer (object):
                 pointcloud.append ([rayFrom, newTo])
 
         return pointcloud
+
+    def readIMU (self):
+        for body in self.bodies:
+            data = []
+            if body.hasIMU:
+                for imu in body.imus:
+                    data.append (imu.measure(body.bodyId))
 
     def renderImage (self):
         '''Render the image for bodies having camera'''
