@@ -22,7 +22,7 @@ class InnerModelIMU (InnerModelNode):
         ret.fixed = self.fixed
         ret.attributes.clear()
         ret.children.clear()
-        hash[id] = ret
+        hash[self.id] = ret
         ret.innerModel = parent.innerModel
 
         for child in self.children:
