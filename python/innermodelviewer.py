@@ -246,7 +246,7 @@ class MultiLinkBody (object):
         num = len (self.links)
         if num > 0 and self.links[num-1].hasChildLink:
             parentId = num
-            linkJointType = p.JOINT_REVOLUTE
+            linkJointType = p.JOINT_FIXED
             self.joints[len(self.joints)-1].childLinkId = num+1
             linkJointAxis = self.getJointAxis (self.joints[len(self.joints)-1].axis)
         else:
