@@ -21,7 +21,7 @@
 			<plane id="cajaMesh2" nz="1" size="60,60,60" texture="/home/robocomp/robocomp/files/osgModels/textures/Metal.jpg" />
 		</transform>
 
-		<differentialrobot id="base"  tx="0" ty="0" tz="500" port="10004">
+		<differentialrobot id="base"  tx="0" ty="0" tz="10" port="10004">
 			<mesh id="base_robex" rx="1.57" rz="-1.57" file="/home/robocomp/.local/lib/python3.6/site-packages/pybullet_data/duck.obj" scale="0.5" />
 			<transform id="palo2" ty="0.10">
 				<transform id="pre_jointCodo" ry="1.5707963267948966" >

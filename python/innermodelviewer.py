@@ -373,6 +373,8 @@ class InnerModelViewer (object):
 
         self.initPyBullet()
 
+        self.initialise_render()
+
     def initPyBullet (self):
         p.connect(p.GUI)
 
@@ -380,8 +382,8 @@ class InnerModelViewer (object):
         p.setAdditionalSearchPath(pybullet_data.getDataPath())
 
         p.loadURDF("plane.urdf")
-        p.setGravity(0, 0, -10)
-        p.setRealTimeSimulation(1)
+        # p.setGravity(0, 0, -10)
+        # p.setRealTimeSimulation(1)
 
     def MakeMultiLinkedBody (self, node):
         '''Method to make a multilinked body'''
@@ -543,7 +545,7 @@ class InnerModelViewer (object):
                             p.addUserDebugLine(newFrom[j], hitPosition, lineColorRGB=[0, 1, 0],
                                                lifeTime=0.1)
 
-    def render (self):
+    def initialise_render(self):
         '''Render the scene'''
 
         self.MakeWorld()
@@ -583,8 +585,7 @@ class InnerModelViewer (object):
                     textId = body.links[i].linkTexture
                     p.changeVisualShape (bodyId, i, textureUniqueId=textId)
 
-        while (1):
-            p.stepSimulation()
-            self.renderImage ()
-            self.detectLaserCollisions ()
-            time.sleep(1. / 240.)
+    def render(self):
+        # p.stepSimulation()
+        self.renderImage ()
+        self.detectLaserCollisions ()

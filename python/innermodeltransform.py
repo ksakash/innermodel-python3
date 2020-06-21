@@ -67,19 +67,30 @@ class InnerModelTransform(InnerModelNode):
     def update (self, tx=None, ty=None, tz=None, rx=None, ry=None, rz=None):
         '''Update the paramters of the object'''
 
-        if tx is None:
-            self.updateChildren(); return
-        self.tx = tx; self.ty = ty; self.tz = tz
-        self.rx = rx; self.ry = ry; self.rz = rz
+
+        if tx is not None:
+            self.tx = tx
+        if ty is not None:
+            self.ty = ty
+        if tz is not None:
+            self.tz = tz
+        if rx is not None:
+            self.rx = rx
+        if ry is not None:
+            self.ry = ry
+        if rz is not None:
+            self.rz = rz
 
         self.rtmat.set (ox=self.rx, oy=self.ry, oz=self.rz,
                         x=self.tx, y=self.ty, z=self.tz)
+
+        self.updateChildren()
 
     def copyNode (self, hash, parent) -> 'InnerModelNode':
         '''Return a copy of the node'''
 
         ret = InnerModelTransform (self.id, self.engine, self.tx, self.ty, self.tz,
-                                self.rx, self.ry, self.rz, self.mass, self.parent)
+                                   self.rx, self.ry, self.rz, self.mass, self.parent)
         ret.level = self.level
         ret.children = []
         ret.attributes = dict()
