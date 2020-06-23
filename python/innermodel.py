@@ -32,8 +32,8 @@ class InnerModel(object):
 
     def __init__ (self, xmlFilePath: str = None, im: 'InnerModel' = None):
         '''Constrcutor
-        param xmlFilePath: path of the xml file representing innermodel
-        param im: InnerModel object to copy from
+        :param xmlFilePath: path of the xml file representing innermodel
+        :param im: InnerModel object to copy from
         '''
 
         self.path = xmlFilePath

@@ -208,12 +208,15 @@ class MultiLinkBody (object):
             textId = p.loadTexture (texture)
             return textId
 
-    def includeLink (self, mass, visual, collision, position, orientation,
-                     parentId, jointType, jointAxis, txt, name):
+    def includeLink (self, node, mass, visual, collision, position,
+                     orientation, parentId, jointType, jointAxis, txt, name):
         '''Include a body with given parameters to the list'''
 
         link = BodyLink (mass, collision, visual, position, orientation, [0,0,0], [0,0,0,1],
                          parentId, jointType, jointAxis, txt, name)
+        link.imNode = node
+        if len (self.links) > 0 and self.links[len(self.links)-1].hasChildLink:
+            link.imParentNode = self.links[len(self.links)-1].imNode
         self.links.append (link)
 
     def getJointAxis (self, axis):
@@ -232,26 +235,29 @@ class MultiLinkBody (object):
         self.baseMass += linkMass
         meshScale = [node.scalex, node.scaley, node.scalez]
         visualShapeId = p.createVisualShape (shapeType=p.GEOM_MESH,
-                                                fileName=node.meshPath,
-                                                meshScale=meshScale)
+                                             fileName=node.meshPath,
+                                             meshScale=meshScale)
         collisionShapeId = p.createCollisionShape (shapeType=p.GEOM_MESH,
-                                                    fileName=node.meshPath,
-                                                    meshScale=meshScale)
+                                                   fileName=node.meshPath,
+                                                   meshScale=meshScale)
         linkPosition = [node.tx/100.0 + tr.x(), node.ty/100.0 + tr.y(), node.tz/100.0 + tr.z()]
         linkOrientation = p.getQuaternionFromEuler ([node.rx + tr.rx(), node.ry + tr.ry(),
                                                         node.rz + tr.rz()])
         num = len (self.links)
         if num > 0 and self.links[num-1].hasChildLink:
             parentId = num
-            linkJointType = p.JOINT_REVOLUTE
+            linkJointType = p.JOINT_PLANAR
             self.joints[len(self.joints)-1].childLinkId = num+1
+            self.joints[len(self.joints)-1].imChildNode = node
+            self.joints[len(self.joints)-1].imParentNode = self.links[num-1].imNode
+            self.links[num-1].imChildNode = node
             linkJointAxis = self.getJointAxis (self.joints[len(self.joints)-1].axis)
         else:
             linkJointType = p.JOINT_FIXED
             linkJointAxis = [0, 0, 1]
 
-        self.includeLink (linkMass, visualShapeId, collisionShapeId, linkPosition, linkOrientation,
-                          parentId, linkJointType, linkJointAxis, None, node.id)
+        self.includeLink (node, linkMass, visualShapeId, collisionShapeId, linkPosition,
+                          linkOrientation, parentId, linkJointType, linkJointAxis, None, node.id)
 
     def makePlane (self, node, tr, parentId):
         linkMass = 1
@@ -284,8 +290,8 @@ class MultiLinkBody (object):
             linkJointType = p.JOINT_FIXED
             linkJointAxis = [0, 0, 1]
 
-        self.includeLink (linkMass, visualShapeId, collisionShapeId, linkPosition, linkOrientation,
-                          parentId, linkJointType, linkJointAxis, texture, node.id)
+        self.includeLink (node, linkMass, visualShapeId, collisionShapeId, linkPosition,
+                          linkOrientation, parentId, linkJointType, linkJointAxis, texture, node.id)
 
     def makeCamera (self, node, tr, parentId):
         self.hasCamera = True
@@ -301,6 +307,7 @@ class MultiLinkBody (object):
                                                             nearVal=0.3,
                                                             farVal=5.1)
         camera = BodyCamera (viewMatrix, projectionMatrix, eyePos, targetPos, upVector, imageSize)
+        camera.imCameraNode = node
         self.cameras.append (camera)
 
     def makeLaser (self, node, tr, parentId):
@@ -317,6 +324,7 @@ class MultiLinkBody (object):
                 tr.y() + length * math.cos(2. * math.pi * float(i) / node.measures), tr.z()
             ])
         laser = BodyLaser (pos, numRays, length, rayFrom, rayTo)
+        laser.imLaserNode = node
         self.lasers.append (laser)
 
     def makeIMU (self, node, tr, parentId):
@@ -324,6 +332,7 @@ class MultiLinkBody (object):
         pos = [tr.x(), tr.y(), tr.z()]
         orient = [tr.rx(), tr.ry(), tr.rz()]
         imu = BodyIMU (node.id, None, parentId, pos, orient)
+        imu.imIMUNode = node
         self.imus.append (imu)
 
     def makeJoint (self, node, tr, parentId):
@@ -331,6 +340,7 @@ class MultiLinkBody (object):
         self.links[num-1].hasChildLink = True
         tr_ = [tr.x(), tr.y(), tr.z(), tr.rx(), tr.ry(), tr.rz()]
         joint = BodyJoint (node.id, tr_, node.home, node.min, node.max, node.axis, num)
+        joint.imJointNode = node
         self.joints.append (joint)
 
         self.baseMass += node.mass
