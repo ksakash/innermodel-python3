@@ -12,7 +12,7 @@ im = InnerModel (xmlFilePath='test.xml')
 imv = InnerModelViewer (innermodel=im)
 
 base_transform = im.getTransform('base')
-
+# print (base_transform)
 alpha = 0
 while True:
     base_transform.update(tx=sin(alpha), ty=cos(alpha), rz=alpha)

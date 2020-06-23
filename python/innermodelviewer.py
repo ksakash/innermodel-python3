@@ -43,6 +43,12 @@ class BodyLink (object):
         self.linkTexture = texture
         self.linkName = name
         self.hasChildLink = False
+        self.imChildNode = None
+        self.imNode = None
+        self.imParentNode = None
+
+    def update (self):
+        pass
 
 class BodyCamera (object):
     '''Class containing all the info related to a camera'''
@@ -54,6 +60,10 @@ class BodyCamera (object):
         self.cameraTargetPosition = targetPos
         self.cameraUpVector = upVector
         self.cameraImageSize = imageSize
+        self.imCameraNode = None
+
+    def update (self):
+        pass
 
 class BodyLaser (object):
     '''Class containing all the info about a laser'''
@@ -64,6 +74,10 @@ class BodyLaser (object):
         self.laserRayLength = rayLength
         self.laserRayBatchFrom = rayBatchFrom
         self.laserRayBatchTo = rayBatchTo
+        self.imLaserNode = None
+
+    def update (self):
+        pass
 
 class BodyIMU (object):
     def __init__ (self, id, linkId, parentId, pos, orient):
@@ -76,6 +90,7 @@ class BodyIMU (object):
         self.prev_lin_vel = [0, 0, 0]
         self.prev_ang_vel = [0, 0, 0]
         self.last_t = 0
+        self.imIMUNode = None
 
     def measure (self, id):
         curr_t = time.time()
@@ -88,6 +103,9 @@ class BodyIMU (object):
         self.prev_ang_vel = ang_vel
         return (ang_vel, lin_accln, ang_accln)
 
+    def update (self):
+        pass
+
 class BodyJoint (object):
     def __init__ (self, id, tr, home, min_angle, max_angle, axis, parentLinkId):
         self.tr = tr
@@ -98,6 +116,12 @@ class BodyJoint (object):
         self.axis = axis
         self.parentLinkId = parentLinkId
         self.childLinkId = None
+        self.imJointNode = None
+        self.imParentNode = None
+        self.imChildNode = None
+
+    def update (self):
+        pass
 
 class MultiLinkBody (object):
     '''Class to represent a Multi Linked Body'''
@@ -112,6 +136,7 @@ class MultiLinkBody (object):
         self.baseVisualShapeIndex = -1
         self.basePosition = [0,0,0]
         self.baseOrientation = p.getQuaternionFromEuler([0,0,0])
+        self.imNode = None
 
         self.hasCamera = False
         self.hasLaser = False
@@ -124,6 +149,12 @@ class MultiLinkBody (object):
         self.lasers = []
         self.imus = []
         self.joints = []
+
+    def updatePosAndOrient (self):
+        self.basePosition = [self.imNode.tx/100.0, self.imNode.ty/100.0, self.imNode.tz/100.0]
+        self.baseOrientation = p.getQuaternionFromEuler ([self.imNode.rx, self.imNode.ry,
+                                                                                    self.imNode.rz])
+        p.resetBasePositionAndOrientation (self.bodyId, self.basePosition, self.baseOrientation)
 
     def eulerFromNormal (self, normal):
         '''Returns rotation angles from normal vector of a plane'''
@@ -347,6 +378,7 @@ class MultiLinkBody (object):
         '''Create a separate body from the node'''
 
         assert (self.getClassType (node) == 'Transform')
+        self.imNode = node
         self.id = node.id
         # self.baseMass = node.mass
         self.baseMass = 10
@@ -372,17 +404,14 @@ class InnerModelViewer (object):
             self.construct (self.innerModel.root)
 
         self.initPyBullet()
-
-        self.initialise_render()
+        self.initialiseRender()
 
     def initPyBullet (self):
         p.connect(p.GUI)
-
-        p.setAdditionalSearchPath(pybullet_data.getDataPath())
         p.setAdditionalSearchPath(pybullet_data.getDataPath())
 
         p.loadURDF("plane.urdf")
-        # p.setGravity(0, 0, -10)
+        # p.setGravity(0, 0, 0)
         # p.setRealTimeSimulation(1)
 
     def MakeMultiLinkedBody (self, node):
@@ -455,10 +484,10 @@ class InnerModelViewer (object):
     # github.com/bulletphysics/bullet3/blob/master/examples/pybullet/examples/pointCloudFromCameraImage.py
     def getPointCloud (self, near, far, width, height, stepX, stepY, depthImg):
         '''Method to get point cloud from depth image
-        params near, far: range of the fov,
-        params width, height: dimensions of the GUI,
-        param depthImg: depth image,
-        params stepX, stepY: resolution of point cloud
+        :params near, far: range of the fov,
+        :params width, height: dimensions of the GUI,
+        :param depthImg: depth image,
+        :params stepX, stepY: resolution of point cloud
         '''
         imgW = depthImg.shape[1]
         imgH = depthImg.shape[0]
@@ -479,12 +508,12 @@ class InnerModelViewer (object):
 
         return pointcloud
 
-    def readIMU (self):
-        for body in self.bodies:
-            data = []
-            if body.hasIMU:
-                for imu in body.imus:
-                    data.append (imu.measure(body.bodyId))
+    def readIMU (self, body):
+        data = []
+        if body.hasIMU:
+            for imu in body.imus:
+                data.append (imu.measure(body.bodyId))
+        return data
 
     def renderImage (self):
         '''Render the image for bodies having camera'''
@@ -545,7 +574,7 @@ class InnerModelViewer (object):
                             p.addUserDebugLine(newFrom[j], hitPosition, lineColorRGB=[0, 1, 0],
                                                lifeTime=0.1)
 
-    def initialise_render(self):
+    def initialiseRender(self):
         '''Render the scene'''
 
         self.MakeWorld()
@@ -585,7 +614,12 @@ class InnerModelViewer (object):
                     textId = body.links[i].linkTexture
                     p.changeVisualShape (bodyId, i, textureUniqueId=textId)
 
+    def resetPosAndOrient (self):
+        for body in self.bodies:
+            body.updatePosAndOrient ()
+
     def render(self):
-        # p.stepSimulation()
-        self.renderImage ()
-        self.detectLaserCollisions ()
+        p.stepSimulation ()
+        self.resetPosAndOrient ()
+        # self.renderImage ()
+        # self.detectLaserCollisions ()

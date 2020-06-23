@@ -84,7 +84,7 @@ class InnerModelTransform(InnerModelNode):
         self.rtmat.set (ox=self.rx, oy=self.ry, oz=self.rz,
                         x=self.tx, y=self.ty, z=self.tz)
 
-        self.updateChildren()
+        # self.updateChildren()
 
     def copyNode (self, hash, parent) -> 'InnerModelNode':
         '''Return a copy of the node'''
