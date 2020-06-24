@@ -47,9 +47,6 @@ class BodyLink (object):
         self.imNode = None
         self.imParentNode = None
 
-    def update (self):
-        pass
-
 class BodyCamera (object):
     '''Class containing all the info related to a camera'''
 
@@ -62,9 +59,6 @@ class BodyCamera (object):
         self.cameraImageSize = imageSize
         self.imCameraNode = None
 
-    def update (self):
-        pass
-
 class BodyLaser (object):
     '''Class containing all the info about a laser'''
 
@@ -75,9 +69,6 @@ class BodyLaser (object):
         self.laserRayBatchFrom = rayBatchFrom
         self.laserRayBatchTo = rayBatchTo
         self.imLaserNode = None
-
-    def update (self):
-        pass
 
 class BodyIMU (object):
     def __init__ (self, id, linkId, parentId, pos, orient):
@@ -102,9 +93,6 @@ class BodyIMU (object):
         self.prev_lin_vel = lin_vel
         self.prev_ang_vel = ang_vel
         return (ang_vel, lin_accln, ang_accln)
-
-    def update (self):
-        pass
 
 class BodyJoint (object):
     def __init__ (self, id, tr, home, min_angle, max_angle, axis, parentLinkId):
