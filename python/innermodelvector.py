@@ -6,7 +6,7 @@ Author: ksakash@github.com (Akash Kumar Singh)
 import numpy as np
 
 class InnerModelVector(np.ndarray):
-    """ 1D vector wrapped around numpy.ndarray"""
+    """1D vector wrapped around numpy.ndarray"""
 
     @staticmethod
     def vec3d(x: float, y: float, z: float) -> 'InnerModelVector':

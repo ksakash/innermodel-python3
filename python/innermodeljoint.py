@@ -117,33 +117,3 @@ class InnerModelJoint (InnerModelTransform):
         elif self.axis is 'z':
             return InnerModelVector.vec3d (0, 0, 1)
         return InnerModelVector.vec3d (0, 0, 0)
-
-    def copyNode (self, hash: dict, parent: 'InnerModelNode') -> 'InnerModelNode':
-        '''Returns copy of the current node'''
-
-        if self.axis is 'x':
-            ret = InnerModelJoint (id, self.backl, 0, 0, self.backh, 0, 0, self.tx, self.ty, self.tz,
-                                   self.rx, 0, 0, self.min, self.max, self.port, self.axis, self.home,
-                                   parent)
-        elif self.axis is 'y':
-            ret = InnerModelJoint (id, self.backl, 0, 0, self.backh, 0, 0, self.tx, self.ty, self.tz,
-                                   0, self.ry, 0, self.min, self.max, self.port, self.axis, self.home,
-                                   parent)
-        elif self.axis is 'z':
-            ret = InnerModelJoint (id, self.backl, 0, 0, self.backh, 0, 0, self.tx, self.ty, self.tz,
-                                   0, 0, self.rz, self.min, self.max, self.port, self.axis, self.home,
-                                   parent)
-        else:
-            raise Exception ("invalid axis: %s", self.axis)
-
-        ret.level = self.level
-        ret.fixed = self.fixed
-        ret.children = []
-        ret.attributes = dict()
-        hash[self.id] = ret
-        ret.innerModel = parent.innerModel
-
-        for child in self.children:
-            ret.addChild(child.copyNode(hash, ret))
-        ret.setAngle (self.getAngle())
-        return ret

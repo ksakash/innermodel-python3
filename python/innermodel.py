@@ -75,10 +75,8 @@ class InnerModel(object):
     def copy (self) -> 'InnerModel':
         '''Returns a copy of the object'''
 
-        inner = InnerModel()
-        for child in self.root.children:
-            inner.root.addChild (child.copyNode (inner.hash, inner.root))
-        return inner
+        ret = copy.deepcopy (self)
+        return ret
 
     def changeHash (self, new_id: str, node: 'InnerModelNode'):
         '''Map another node corresponding to the given new_id'''

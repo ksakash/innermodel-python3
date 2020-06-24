@@ -34,20 +34,6 @@ class InnerModelCamera (InnerModelNode):
     def update (self):
         self.updateChildren()
 
-    def copyNode (self, hash: dict, parent: 'InnerModelNode') -> 'InnerModelNode':
-        ret = InnerModelCamera (self.id, self.width, self.height, self.focal, self.innerModel, parent)
-        ret.level = self.level
-        ret.fixed = self.fixed
-        ret.children = []
-        ret.attributes = dict()
-        hash[self.id] = ret
-        ret.innerModel = parent.innerModel
-        ret.camera = self.camera
-
-        for child in self.children:
-            ret.addChild(child.copyNode(hash, ret))
-        return ret
-
     def getWidth (self) -> float:
         return self.width
 

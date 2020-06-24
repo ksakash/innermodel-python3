@@ -46,18 +46,3 @@ class InnerModelDisplay (InnerModelNode):
         else:
             self.normal[0] = nx; self.normal[1] = ny; self.normal[2] = nz
             self.point[0] = nx; self.point[1] = ny; self.point[2] = nz
-
-    def copyNode (self, hash: dict, parent: 'InnerModelNode') -> 'InnerModelNode':
-        ret = InnerModelDisplay (self.id, self.port, self.width, self.height, self.depth, self.repeat,
-                                 self.normal[0], self.normal[1], self.normal[2], self.point[0],
-                                 self.point[1], self.point[2], self.collidable, parent)
-        ret.level = self.level
-        ret.fixed = self.fixed
-        ret.children = []
-        ret.attributes = dict()
-        hash[self.id] = ret
-        ret.innerModel = parent.innerModel
-
-        for child in self.children:
-            ret.addChild(child.copyNode(hash, ret))
-        return ret

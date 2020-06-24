@@ -9,17 +9,3 @@ class InnerModelOmniRobot (InnerModelTransform):
         self.port = port
         self.noise = noise
         self.collide = collide  # may be redundant
-
-    def copyNode (self, hash: dict, parent: 'InnerModelNode') -> 'InnerModelNode':
-        ret = InnerModelOmniRobot (self.id, self.tx, self.ty, self.tz, self.rx, self.ry, self.rz,
-                                   self.port, self.noise, False, self.parent)
-        ret.level = self.level
-        ret.fixed = self.fixed
-        ret.children = []
-        ret.attributes = dict()
-        hash[self.id] = ret
-        ret.innerModel = parent.innerModel
-
-        for child in self.children:
-            ret.addChild(child.copyNode(hash, ret))
-        return ret

@@ -49,12 +49,6 @@ class InnerModelNode (object):
         raise NotImplementedError
 
     # abstract
-    def copyNode (self, hash, parent):
-        '''Return a copy of this node'''
-
-        raise NotImplementedError
-
-    # abstract
     def save (self, out, tabs):
         '''Save the current ndoe into a file'''
 
@@ -80,6 +74,6 @@ class InnerModelNode (object):
         for child in self.children:
             child.update()
 
-    # def copyNode (self):
-    #     ret = copy.deepcopy (self)
-    #     return ret
+    def copyNode (self):
+        ret = copy.deepcopy (self)
+        return ret

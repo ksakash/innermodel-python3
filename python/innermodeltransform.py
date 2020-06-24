@@ -89,18 +89,3 @@ class InnerModelTransform(InnerModelNode):
                         x=self.tx, y=self.ty, z=self.tz)
 
         # self.updateChildren()
-
-    def copyNode (self, hash, parent) -> 'InnerModelNode':
-        '''Return a copy of the node'''
-
-        ret = InnerModelTransform (self.id, self.engine, self.tx, self.ty, self.tz,
-                                   self.rx, self.ry, self.rz, self.mass, self.parent)
-        ret.level = self.level
-        ret.children = []
-        ret.attributes = dict()
-        hash[self.id] = ret
-        ret.innerModel = parent.innerModel
-
-        for child in self.children:
-            ret.addChild(child.copyNode(hash, ret))
-        return ret

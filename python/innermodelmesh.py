@@ -47,19 +47,3 @@ class InnerModelMesh (InnerModelNode):
 
     def wireFrameRendering (self) -> bool: # may be redudant
         return self.renderMode == 'WireFrameRendering'
-
-    def copyNode (self, hash, parent) -> 'InnerModelMesh':
-        ret = InnerModelMesh (self.id, self.meshPath, self.scalex, self.scaley, self.scalez,
-                              self.renderMode, self.tx, self.ty, self.tz, self.rx, self.ry,
-                              self.rz, self.collidable, parent)
-        ret.level = self.level
-        ret.fixed = self.fixed # redundant
-        ret.children = []
-        ret.attributes = dict()
-        hash[id] = ret
-        ret.innerModel = parent.innerModel
-
-        for child in self.children:
-            ret.addChild (child.copyNode(hash, ret))
-
-        return ret

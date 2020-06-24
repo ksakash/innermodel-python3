@@ -21,17 +21,3 @@ class InnerModelTouchSensor (InnerModelNode):
 
     def getMeasure (self) -> float:
         return self.value
-
-    def copyNode (self, hash: dict, parent: 'InnerModelNode') -> 'InnerModelNode':
-        ret = InnerModelTouchSensor (self.id, self.stype, self.nx, self.ny, self.nz, self.min,
-                                     self.max, self.port, parent)
-        ret.level = self.level
-        ret.fixed = self.fixed
-        ret.children = []
-        ret.attributes = dict()
-        hash[self.id] = ret
-        ret.innerModel = parent.innerModel
-
-        for child in self.children:
-            ret.addChild(child.copyNode(hash, ret))
-        return ret

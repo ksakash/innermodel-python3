@@ -59,20 +59,3 @@ class InnerModelPlane (InnerModelNode):
     def save (self, out, tabs: int):
         pass
 
-    def copyNode (self, hash: dict, parent: 'InnerModelNode') -> 'InnerModelNode':
-        '''Returns copy of the current node'''
-
-        ret = InnerModelPlane (self.id, self.texture, self.width, self.height, self.depth,
-                               self.repeat, self.normal[0], self.normal[1], self.normal[2],
-                               self.point[0], self.point[1], self.point[2], False, parent)
-        ret.level = self.level
-        ret.fixed = self.fixed # redundant
-        ret.children = []
-        ret.attributes = dict()
-        hash[self.id] = ret
-        ret.innerModel = parent.innerModel
-
-        for child in self.children:
-            ret.addChild(child.copyNode(hash, ret))
-        return ret
-

@@ -33,20 +33,6 @@ class InnerModelLaser (InnerModelNode):
     def udpate (self):
         self.updateChildren()
 
-    def copyNode (self, hash: dict, parent: 'InnerModelNode') -> 'InnerModelNode':
-        ret = InnerModelLaser (self.id, self.port, self.min, self.max, self.angle, self.measures,
-                               self.ifconfig, self.innerModel, parent)
-        ret.level = self.level
-        ret.fixed = self.fixed
-        ret.children = []
-        ret.attributes = dict()
-        hash[self.id] = ret
-        ret.innerModel = parent.innerModel
-
-        for child in self.children:
-            ret.addChild(child.copyNode(hash, ret))
-        return ret
-
     def laserTo (self, dest: str, r: float, alpha: float) -> 'InnerModelVector':
         p = InnerModelVector((3,))
         p[0] = r*math.sin (alpha)
