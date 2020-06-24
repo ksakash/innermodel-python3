@@ -31,13 +31,18 @@ class InnerModelTransform(InnerModelNode):
         self.ry = ry
         self.rz = rz
 
-        self.gui_translation = True
-        self.gui_rotation = True
+        self.gui_translation = True # may be redundant
+        self.gui_rotation = True # may be redundant
 
-        self.engine = engine
+        self.engine = engine # may be redundant
+
+    def __repr__ (self):
+        ret = "id: {}, mass: {}, tx: {}, ty: {}, tz: {}, rx: {}, ry: {}, rz: {}"\
+              .format (self.id, self.mass, self.tx, self.ty, self.tz, self.rx, self.ry, self.rz)
+        return ret
 
     # print the rt matrix
-    def printT (self, verbose):
+    def printT (self, verbose): # redundant if __repr__ is used
         '''Print info about object'''
 
         if verbose:
@@ -50,14 +55,14 @@ class InnerModelTransform(InnerModelNode):
 
         pass
 
-    def updateTranslation (self, tx, ty, tz):
+    def updateTranslation (self, tx, ty, tz): # may be redundant
         '''Update translation parameters'''
 
         self.tx = tx
         self.ty = ty
         self.tz = tz
 
-    def updateRotation (self, rx, ry, rz):
+    def updateRotation (self, rx, ry, rz): # may be redundant
         '''Update rotation parameters'''
 
         self.rx = rx
@@ -66,7 +71,6 @@ class InnerModelTransform(InnerModelNode):
 
     def update (self, tx=None, ty=None, tz=None, rx=None, ry=None, rz=None):
         '''Update the paramters of the object'''
-
 
         if tx is not None:
             self.tx = tx

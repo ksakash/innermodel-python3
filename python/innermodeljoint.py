@@ -12,16 +12,16 @@ class InnerModelJoint (InnerModelTransform):
                   max: float = float("inf"), port: int = 0, axis: str = "z", home: float = 0,
                   parent: 'InnerModelTransform' = None):
         '''Constructor
-        param id: identifier of the joint
-        param lx, ly, lz: lower limit of the joint
-        param hx, hy, hz: higher limit of the joint
-        param tx, ty, tz: translation of the joint
-        param rx, ry, rz: rotation of the joint
-        param min: minimum value of the joint rotation
-        param max: maximum value of the joint rotation
-        param port: port of the joint
-        param axis: axis around which it revolves
-        param parent: parent of the given node
+        :param id: identifier of the joint
+        :param lx, ly, lz: lower limit of the joint
+        :param hx, hy, hz: higher limit of the joint
+        :param tx, ty, tz: translation of the joint
+        :param rx, ry, rz: rotation of the joint
+        :param min: minimum value of the joint rotation
+        :param max: maximum value of the joint rotation
+        :param port: port of the joint
+        :param axis: axis around which it revolves
+        :param parent: parent of the given node
         '''
 
         super (InnerModelJoint, self).__init__ (id, 'static', tx, ty, tz, rx, ry, rz, 0, parent)

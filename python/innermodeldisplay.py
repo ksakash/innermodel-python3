@@ -9,12 +9,23 @@ class InnerModelDisplay (InnerModelNode):
         self.normal = InnerModelVector.vec3d (nx, ny, nz)
         self.point = InnerModelVector.vec3d (px, py, pz)
         self.port = port
-        self.repeat = repeat
+        self.repeat = repeat # redundant
         self.texture = texture
         self.width = width
         self.height = height
         self.depth = depth
-        self.collidable = collidable
+        self.collidable = collidable # redundant
+
+    def __repr__ (self):
+        normal = "normal: [{}, {}, {}]".format (self.normal[0], self.normal[1], self.normal[2])
+        point = "point: [{}, {}, {}]".format (self.point[0], self.point[1], self.point[2])
+        texture = "texture: {}".format (self.texture)
+        width = "width: {}".format (self.width)
+        height = "height: {}".format (self.height)
+        depth = "depth: {}".format (self.depth)
+
+        ret = normal + ", " + point + ", " + texture + ", " + width + ", " + height + ", " + depth
+        return ret
 
     def updateTexture (self, texture: str):
         self.texture = texture

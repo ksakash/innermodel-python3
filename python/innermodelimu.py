@@ -9,6 +9,10 @@ class InnerModelIMU (InnerModelNode):
     def save (self, out, tabs: int):
         pass
 
+    def __repr__ (self) -> str:
+        ret = "id: {}, port: {}".format (self.id, self.port)
+        return ret
+
     def printT (self, verbose: bool):
         if verbose:
             print ("IMU")

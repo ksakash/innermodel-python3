@@ -3,6 +3,8 @@ Base class for all the elements in an innermodel
 Author: ksakash@github.com (Akash Kumar Singh)
 '''
 
+import copy
+
 class InnerModelNode (object):
     '''Base class for all the elements in an innermodel'''
 
@@ -77,3 +79,7 @@ class InnerModelNode (object):
 
         for child in self.children:
             child.update()
+
+    # def copyNode (self):
+    #     ret = copy.deepcopy (self)
+    #     return ret

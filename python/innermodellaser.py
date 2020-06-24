@@ -1,6 +1,5 @@
 import math
 from innermodelnode import InnerModelNode
-# from innermodel import InnerModel
 from innermodelvector import InnerModelVector
 
 class InnerModel (object):
@@ -15,12 +14,17 @@ class InnerModelLaser (InnerModelNode):
         self.max = max
         self.angle = angle
         self.measures = measures
-        self.ifconfig = ifconfig
+        self.ifconfig = ifconfig # redundant
         self.innerModel = innermodel
 
     # TODO
     def save (self, out, tabs: int):
         pass
+
+    def __repr__ (self) -> str:
+        ret = "id: {}, port: {}, min: {}, max: {}, angle: {}, measures: {}".format (self.id,
+                                        self.port, self.min, self.max, self.angle, self.measures)
+        return ret
 
     def printT (self, verbose: bool):
         if verbose:

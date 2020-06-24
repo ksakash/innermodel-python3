@@ -14,18 +14,27 @@ class InnerModelMesh (InnerModelNode):
         self.rx = rx
         self.ry = ry
         self.rz = rz
-        self.renderMode = render
-        self.collidable = collidable
+        self.renderMode = render # may be redundant
+        self.collidable = collidable # may be redundant
 
     # TODO
     def save (self, out, tabs):
         pass
 
-    def printT (self, verbose):
+    def __repr__ (self):
+        scale = "scale: [{}, {}, {}]".format (self.scalex, self.scaley, self.scalez)
+        translation = "translation: [{}, {}, {}]".format (self.tx, self.ty, self.tz)
+        rotation = "rotation: [{}, {}, {}]".format (self.rx, self.ry, self.rz)
+        meshPath = "meshPath: {}".format (self.meshPath)
+
+        ret = scale + ", " + translation + ", " + rotation + ", " + meshPath
+        return ret
+
+    def printT (self, verbose): # may be redundant
         if (verbose):
             print ("Mesh:", self.id)
 
-    def update (self):
+    def update (self): # may be redundant
         self.updateChildren()
 
     def setScale (self, x, y, z):
@@ -33,18 +42,18 @@ class InnerModelMesh (InnerModelNode):
         self.scaley = y
         self.scalez = z
 
-    def normalRendering (self) -> bool:
+    def normalRendering (self) -> bool: # may be redundant
         return self.renderMode == 'NormalRendering'
 
-    def wireFrameRendering (self):
+    def wireFrameRendering (self) -> bool: # may be redudant
         return self.renderMode == 'WireFrameRendering'
 
     def copyNode (self, hash, parent) -> 'InnerModelMesh':
         ret = InnerModelMesh (self.id, self.meshPath, self.scalex, self.scaley, self.scalez,
                               self.renderMode, self.tx, self.ty, self.tz, self.rx, self.ry,
-                              self.rz, self.collidable, self.parent)
+                              self.rz, self.collidable, parent)
         ret.level = self.level
-        ret.fixed = self.fixed
+        ret.fixed = self.fixed # redundant
         ret.children = []
         ret.attributes = dict()
         hash[id] = ret

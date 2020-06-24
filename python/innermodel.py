@@ -31,7 +31,7 @@ class InnerModel(object):
     '''Class representing a scene'''
 
     def __init__ (self, xmlFilePath: str = None, im: 'InnerModel' = None):
-        '''Constrcutor
+        '''
         :param xmlFilePath: path of the xml file representing innermodel
         :param im: InnerModel object to copy from
         '''
@@ -78,6 +78,7 @@ class InnerModel(object):
         inner = InnerModel()
         for child in self.root.children:
             inner.root.addChild (child.copyNode (inner.hash, inner.root))
+        return inner
 
     def changeHash (self, new_id: str, node: 'InnerModelNode'):
         '''Map another node corresponding to the given new_id'''
