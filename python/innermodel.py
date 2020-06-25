@@ -4,6 +4,7 @@ Author: ksakash@github.com (Akash Kumar Singh)
 '''
 
 import copy
+import numpy as np
 
 from innermodelnode import InnerModelNode
 from innermodelmatrix import InnerModelMatrix
@@ -30,36 +31,28 @@ from innermodelrotmatrix import Rot3D
 class InnerModel(object):
     '''Class representing a scene'''
 
-    def __init__ (self, xmlFilePath: str = None, im: 'InnerModel' = None):
+    def __init__ (self, xmlFilePath: str = None):
         '''
         :param xmlFilePath: path of the xml file representing innermodel
-        :param im: InnerModel object to copy from
         '''
 
         self.path = xmlFilePath
         self.hash = dict()
 
-        if self.path is not None:
-            self.root = None
-            InnerModelReader.load (file=self.path, model=self)
-        elif im is not None:
-            self.root = InnerModelTransform ('root', 'static', 0, 0, 0, 0, 0, 0)
-            self.setRoot (self.root)
-            self.root.innerModel = self
-            self.hash['root'] = self.root
-            for child in im.root.children:
-                self.root.addChild (child.copyNode (self.hash, self.root))
-        else:
-            self.root = InnerModelTransform ('root', 'static', 0, 0, 0, 0, 0, 0)
-            self.root.parent = None
-            self.setRoot (self.root)
-            self.root.innerModel = self
-            self.hash['root'] = self.root
+        self.root = InnerModelTransform ('root', 'static', 0, 0, 0, 0, 0, 0)
+        self.root.parent = None
+        self.setRoot (self.root)
+        self.root.innerModel = self
+        self.hash['root'] = self.root
 
         self.localHashTr = dict()
         self.localHashRot = dict()
         self.listA = []
         self.listB = []
+
+        if self.path is not None:
+            self.root = None
+            InnerModelReader.load (file=self.path, model=self)
 
     def open (self, xmlFilePath: str) -> bool:
         '''Read the xml file'''
@@ -169,7 +162,7 @@ class InnerModel(object):
 
         if (id in self.hash):
             raise Exception ("InnerModel.newTransform: Error: Trying to insert a node with an \
-                              already-existing key: %s", id)
+                              already-existing key: %s"%id)
 
         newnode = InnerModelTransform (id=id, engine=engine, tx=tx, ty=ty, tz=tz,
                                         rx=rx, ry=ry, rz=rz, mass=mass, parent=parent)
@@ -183,7 +176,7 @@ class InnerModel(object):
 
         if (id in self.hash):
             raise Exception ("InnerModel.newTouchSensor: Error: Trying to insert a node with an \
-                              already-existing key: %s", id)
+                              already-existing key: %s"%id)
         newnode = InnerModelTouchSensor (id=id, stype=stype, nx=nx, ny=ny, nz=nz, min=min, max=max,
                                         port=port, parent=parent)
         self.hash[id] = newnode
@@ -197,7 +190,7 @@ class InnerModel(object):
 
         if (id in self.hash):
             raise Exception ("InnerModel.newJoint: Error: Trying to insert a node with an \
-                              already-existing key: %s", id)
+                              already-existing key: %s"%id)
         newnode = InnerModelJoint (id=id, lx=lx, ly=ly, lz=lx, hx=hx, hy=hy, hz=hz, tx=tx, ty=ty,
                                    tz=tz, rx=rx, ry=ry, rz=rz, min=min, max=max, port=port, axis=axis,
                                    home=home, parent=parent)
@@ -211,7 +204,7 @@ class InnerModel(object):
 
         if (id in self.hash):
             raise Exception ("InnerModel.newPrismaticJoint: Error: Trying to insert a node with an \
-                              already-existing key: %s", id)
+                              already-existing key: %s"%id)
         newnode = InnerModelPrismaticJoint (id, min, max, value, offset, port, axis, home, parent)
         self.hash[id] = newnode
         return newnode
@@ -223,7 +216,7 @@ class InnerModel(object):
 
         if (id in self.hash):
             raise Exception ("InnerModel.newDifferentialRobot: Error: Trying to insert a node with \
-                              an already-existing key: %s", id)
+                              an already-existing key: %s"%id)
         newnode = InnerModelDifferentialRobot (id, tx, ty, tz, rx, ry, rz, port, noise, collide, parent)
         self.hash[id] = newnode
         return newnode
@@ -235,7 +228,7 @@ class InnerModel(object):
 
         if (id in self.hash):
             raise Exception ("InnerModel.newOmniRobot: Error: Trying to insert a node with an \
-                              already-existing key: %s", id)
+                              already-existing key: %s"%id)
         newnode = InnerModelOmniRobot (id, tx, ty, tz, rx, ry, rz, port, noise, collide, parent)
         self.hash[id] = newnode
         return newnode
@@ -245,7 +238,7 @@ class InnerModel(object):
 
         if (id in self.hash):
             raise Exception ("InnerModel.newCamera: Error: Trying to insert a node with an \
-                              already-existing key: %s", id)
+                              already-existing key: %s"%id)
         newnode = InnerModelCamera (id, width, height, focal, self, parent=None)
         self.hash[id] = newnode
         return newnode
@@ -258,7 +251,7 @@ class InnerModel(object):
             raise Exception ("InnerModel.newRGBD: noise can't have negative values")
         if (id in self.hash):
             raise Exception ("InnerModel.newRGBD: Error: Trying to insert a node with an \
-                              already-existing key: %s", id)
+                              already-existing key: %s"%id)
         newnode = InnerModelRGBD (id, width, height, focal, noise, port, ifconfig, self, parent)
         self.hash[id] = newnode
         return newnode
@@ -268,7 +261,7 @@ class InnerModel(object):
 
         if (id in self.hash):
             raise Exception ("InnerModel.newIMU: Error: Trying to insert a node with an \
-                              already-existing key: %s", id)
+                              already-existing key: %s"%id)
         newnode = InnerModelIMU (id, port, parent)
         self.hash[id] = newnode
         return newnode
@@ -279,7 +272,7 @@ class InnerModel(object):
 
         if (id in self.hash):
             raise Exception ("InnerModel.newLaser: Error: Trying to insert a node with an \
-                              already-existing key: %s", id)
+                              already-existing key: %s"%id)
         newnode = InnerModelLaser (id, port, min, max, angle, measures, ifconfig, self, parent)
         self.hash[id] = newnode
         return newnode
@@ -292,7 +285,7 @@ class InnerModel(object):
 
         if (id in self.hash):
             raise Exception ("InnerModel.newMesh: Error: Trying to insert a node with an \
-                              already-existing key: %s", id)
+                              already-existing key: %s"%id)
         newnode = InnerModelMesh (id, path, scalex, scaley, scalez, render, tx, ty, tz, rx, ry, rz,
                                   collidable, parent)
         self.hash[id] = newnode
@@ -303,7 +296,7 @@ class InnerModel(object):
 
         if (id in self.hash):
             raise Exception ("InnerModel.newPointCloud: Error: Trying to insert a node with an \
-                              already-existing key: %s", id)
+                              already-existing key: %s"%id)
         newnode = InnerModelPointCloud (id, parent)
         self.hash[id] = newnode
         return newnode
@@ -315,7 +308,7 @@ class InnerModel(object):
 
         if (id in self.hash):
             raise Exception ("InnerModel.newPlane: Error: Trying to insert a node with an \
-                              already-existing key: %s", id)
+                              already-existing key: %s"%id)
         newnode = InnerModelPlane (id, texture, width, height, depth, repeat, nx, ny, nz, px, py, pz,
                                    collidable, parent)
         self.hash[id] = newnode
@@ -329,7 +322,7 @@ class InnerModel(object):
 
         if (id in self.hash):
             raise Exception ("InnerModel.newDisplay: Error: Trying to insert a node with an \
-                              already-existing key: %s", id)
+                              already-existing key: %s"%id)
         newnode = InnerModelDisplay (id, port, texture, width, height, depth, repeat, nx, ny, nz,
                                     px, py, pz, collidable, parent)
         self.hash[id] = newnode
@@ -410,7 +403,9 @@ class InnerModel(object):
         if origVec.size() == 3:
             m = self.getTransformationMatrix(destId, origId)
             v = origVec.toHomogeneousCoordinates()
-            vt = m.dot (v)
+            vt_ = m.dot (v)
+            vt = InnerModelVector ((4,))
+            np.copyto (vt, vt_)
             return vt.fromHomogeneousCoordinates()
         else:
             M = self.getTransformationMatrix (destId, origId)
@@ -438,9 +433,9 @@ class InnerModel(object):
         b = self.hash [destId]
 
         if (a is None):
-            raise Exception ("cannot find node: %s", origId)
+            raise Exception ("cannot find node: %s"%origId)
         if (b is None):
-            raise Exception ("cannot find node: %s", destId)
+            raise Exception ("cannot find node: %s"%destId)
 
         minLevel = a.level if a.level < b.level else b.level
         self.listA.clear()
@@ -564,8 +559,6 @@ class InnerModel(object):
         if n is not None:
             if n.parent is not None:
                 return n.parent.id
-            else:
-                return ""
         return ""
 
     def printTree (self, s: str = '', verbose: bool = False):
