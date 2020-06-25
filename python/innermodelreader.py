@@ -126,7 +126,7 @@ class InnerModelReader (object):
         list2 = InnerModelReader.validAttr[tag.lower()]
 
         if (not set(list1).issubset(set(list2))):
-            raise Exception ("%s tag doesn't have valid attributes", tag)
+            raise Exception ("%s tag doesn't have valid attributes" % tag)
 
         if tag.lower() == 'rotation':
             tr = model.newTransform (id=domnode.get('id'), engine=domnode.get('engine', 'static'),
@@ -221,7 +221,7 @@ class InnerModelReader (object):
             render = domnode.get ('render', 'normal')
 
             if (render is not 'normal') and (render is not 'wireframe'):
-                raise Exception ("rendering mode not valid: %s", render)
+                raise Exception ("rendering mode not valid: %s" % render)
 
             scale = domnode.get ('scale', '1')
             li = scale.split (',')

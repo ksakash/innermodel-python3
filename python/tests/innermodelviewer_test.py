@@ -16,6 +16,6 @@ alpha = 0
 while True:
     base_transform.update(tx=sin(alpha), ty=cos(alpha), rz=alpha)
     alpha += 0.02
-
+    print(im.transform('base', 'world'))
     imv.render()
     time.sleep(1. / 30.)

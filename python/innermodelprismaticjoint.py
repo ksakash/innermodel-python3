@@ -11,17 +11,19 @@ class InnerModelPrismaticJoint (InnerModelTransform):
         self.home = home
         self.port = port
         self.axis = axis
-        self.fixed = False
         self.setPosition (value)
 
     def printT (self, verbose):
-        print ("Prismatic Joint: %s", self.id)
+        print ("Prismatic Joint: %s" % self.id)
         if verbose:
             print (self.rtmat)
 
-    # TODO
     def save (self, out, tabs: int):
-        pass
+        s = ""
+        for _ in range (tabs):
+            s += "\t"
+        s += "<!-- joints cannot be saved yet -->\n"
+        out.write (s)
 
     def update (self):
         self.updateChildren()
@@ -46,5 +48,5 @@ class InnerModelPrismaticJoint (InnerModelTransform):
         elif self.axis is 'z':
             self.rtmat.set (0, 0, 0, 0, 0, v+self.offset)
         else:
-            raise Exception ("internal error, no such axis %s", self.axis)
+            raise Exception ("internal error, no such axis %s" % self.axis)
         return ret

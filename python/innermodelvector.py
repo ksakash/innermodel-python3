@@ -31,6 +31,11 @@ class InnerModelVector(np.ndarray):
         ret[5] = rz
         return ret
 
+    def size (self) -> int:
+        """Returns the size of 1D vector"""
+
+        return self.shape[0]
+
     def set(self, val: float):
         """Sets the value of all the elements of the vector to be equal to 'val'"""
 
@@ -92,12 +97,12 @@ class InnerModelVector(np.ndarray):
         size = self.shape[0]
         return np.array_equal(self, np.zeros(size))
 
-    def to_homogeneous_coordinates(self) -> 'InnerModelVector':
+    def toHomogeneousCoordinates(self) -> 'InnerModelVector':
         """Returns the vector to homogeneous coordinates"""
 
         return np.append(self, 1.0)
 
-    def from_homogeneous_coordinates(self) -> 'InnerModelVector':
+    def fromHomogeneousCoordinates(self) -> 'InnerModelVector':
         """Returns the vector from homogeneous coordinates"""
 
         size = self.shape[0]

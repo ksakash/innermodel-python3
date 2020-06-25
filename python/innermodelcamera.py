@@ -12,8 +12,8 @@ class InnerModel (object):
     pass
 
 class InnerModelCamera (InnerModelNode):
-    def __init__ (self, id: str, width: float, height: float, focal: float, innermodel: 'InnerModel',
-                  parent: 'InnerModelNode' = None):
+    def __init__ (self, id: str, width: float, height: float, focal: float,
+                  innermodel: 'InnerModel', parent: 'InnerModelNode' = None):
         super (InnerModelCamera, self).__init__(id, parent)
         self.innerModel = innermodel
         self.camera = InnerModelCam (Fx=focal, Fy=focal, Ox=width/2, Oy=height/2)
@@ -27,9 +27,15 @@ class InnerModelCamera (InnerModelNode):
             print ("Camera: ", self.id)
             print (self.camera.qmat)
 
-    # TODO
-    def save (self):
-        pass
+    def save (self, out, tabs):
+        s = ""
+        for _ in range (tabs):
+            s += "\t"
+
+        s += "<camera id=\"" << self.id + "\" width=\"" + "%.9f" % self.width + "\" height=\"" + \
+             "%.9f" % self.height + "\" focal=\"" + "%.9f" % self.focal << "\" />\n"
+
+        out.write (s)
 
     def update (self):
         self.updateChildren()

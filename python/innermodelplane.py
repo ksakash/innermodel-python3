@@ -32,6 +32,7 @@ class InnerModelPlane (InnerModelNode):
         self.height = height
         self.depth = depth
         self.repeat = repeat # redundant
+        self.collidable = collidable
 
     def __repr__ (self):
         ret = "normal: {}, point: {}, texture: {}, width: {}, height: {}, depth: {}".\
@@ -53,9 +54,18 @@ class InnerModelPlane (InnerModelNode):
         else:
             self.normal[0] = nx; self.normal[1] = ny; self.normal[2] = nz
             self.parent[0] = px; self.parent[1] = py; self.parent[2] = pz
-            self.fixed = True # redundant
 
-    # TODO
     def save (self, out, tabs: int):
-        pass
+        s = ""
+        for _ in range (tabs):
+            s += "\t"
 
+        s += "<plane id=\"" + self.id + "\" texture=\"" + self.texture + "\" size=\"" + \
+             "%.9f" % self.width + "," + "%.9f" % self.height + "," + "%.9f" % self.depth + \
+             "\" repeat=\"" + "%.9f" % self.repeat + "\" nx=\"" + "%.9f" % self.normal[0] + \
+             "\" ny=\"" + "%.9f" % self.normal[1] + "\" nz=\"" + "%.9f" % self.normal[2] + \
+             "\" px=\"" + "%.9f" % self.point[0] + "\" py=\"" + "%.9f" % self.point[1] + \
+             "\" pz=\"" + "%.9f" % self.point[2] + "\" collide=\"" + "%.9f" % self.collidable + \
+             "\" />\n"
+
+        out.write (s)

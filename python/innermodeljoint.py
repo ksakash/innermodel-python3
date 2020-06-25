@@ -11,7 +11,7 @@ class InnerModelJoint (InnerModelTransform):
                   tx: float, ty: float, tz: float, rx: float, ry: float, rz: float, min: float =-float("inf"),
                   max: float = float("inf"), port: int = 0, axis: str = "z", home: float = 0,
                   parent: 'InnerModelTransform' = None):
-        '''Constructor
+        '''
         :param id: identifier of the joint
         :param lx, ly, lz: lower limit of the joint
         :param hx, hy, hz: higher limit of the joint
@@ -43,20 +43,40 @@ class InnerModelJoint (InnerModelTransform):
             self.backh = hz
             self.update (0, 0, min, 0, 0, max)
         else:
-            raise Exception ("internal error, no such axis %s", axis)
+            raise Exception ("internal error, no such axis %s" % axis)
         self.backl = None
         self.backh = None
 
     def printT (self, verbose: bool):
         '''Print info about the given node'''
 
-        print ("Joint: %s", self.id)
+        print ("Joint: %s" % self.id)
         if verbose:
             print (self.rtmat)
 
-    # TODO
     def save (self, out, tabs: int):
-        pass
+        s = ""
+        for _ in range (tabs):
+            s += "\t"
+
+        s += "<joint id=\"" + self.id + "\" port=\"" + self.port + "\" axis=\"" + self.axis + \
+             "\" home=\"" + "%.9f" % self.home + "\" min=\"" + "%.9f" % self.min + "\" max=\"" + \
+             "%.9f" % self.max + "\" tx=\"" + "%.9f" % self.tx + "\" ty=\"" + "%.9f" % self.tx + \
+             "\" tz=\"" + "%.9f" % self.tz + "\" rx=\"" + "%.9f" % self.rx + "\" ry=\"" + \
+             "%.9f" % self.ry + "\" rz=\"" + "%.9f" % self.rz + "\">\n"
+
+        out.write (s)
+
+        for child in self.children:
+            child.save (out, tabs+1)
+
+        s = ""
+
+        for _ in range (tabs):
+            s += "\t"
+
+        s += "</joint>\n"
+        out.write (s)
 
     def update (self, lx: float, ly: float, lz: float, hx: float, hy: float, hz: float):
         '''Update parameters about the given parameters'''
@@ -70,7 +90,6 @@ class InnerModelJoint (InnerModelTransform):
         elif self.axis is 'z':
             self.backl = lz
             self.backh = hz
-        self.fixed = True
 
     def getAngle (self) -> float:
         '''Returns the angle of rotation about the given axis'''

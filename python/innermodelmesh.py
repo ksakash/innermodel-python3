@@ -17,9 +17,17 @@ class InnerModelMesh (InnerModelNode):
         self.renderMode = render # may be redundant
         self.collidable = collidable # may be redundant
 
-    # TODO
     def save (self, out, tabs):
-        pass
+        s = ""
+        for _ in range (tabs):
+            s += "\t"
+
+        s += "<mesh id=\"" + self.id + "\"" + " file=\"" + self.meshPath + "\" scale=\"" + \
+             "%.9f" % self.scalex + "," + "%.9f" % self.scalex + "," + "%.9f" % self.scalex + \
+             "\" tx=\"" + "%.9f" % self.tx + "\" ty=\"" + "%.9f" % self.ty + "\" tz=\"" + \
+             "%.9f" % self.tz + "\" rx=\"" + "%.9f" % self.rx + "\" ry=\"" + "%.9f" % self.ry + \
+             "\" rz=\"" + "%.9f" % self.rz + "\" collide=\"" + "%.9f" % self.collidable << "\" />\n"
+        out.write (s)
 
     def __repr__ (self):
         scale = "scale: [{}, {}, {}]".format (self.scalex, self.scaley, self.scalez)
