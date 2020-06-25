@@ -54,9 +54,29 @@ class InnerModelJoint (InnerModelTransform):
         if verbose:
             print (self.rtmat)
 
-    # TODO
     def save (self, out, tabs: int):
-        pass
+        s = ""
+        for _ in range (tabs):
+            s += "\t"
+
+        s += "<joint id=\"" + self.id + "\" port=\"" + self.port + "\" axis=\"" + self.axis + \
+             "\" home=\"" + "%.9f" % self.home + "\" min=\"" + "%.9f" % self.min + "\" max=\"" + \
+             "%.9f" % self.max + "\" tx=\"" + "%.9f" % self.tx + "\" ty=\"" + "%.9f" % self.tx + \
+             "\" tz=\"" + "%.9f" % self.tz + "\" rx=\"" + "%.9f" % self.rx + "\" ry=\"" + \
+             "%.9f" % self.ry + "\" rz=\"" + "%.9f" % self.rz + "\">\n"
+
+        out.write (s)
+
+        for child in self.children:
+            child.save (out, tabs+1)
+
+        s = ""
+
+        for _ in range (tabs):
+            s += "\t"
+
+        s += "</joint>\n"
+        out.write (s)
 
     def update (self, lx: float, ly: float, lz: float, hx: float, hy: float, hz: float):
         '''Update parameters about the given parameters'''

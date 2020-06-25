@@ -12,6 +12,11 @@ class InnerModelRGBD (InnerModelCamera):
         self.port = port
         self.ifconfig = ifconfig
 
-    # TODO
     def save (self, out, tabs: int):
-        pass
+        s = ""
+        for _ in range (tabs):
+            s += "\t"
+        s += "<rgbd id=\"" + self.id + "\" width=\"" + "%.9f" % self.width + "\" height=\"" + \
+             "%.9f" % self.height + "\" focal=\"" + "%.9f" % self.focal + "\" port=\"" + self.port \
+             + "\" ifconfig=\"" + self.ifconfig + "\" noise=\"" + "%.9f" % self.noise + "\" />\n"
+        out.write (s)

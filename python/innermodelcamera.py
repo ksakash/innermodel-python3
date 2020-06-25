@@ -27,9 +27,15 @@ class InnerModelCamera (InnerModelNode):
             print ("Camera: ", self.id)
             print (self.camera.qmat)
 
-    # TODO
-    def save (self):
-        pass
+    def save (self, out, tabs):
+        s = ""
+        for _ in range (tabs):
+            s += "\t"
+
+        s += "<camera id=\"" << self.id + "\" width=\"" + "%.9f" % self.width + "\" height=\"" + \
+             "%.9f" % self.height + "\" focal=\"" + "%.9f" % self.focal << "\" />\n"
+
+        out.write (s)
 
     def update (self):
         self.updateChildren()

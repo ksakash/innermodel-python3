@@ -19,9 +19,12 @@ class InnerModelPrismaticJoint (InnerModelTransform):
         if verbose:
             print (self.rtmat)
 
-    # TODO
     def save (self, out, tabs: int):
-        pass
+        s = ""
+        for _ in range (tabs):
+            s += "\t"
+        s += "<!-- joints cannot be saved yet -->\n"
+        out.write (s)
 
     def update (self):
         self.updateChildren()

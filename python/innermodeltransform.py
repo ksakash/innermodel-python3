@@ -49,11 +49,45 @@ class InnerModelTransform(InnerModelNode):
             print ("{} {}".format(self.id, self.rtmat.shape))
             print (self.rtmat)
 
-    # TODO: to save the model in a file
     def save (self, out, tabs):
         '''Save info to a doc'''
 
-        pass
+        s = ""
+
+        if self.id == "root":
+            for _ in range (tabs):
+                s += "\t"
+
+            s += "<innermodel>\n"
+            out.write (s)
+
+            for child in self.children:
+                child.save(out, tabs+1)
+
+            s = ""
+            for _ in range (tabs):
+                s += "\t"
+
+            s += "</innermodel>\n"
+            out.write (s)
+        else:
+            for _ in range (tabs):
+                s += "\t"
+
+            s += "<transform id=\"" + self.id + "\" tx=\"" + "%.9f" % self.tx + "\" ty=\"" + \
+                 "%.9f" % self.ty + "\" tz=\"" + "%.9f" % self.tz + "\"  rx=\"" + "%.9f" % self.rx \
+                 + "\" ry=\"" + "%.9f" % self.ry + "\" rz=\"" + "%.9f" % self.rz + "\">\n"
+            out.write (s)
+
+            for child in self.children:
+                child.save (out, tabs+1)
+
+            s = ""
+            for _ in range (tabs):
+                s += "\t"
+
+            s += "</transform>\n"
+            out.write (s)
 
     def updateTranslation (self, tx, ty, tz): # may be redundant
         '''Update translation parameters'''

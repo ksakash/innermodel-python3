@@ -3,6 +3,7 @@ Class representing a complete innermodel scene
 Author: ksakash@github.com (Akash Kumar Singh)
 '''
 
+import os
 import copy
 import numpy as np
 
@@ -63,7 +64,14 @@ class InnerModel(object):
     def save (self, path: str) -> bool:
         '''Save the info into a file'''
 
-        pass
+        if not os.path.exists (path):
+            return False
+
+        f = open (path, "w+")
+        self.root.save (f, 0)
+        f.close ()
+
+        return True
 
     def copy (self) -> 'InnerModel':
         '''Returns a copy of the object'''
@@ -437,7 +445,7 @@ class InnerModel(object):
         if (b is None):
             raise Exception ("cannot find node: %s"%destId)
 
-        minLevel = a.level if a.level < b.level else b.level
+        minLevel = min (a.level, b.level)
         self.listA.clear()
 
         while (a.level >= minLevel):
