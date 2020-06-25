@@ -60,7 +60,6 @@ class InnerModel(object):
 
         return InnerModelReader.load (file=xmlFilePath, model=self)
 
-    # TODO
     def save (self, path: str) -> bool:
         '''Save the info into a file'''
 
@@ -101,39 +100,39 @@ class InnerModel(object):
         '''Update rotation paramters of the node with the given id'''
 
         if self.hash[id] is None:
-            print ("There is no such %s node", id)
+            print ("There is no such %s node" % id)
         else:
             aux = self.hash[id]
-            aux.updateRotationPointers (rx, ry, ry)
+            aux.updateRotation (rx, ry, ry)
 
     def updateTranslation (self, id: str, tx: float, ty: float, tz: float):
         '''Update translation parameters of the node with the given id'''
 
         if self.hash[id] is None:
-            print ("There is no such %s node", id)
+            print ("There is no such %s node" % id)
         else:
             aux = self.hash[id]
-            aux.updateTranslationPointers (tx, ty, ty)
+            aux.updateTranslation (tx, ty, ty)
 
     def updatePlane (self, id: str, nx: float, ny: float, nz: float,
                                          px: float, py: float, pz: float):
         '''Update paramters of the plane with given id'''
 
         if self.hash[id] is None:
-            print ("There is no such %s node", id)
+            print ("There is no such %s node" % id)
         else:
             aux = self.hash[id]
-            aux.updatePointers (nx, ny, nz, px, py, pz)
+            aux.update (nx, ny, nz, px, py, pz)
 
     def updateTransform (self, id: str, tx: float, ty: float, tz: float,
                                                  rx: float, ry: float, rz: float):
         '''Update transformation parameters'''
 
         if self.hash[id] is None:
-            print ("There is no such %s node", id)
+            print ("There is no such %s node" % id)
         else:
             aux = self.hash[id]
-            aux.updateTransformPointers (tx, ty, tz, rx, ry, ry)
+            aux.update (tx, ty, tz, rx, ry, ry)
 
     def cleanUpTables (self):
         '''Clear the hash tables'''
@@ -150,7 +149,7 @@ class InnerModel(object):
         if joint is not None:
             joint.setAngle (angle, force)
         else:
-            print ("There is no such %s node", jointId)
+            print ("There is no such %s node" % jointId)
 
     def updatePrismaticJointPosition (self, jointId: str, position: float):
         '''Update the prismatric joint position'''
@@ -161,7 +160,7 @@ class InnerModel(object):
         if pj is not None:
             pj.setPosition (position)
         else:
-            print ("There is no such %s node", jointId)
+            print ("There is no such %s node" % jointId)
 
     def newTransform (self, id: str, engine: str, parent: 'InnerModelNode',
                     mass: float, tx: float, ty: float, tz: float, rx: float,

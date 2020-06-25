@@ -11,7 +11,7 @@ class InnerModelJoint (InnerModelTransform):
                   tx: float, ty: float, tz: float, rx: float, ry: float, rz: float, min: float =-float("inf"),
                   max: float = float("inf"), port: int = 0, axis: str = "z", home: float = 0,
                   parent: 'InnerModelTransform' = None):
-        '''Constructor
+        '''
         :param id: identifier of the joint
         :param lx, ly, lz: lower limit of the joint
         :param hx, hy, hz: higher limit of the joint
@@ -43,14 +43,14 @@ class InnerModelJoint (InnerModelTransform):
             self.backh = hz
             self.update (0, 0, min, 0, 0, max)
         else:
-            raise Exception ("internal error, no such axis %s", axis)
+            raise Exception ("internal error, no such axis %s" % axis)
         self.backl = None
         self.backh = None
 
     def printT (self, verbose: bool):
         '''Print info about the given node'''
 
-        print ("Joint: %s", self.id)
+        print ("Joint: %s" % self.id)
         if verbose:
             print (self.rtmat)
 
@@ -90,7 +90,6 @@ class InnerModelJoint (InnerModelTransform):
         elif self.axis is 'z':
             self.backl = lz
             self.backh = hz
-        self.fixed = True
 
     def getAngle (self) -> float:
         '''Returns the angle of rotation about the given axis'''

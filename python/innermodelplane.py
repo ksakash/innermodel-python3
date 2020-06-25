@@ -54,7 +54,6 @@ class InnerModelPlane (InnerModelNode):
         else:
             self.normal[0] = nx; self.normal[1] = ny; self.normal[2] = nz
             self.parent[0] = px; self.parent[1] = py; self.parent[2] = pz
-            self.fixed = True # redundant
 
     def save (self, out, tabs: int):
         s = ""
