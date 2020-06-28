@@ -353,7 +353,8 @@ class InnerModelMatrix(np.ndarray):
         np.copyto (y, self[row,:])
         return y
 
-    def getSubmatrix (self, firstRow: int, lastRow: int, firstCol: int, lastCol: int) -> 'InnerModelMatrix':
+    def getSubmatrix (self, firstRow: int, lastRow: int, firstCol: int,
+                                                                lastCol: int) -> 'InnerModelMatrix':
         """Returns the matrix within the given range"""
 
         return self[firstRow:lastRow+1, firstCol:lastCol+1]

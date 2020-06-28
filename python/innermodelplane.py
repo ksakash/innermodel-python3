@@ -21,7 +21,7 @@ class InnerModelPlane (InnerModelNode):
         self.height = height
         self.depth = depth
         self.repeat = repeat # redundant
-        self.collidable = collidable
+        self.collidable = collidable # redundant
 
     def __repr__ (self):
         ret = "InnerModelPlane, id: {}, normal: [{}, {}, {}], point: [{}, {}, {}], texture: {}, \
@@ -30,7 +30,7 @@ class InnerModelPlane (InnerModelNode):
               self.height, self.depth)
         return ret
 
-    def printT (self, verbose: bool):
+    def printT (self, verbose: bool): # redundant
         '''Print info about the current node'''
 
         if verbose:
@@ -40,11 +40,8 @@ class InnerModelPlane (InnerModelNode):
     def udpate (self, nx=None, ny=None, nz=None, px=None, py=None, pz=None):
         '''Update paramters of the current node'''
 
-        if (nx is None):
-            self.updateChildren()
-        else:
-            self.normal[0] = nx; self.normal[1] = ny; self.normal[2] = nz
-            self.parent[0] = px; self.parent[1] = py; self.parent[2] = pz
+        self.normal[0] = nx; self.normal[1] = ny; self.normal[2] = nz
+        self.parent[0] = px; self.parent[1] = py; self.parent[2] = pz
 
     def save (self, out, tabs: int):
         s = ""

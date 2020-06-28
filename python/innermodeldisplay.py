@@ -31,7 +31,7 @@ class InnerModelDisplay (InnerModelNode):
     def updateTexture (self, texture: str):
         self.texture = texture
 
-    def printT (self, verbose: bool):
+    def printT (self, verbose: bool): # redundant
         if verbose:
             print ("Display: ", self.id)
             print (self.normal)
@@ -42,8 +42,5 @@ class InnerModelDisplay (InnerModelNode):
 
     def update (self, nx: float = None, ny: float = None, nz: float = None, px: float = None,
                 py: float = None, pz: float = None):
-        if nx is None:
-            self.updateChildren()
-        else:
-            self.normal[0] = nx; self.normal[1] = ny; self.normal[2] = nz
-            self.point[0] = nx; self.point[1] = ny; self.point[2] = nz
+        self.normal[0] = nx; self.normal[1] = ny; self.normal[2] = nz
+        self.point[0] = nx; self.point[1] = ny; self.point[2] = nz

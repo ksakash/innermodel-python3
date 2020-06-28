@@ -11,14 +11,6 @@ class InnerModelTransform(InnerModelNode):
 
     def __init__ (self, id: str, engine: str, tx: float, ty: float, tz: float, rx: float, ry: float,
                   rz: float, mass: float = 0, parent: 'InnerModelNode' = None):
-        '''Constructor
-        :param id: identifier
-        :param engine:
-        :param tx, ty, tz: translation
-        :param rx, ry, rz: rotation
-        :param mass: weight
-        :param parent: parent of the node
-        '''
 
         super (InnerModelTransform, self).__init__(id, parent)
         self.rtmat = InnerModelRTMat.getInnerModelRTMat (tx=tx, ty=ty, tz=tz, rx=rx, ry=ry, rz=rz)
@@ -122,5 +114,3 @@ class InnerModelTransform(InnerModelNode):
 
         self.rtmat.set (ox=self.rx, oy=self.ry, oz=self.rz,
                         x=self.tx, y=self.ty, z=self.tz)
-
-        # self.updateChildren()

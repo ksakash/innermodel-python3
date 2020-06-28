@@ -15,9 +15,6 @@ class InnerModelPointCloud (InnerModelNode):
         s += "<pointcloud id=\"" + self.id + "\"/>\n"
         out.write (s)
 
-    def printT (self, verbose: bool):
+    def printT (self, verbose: bool): # redundant
         if verbose:
             print ("Point Cloud: %s"%self.id)
-
-    def update (self):
-        self.updateChildren()

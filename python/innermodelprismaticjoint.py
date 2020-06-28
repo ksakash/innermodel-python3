@@ -13,7 +13,14 @@ class InnerModelPrismaticJoint (InnerModelTransform):
         self.axis = axis
         self.setPosition (value)
 
-    def printT (self, verbose):
+    def __repr__ (self):
+        s = "InnerModelPrismaticJoint, id: {}, offset: {}, min: {}, max: {}, home: {}, port: {}, \
+            axis: {}, pos: [{}, {}, {}], orient: [{}, {}, {}]".format (self.id, self.offset, \
+            self.min, self.max, self.home, self.port, self.axis, self.tx, self.ty, self.tz, self.rx \
+            , self.ry, self.rz)
+        return s
+
+    def printT (self, verbose): # redundant
         print ("Prismatic Joint: %s" % self.id)
         if verbose:
             print (self.rtmat)
@@ -24,9 +31,6 @@ class InnerModelPrismaticJoint (InnerModelTransform):
             s += "\t"
         s += "<!-- joints cannot be saved yet -->\n"
         out.write (s)
-
-    def update (self):
-        self.updateChildren()
 
     def getPosition (self) -> float:
         return self.value

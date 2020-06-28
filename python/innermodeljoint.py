@@ -18,6 +18,9 @@ class InnerModelJoint (InnerModelTransform):
         self.home = home
         self.port = port
         self.axis = axis
+        self.backl = None
+        self.backh = None
+
         if axis is 'x':
             self.backl = lx
             self.backh = hx
@@ -32,8 +35,6 @@ class InnerModelJoint (InnerModelTransform):
             self.update (0, 0, min, 0, 0, max)
         else:
             raise Exception ("internal error, no such axis %s" % axis)
-        self.backl = None
-        self.backh = None
 
     def __repr__ (self):
         s = "InnerModelJoint, id: {}, pos: [{}, {}, {}], orient: [{}, {}, {}], lower_limit: [{}], \
@@ -43,7 +44,7 @@ class InnerModelJoint (InnerModelTransform):
 
         return s
 
-    def printT (self, verbose: bool):
+    def printT (self, verbose: bool): # redundant
         '''Print info about the given node'''
 
         print ("Joint: %s" % self.id)

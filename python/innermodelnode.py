@@ -23,7 +23,7 @@ class InnerModelNode (object):
         else:
             self.level = 0
         self.children = []
-        self.attributes = None
+        self.attributes = None # redundant
 
     # can also use __repr__ instead
     def printTree (self, s: str, verbose: bool):
@@ -39,12 +39,6 @@ class InnerModelNode (object):
     # abstract
     def printT (self, verbose: bool):
         '''Print info about the current node'''
-
-        raise NotImplementedError
-
-    # abstract
-    def update (self):
-        '''Update paramters of the node'''
 
         raise NotImplementedError
 
@@ -67,12 +61,6 @@ class InnerModelNode (object):
         if child not in self.children:
             self.children.append(child)
         child.parent = self
-
-    def updateChildren (self):
-        '''Update parameters of the children'''
-
-        for child in self.children:
-            child.update()
 
     def copyNode (self):
         ret = copy.deepcopy (self)

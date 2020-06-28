@@ -9,7 +9,7 @@ class InnerModelDifferentialRobot (InnerModelTransform):
                                                             parent)
         self.port = port
         self.noise = noise
-        self.collide = collide
+        self.collide = collide # redundant
 
     def __repr__ (self):
         s = "InnerModelDifferentialRobot, id: {}, pos: [{}, {}, {}], orientation: [{}, {}, {}], \

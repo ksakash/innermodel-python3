@@ -43,9 +43,6 @@ class InnerModelMesh (InnerModelNode):
         if (verbose):
             print ("Mesh:", self.id)
 
-    def update (self): # may be redundant
-        self.updateChildren()
-
     def setScale (self, x, y, z):
         self.scalex = x
         self.scaley = y

@@ -27,7 +27,7 @@ class InnerModelCamera (InnerModelNode):
                                                                             self.height, self.focal)
         return s
 
-    def printT (self, verbose):
+    def printT (self, verbose): # redundant
         if verbose:
             print ("Camera: ", self.id)
             print (self.camera.qmat)
@@ -41,9 +41,6 @@ class InnerModelCamera (InnerModelNode):
              "%.9f" % self.height + "\" focal=\"" + "%.9f" % self.focal + "\" />\n"
 
         out.write (s)
-
-    def update (self):
-        self.updateChildren()
 
     def getWidth (self) -> float:
         return self.width

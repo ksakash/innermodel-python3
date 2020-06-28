@@ -16,9 +16,6 @@ class InnerModelIMU (InnerModelNode):
         s += "<imu id=\"" + self.id + "\" />\n"
         out.write (s)
 
-    def printT (self, verbose: bool):
+    def printT (self, verbose: bool): # redundant
         if verbose:
             print ("IMU")
-
-    def update (self):
-        self.updateChildren()

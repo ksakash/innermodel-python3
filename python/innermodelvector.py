@@ -194,5 +194,3 @@ class InnerModelVector(np.ndarray):
 
         assert(self.shape[0] >= 6)
         return self[5]
-
-

@@ -87,7 +87,7 @@ class InnerModel(object):
         self.hash['root'] = self.root
         self.root.parent = None
 
-    def update (self):
+    def update (self): # redundant
         '''update parameters of all the nodes in the innermodel'''
 
         self.root.update()
@@ -131,7 +131,7 @@ class InnerModel(object):
             aux = self.hash[id]
             aux.update (tx, ty, tz, rx, ry, ry)
 
-    def cleanUpTables (self):
+    def cleanUpTables (self): # redundant
         '''Clear the hash tables'''
 
         self.localHashRot.clear()

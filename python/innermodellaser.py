@@ -32,12 +32,9 @@ class InnerModelLaser (InnerModelNode):
              "\" angle=\"" + "%.3f" % self.angle + "\" ifconfig=\"" + self.ifconfig + "\" />\n"
         out.write (s)
 
-    def printT (self, verbose: bool):
+    def printT (self, verbose: bool): # redundant
         if verbose:
             print ("Laser")
-
-    def udpate (self):
-        self.updateChildren()
 
     def laserTo (self, dest: str, r: float, alpha: float) -> 'InnerModelVector':
         p = InnerModelVector((3,))
