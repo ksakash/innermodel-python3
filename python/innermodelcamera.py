@@ -32,8 +32,8 @@ class InnerModelCamera (InnerModelNode):
         for _ in range (tabs):
             s += "\t"
 
-        s += "<camera id=\"" << self.id + "\" width=\"" + "%.9f" % self.width + "\" height=\"" + \
-             "%.9f" % self.height + "\" focal=\"" + "%.9f" % self.focal << "\" />\n"
+        s += "<camera id=\"" + self.id + "\" width=\"" + "%.9f" % self.width + "\" height=\"" + \
+             "%.9f" % self.height + "\" focal=\"" + "%.9f" % self.focal + "\" />\n"
 
         out.write (s)
 

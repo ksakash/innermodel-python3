@@ -61,11 +61,11 @@ class InnerModelPlane (InnerModelNode):
             s += "\t"
 
         s += "<plane id=\"" + self.id + "\" texture=\"" + self.texture + "\" size=\"" + \
-             "%.9f" % self.width + "," + "%.9f" % self.height + "," + "%.9f" % self.depth + \
-             "\" repeat=\"" + "%.9f" % self.repeat + "\" nx=\"" + "%.9f" % self.normal[0] + \
-             "\" ny=\"" + "%.9f" % self.normal[1] + "\" nz=\"" + "%.9f" % self.normal[2] + \
-             "\" px=\"" + "%.9f" % self.point[0] + "\" py=\"" + "%.9f" % self.point[1] + \
-             "\" pz=\"" + "%.9f" % self.point[2] + "\" collide=\"" + "%.9f" % self.collidable + \
+             "%.3f" % self.width + "," + "%.3f" % self.height + "," + "%.3f" % self.depth + \
+             "\" repeat=\"" + "%.3f" % self.repeat + "\" nx=\"" + "%.3f" % self.normal[0] + \
+             "\" ny=\"" + "%.3f" % self.normal[1] + "\" nz=\"" + "%.3f" % self.normal[2] + \
+             "\" px=\"" + "%.3f" % self.point[0] + "\" py=\"" + "%.3f" % self.point[1] + \
+             "\" pz=\"" + "%.3f" % self.point[2] + "\" collide=\"" + "%.3f" % self.collidable + \
              "\" />\n"
 
         out.write (s)

@@ -23,10 +23,10 @@ class InnerModelMesh (InnerModelNode):
             s += "\t"
 
         s += "<mesh id=\"" + self.id + "\"" + " file=\"" + self.meshPath + "\" scale=\"" + \
-             "%.9f" % self.scalex + "," + "%.9f" % self.scalex + "," + "%.9f" % self.scalex + \
-             "\" tx=\"" + "%.9f" % self.tx + "\" ty=\"" + "%.9f" % self.ty + "\" tz=\"" + \
-             "%.9f" % self.tz + "\" rx=\"" + "%.9f" % self.rx + "\" ry=\"" + "%.9f" % self.ry + \
-             "\" rz=\"" + "%.9f" % self.rz + "\" collide=\"" + "%.9f" % self.collidable << "\" />\n"
+             "%.3f" % self.scalex + "," + "%.3f" % self.scalex + "," + "%.3f" % self.scalex + \
+             "\" tx=\"" + "%.3f" % self.tx + "\" ty=\"" + "%.3f" % self.ty + "\" tz=\"" + \
+             "%.3f" % self.tz + "\" rx=\"" + "%.3f" % self.rx + "\" ry=\"" + "%.3f" % self.ry + \
+             "\" rz=\"" + "%.3f" % self.rz + "\" collide=\"" + "%.3f" % self.collidable + "\" />\n"
         out.write (s)
 
     def __repr__ (self):

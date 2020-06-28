@@ -7,9 +7,4 @@ sys.path.append('..')
 from innermodel import InnerModel
 
 im = InnerModel (xmlFilePath='test.xml')
-
-im.printTree()
-
-fake_im = im.copy()
-print ('----------')
-fake_im.printTree ()
+print (im.save ('test2.xml'))

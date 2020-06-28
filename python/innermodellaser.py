@@ -22,9 +22,9 @@ class InnerModelLaser (InnerModelNode):
         for _ in range (tabs):
             s += "\t"
 
-        s += "<laser id=\"" + self.id + "\" port=\"" + self.port + "\" min=\"" + "%.9f" % self.min \
-             + "\" max=\"" + "%.9f" % self.max + "\" measures=\"" + "%.9f" % self.measures + \
-             "\" angle=\"" + "%.9f" % self.angle + "\" ifconfig=\"" + self.ifconfig + "\" />\n"
+        s += "<laser id=\"" + self.id + "\" port=\"" + self.port + "\" min=\"" + "%.3f" % self.min \
+             + "\" max=\"" + "%.3f" % self.max + "\" measures=\"" + "%.3f" % self.measures + \
+             "\" angle=\"" + "%.3f" % self.angle + "\" ifconfig=\"" + self.ifconfig + "\" />\n"
         out.write (s)
 
     def __repr__ (self) -> str:

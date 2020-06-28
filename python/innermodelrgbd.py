@@ -16,7 +16,7 @@ class InnerModelRGBD (InnerModelCamera):
         s = ""
         for _ in range (tabs):
             s += "\t"
-        s += "<rgbd id=\"" + self.id + "\" width=\"" + "%.9f" % self.width + "\" height=\"" + \
-             "%.9f" % self.height + "\" focal=\"" + "%.9f" % self.focal + "\" port=\"" + self.port \
-             + "\" ifconfig=\"" + self.ifconfig + "\" noise=\"" + "%.9f" % self.noise + "\" />\n"
+        s += "<rgbd id=\"" + self.id + "\" width=\"" + "%.3f" % self.width + "\" height=\"" + \
+             "%.3f" % self.height + "\" focal=\"" + "%.3f" % self.focal + "\" port=\"" + self.port \
+             + "\" ifconfig=\"" + self.ifconfig + "\" noise=\"" + "%.3f" % self.noise + "\" />\n"
         out.write (s)

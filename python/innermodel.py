@@ -63,9 +63,6 @@ class InnerModel(object):
     def save (self, path: str) -> bool:
         '''Save the info into a file'''
 
-        if not os.path.exists (path):
-            return False
-
         f = open (path, "w+")
         self.root.save (f, 0)
         f.close ()

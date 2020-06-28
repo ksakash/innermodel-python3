@@ -60,10 +60,10 @@ class InnerModelJoint (InnerModelTransform):
             s += "\t"
 
         s += "<joint id=\"" + self.id + "\" port=\"" + self.port + "\" axis=\"" + self.axis + \
-             "\" home=\"" + "%.9f" % self.home + "\" min=\"" + "%.9f" % self.min + "\" max=\"" + \
-             "%.9f" % self.max + "\" tx=\"" + "%.9f" % self.tx + "\" ty=\"" + "%.9f" % self.tx + \
-             "\" tz=\"" + "%.9f" % self.tz + "\" rx=\"" + "%.9f" % self.rx + "\" ry=\"" + \
-             "%.9f" % self.ry + "\" rz=\"" + "%.9f" % self.rz + "\">\n"
+             "\" home=\"" + "%.3f" % self.home + "\" min=\"" + "%.3f" % self.min + "\" max=\"" + \
+             "%.3f" % self.max + "\" tx=\"" + "%.3f" % self.tx + "\" ty=\"" + "%.3f" % self.tx + \
+             "\" tz=\"" + "%.3f" % self.tz + "\" rx=\"" + "%.3f" % self.rx + "\" ry=\"" + \
+             "%.3f" % self.ry + "\" rz=\"" + "%.3f" % self.rz + "\">\n"
 
         out.write (s)
 

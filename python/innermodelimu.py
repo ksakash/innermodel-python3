@@ -9,7 +9,7 @@ class InnerModelIMU (InnerModelNode):
         s = ""
         for _ in range (tabs):
             s += "\t"
-        s += "<imu id=\"" << self.id << "\" />\n"
+        s += "<imu id=\"" + self.id + "\" />\n"
         out.write (s)
 
     def __repr__ (self) -> str:

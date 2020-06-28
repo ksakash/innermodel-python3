@@ -74,9 +74,9 @@ class InnerModelTransform(InnerModelNode):
             for _ in range (tabs):
                 s += "\t"
 
-            s += "<transform id=\"" + self.id + "\" tx=\"" + "%.9f" % self.tx + "\" ty=\"" + \
-                 "%.9f" % self.ty + "\" tz=\"" + "%.9f" % self.tz + "\"  rx=\"" + "%.9f" % self.rx \
-                 + "\" ry=\"" + "%.9f" % self.ry + "\" rz=\"" + "%.9f" % self.rz + "\">\n"
+            s += "<transform id=\"" + self.id + "\" tx=\"" + "%.3f" % self.tx + "\" ty=\"" + \
+                 "%.3f" % self.ty + "\" tz=\"" + "%.3f" % self.tz + "\"  rx=\"" + "%.3f" % self.rx \
+                 + "\" ry=\"" + "%.3f" % self.ry + "\" rz=\"" + "%.3f" % self.rz + "\">\n"
             out.write (s)
 
             for child in self.children:
