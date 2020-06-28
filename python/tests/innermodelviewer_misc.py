@@ -14,7 +14,7 @@ imv = InnerModelViewer (innermodel=im)
 robot_transform = im.getTransform('robot')
 alpha = 0
 while True:
-    
+
     print(f"alpha:{alpha}")
     robot_transform.update(tx=100.*sin(alpha)+100., ty=100.*cos(alpha), rz=alpha)
     alpha += 0.001

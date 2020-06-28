@@ -468,15 +468,11 @@ class InnerModel(object):
         '''Get transformation matrix betwn two nodes with given ids'''
 
         ret = InnerModelRTMat.getInnerModelRTMat (0, 0, 0, 0, 0, 0)
-        if ((to, fr) in self.localHashTr):
-            ret = self.localHashTr[(to, fr)]
-        else:
-            self.setLists (fr, to)
-            for node in self.listA:
-                ret = node.rtmat.dot (ret)
-            for node in self.listB:
-                ret = node.rtmat.invert().dot (ret)
-            self.localHashTr[(to, fr)] = ret
+        self.setLists (fr, to)
+        for node in self.listA:
+            ret = node.rtmat.dot (ret)
+        for node in self.listB:
+            ret = node.rtmat.invert().dot (ret)
         return ret
 
     def getRotationMatrixTo (self, to: str, fr: str) -> 'Rot3D':
@@ -484,15 +480,11 @@ class InnerModel(object):
 
         rret = InnerModelMatrix.identity (3)
 
-        if ((to, fr) in self.localHashTr):
-            rret = self.localHashTr[(to, fr)]
-        else:
-            self.setLists (fr, to)
-            for node in self.listA:
-                rret = node.rmat.getR().dot (rret)
-            for node in self.listB:
-                rret = node.rmat.getR().getTranspose().dot (rret)
-            self.localHashRot[(to, fr)] = rret
+        self.setLists (fr, to)
+        for node in self.listA:
+            rret = node.rmat.getR().dot (rret)
+        for node in self.listB:
+            rret = node.rmat.getR().getTranspose().dot (rret)
 
         return rret
 
