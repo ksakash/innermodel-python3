@@ -60,6 +60,7 @@ class Rot3DOX(Rot3DOnAxis):
         self[2][2] = math.cos(alpha)
         self.ang = alpha
 
+# redundant
 class Rot3DCOX(Rot3DOnAxis):
     """3D Rotation matrix around the x axis CW"""
 
@@ -124,6 +125,7 @@ class Rot3DOY(Rot3DOnAxis):
         self[2][2] = math.cos(alpha)
         self.ang = alpha
 
+# redundant
 class Rot3DCOY(Rot3DOnAxis):
     """3D Rotation matrix around the x axis CW"""
 
@@ -188,6 +190,7 @@ class Rot3DOZ(Rot3DOnAxis):
         self[1][1] = math.cos(alpha)
         self.ang = alpha
 
+# redundant
 class Rot3DCOZ(Rot3DOnAxis):
     """3D Rotation matrix around the x axis CW"""
 
@@ -267,6 +270,7 @@ class Rot3D(InnerModelMatrix):
         _m  = self.RX.dot(self.RY.dot(self.RZ))
         np.copyto(self, _m)
 
+# redundant
 class Rot3DC(InnerModelMatrix):
     """Rotation matrix CW"""
 
@@ -336,6 +340,7 @@ class Rot2D(InnerModelMatrix):
         self[1][0] = -math.sin(alpha)
         self[1][1] = math.cos(alpha)
 
+# redundant
 class Rot2DC(InnerModelMatrix):
     """rotation in a plane CW"""
 

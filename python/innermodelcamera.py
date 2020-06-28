@@ -22,6 +22,11 @@ class InnerModelCamera (InnerModelNode):
         self.height = height
         self.focal = focal
 
+    def __repr__ (self):
+        s = "InnermodelCamera, id: {}, width: {}, height: {}, focal: {}".format(self.id, self.width,
+                                                                            self.height, self.focal)
+        return s
+
     def printT (self, verbose):
         if verbose:
             print ("Camera: ", self.id)

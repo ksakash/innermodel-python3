@@ -179,6 +179,7 @@ class InnerModelRTMat(InnerModelMatrix):
             str(self.Rx.getAlpha()) + ' ' + str(self.Ry.getAlpha()) + str(self.Rz.getAlpha())
         return s
 
+# redundant
 class InnerModelRTCMat(InnerModelMatrix):
     @staticmethod
     def getInnerModelRTCMat (ox: float, oy: float, oz: float,

@@ -37,8 +37,9 @@ class InnerModelTransform(InnerModelNode):
         self.engine = engine # may be redundant
 
     def __repr__ (self):
-        ret = "id: {}, mass: {}, tx: {}, ty: {}, tz: {}, rx: {}, ry: {}, rz: {}"\
-              .format (self.id, self.mass, self.tx, self.ty, self.tz, self.rx, self.ry, self.rz)
+        ret = "InnerModelTransform, id: {}, mass: {}, tx: {}, ty: {}, tz: {}, rx: {}, ry: {}, \
+              rz: {}".format (self.id, self.mass, self.tx, self.ty, self.tz, self.rx, self.ry, \
+              self.rz)
         return ret
 
     # print the rt matrix

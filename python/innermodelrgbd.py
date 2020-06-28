@@ -10,7 +10,7 @@ class InnerModelRGBD (InnerModelCamera):
         super (InnerModelRGBD, self).__init__ (id, width, height, focal, innermodel, parent)
         self.noise = noise
         self.port = port
-        self.ifconfig = ifconfig
+        self.ifconfig = ifconfig # redundant
 
     def save (self, out, tabs: int):
         s = ""

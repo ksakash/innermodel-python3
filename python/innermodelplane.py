@@ -12,17 +12,6 @@ class InnerModelPlane (InnerModelNode):
     def __init__ (self, id: str, texture: str, width: float, height: float, depth: float, repeat: int,
                   nx: float, ny: float, nz: float, px: float, py: float, pz: float, collidable: bool,
                   parent: 'InnerModelNode' = None):
-        '''
-        :param id: identifier of the plane
-        :param texture: file path for the texture
-        :param width: width of plane
-        :param height: height of plane
-        :param depth: depth of plane
-        :param nx, ny, nz: normal of the plane
-        :param px, py, pz: location of the center of plane
-        :param collidable: if the plane has a collision mesh
-        :param parent: parent node of the current plane
-        '''
 
         super (InnerModelPlane, self).__init__(id, parent)
         self.normal = InnerModelVector.vec3d (nx, ny, nz)
@@ -35,8 +24,10 @@ class InnerModelPlane (InnerModelNode):
         self.collidable = collidable
 
     def __repr__ (self):
-        ret = "normal: {}, point: {}, texture: {}, width: {}, height: {}, depth: {}".\
-              format (self.normal, self.point, self.texture, self.width, self.height, self.depth)
+        ret = "InnerModelPlane, id: {}, normal: [{}, {}, {}], point: [{}, {}, {}], texture: {}, \
+              width: {}, height: {}, depth: {}".format (self.id, self.normal[0], self.normal[1], \
+              self.normal[2], self.point[0], self.point[1], self.point[2], self.texture, self.width,\
+              self.height, self.depth)
         return ret
 
     def printT (self, verbose: bool):

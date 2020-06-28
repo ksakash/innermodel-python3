@@ -17,6 +17,11 @@ class InnerModelLaser (InnerModelNode):
         self.ifconfig = ifconfig # redundant
         self.innerModel = innermodel
 
+    def __repr__ (self) -> str:
+        ret = "InnerModelLaser, id: {}, port: {}, min: {}, max: {}, angle: {}, measures: {}".format \
+                                (self.id, self.port, self.min, self.max, self.angle, self.measures)
+        return ret
+
     def save (self, out, tabs: int):
         s = ""
         for _ in range (tabs):
@@ -26,11 +31,6 @@ class InnerModelLaser (InnerModelNode):
              + "\" max=\"" + "%.3f" % self.max + "\" measures=\"" + "%.3f" % self.measures + \
              "\" angle=\"" + "%.3f" % self.angle + "\" ifconfig=\"" + self.ifconfig + "\" />\n"
         out.write (s)
-
-    def __repr__ (self) -> str:
-        ret = "id: {}, port: {}, min: {}, max: {}, angle: {}, measures: {}".format (self.id,
-                                        self.port, self.min, self.max, self.angle, self.measures)
-        return ret
 
     def printT (self, verbose: bool):
         if verbose:

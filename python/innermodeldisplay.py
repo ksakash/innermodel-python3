@@ -24,7 +24,8 @@ class InnerModelDisplay (InnerModelNode):
         height = "height: {}".format (self.height)
         depth = "depth: {}".format (self.depth)
 
-        ret = normal + ", " + point + ", " + texture + ", " + width + ", " + height + ", " + depth
+        ret = "InnerModelDisplay, id: {}, ".format (self.id) + normal + ", " + point + ", " + \
+               texture + ", " + width + ", " + height + ", " + depth
         return ret
 
     def updateTexture (self, texture: str):

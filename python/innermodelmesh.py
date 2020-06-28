@@ -17,6 +17,16 @@ class InnerModelMesh (InnerModelNode):
         self.renderMode = render # may be redundant
         self.collidable = collidable # may be redundant
 
+    def __repr__ (self):
+        scale = "scale: [{}, {}, {}]".format (self.scalex, self.scaley, self.scalez)
+        translation = "translation: [{}, {}, {}]".format (self.tx, self.ty, self.tz)
+        rotation = "rotation: [{}, {}, {}]".format (self.rx, self.ry, self.rz)
+        meshPath = "meshPath: {}".format (self.meshPath)
+
+        ret = "InnerModelMesh, id: {}, ".format (self.id) + scale + ", " + translation + ", " + \
+                                                                        rotation + ", " + meshPath
+        return ret
+
     def save (self, out, tabs):
         s = ""
         for _ in range (tabs):
@@ -28,15 +38,6 @@ class InnerModelMesh (InnerModelNode):
              "%.3f" % self.tz + "\" rx=\"" + "%.3f" % self.rx + "\" ry=\"" + "%.3f" % self.ry + \
              "\" rz=\"" + "%.3f" % self.rz + "\" collide=\"" + "%.3f" % self.collidable + "\" />\n"
         out.write (s)
-
-    def __repr__ (self):
-        scale = "scale: [{}, {}, {}]".format (self.scalex, self.scaley, self.scalez)
-        translation = "translation: [{}, {}, {}]".format (self.tx, self.ty, self.tz)
-        rotation = "rotation: [{}, {}, {}]".format (self.rx, self.ry, self.rz)
-        meshPath = "meshPath: {}".format (self.meshPath)
-
-        ret = scale + ", " + translation + ", " + rotation + ", " + meshPath
-        return ret
 
     def printT (self, verbose): # may be redundant
         if (verbose):

@@ -11,18 +11,6 @@ class InnerModelJoint (InnerModelTransform):
                   tx: float, ty: float, tz: float, rx: float, ry: float, rz: float, min: float =-float("inf"),
                   max: float = float("inf"), port: int = 0, axis: str = "z", home: float = 0,
                   parent: 'InnerModelTransform' = None):
-        '''
-        :param id: identifier of the joint
-        :param lx, ly, lz: lower limit of the joint
-        :param hx, hy, hz: higher limit of the joint
-        :param tx, ty, tz: translation of the joint
-        :param rx, ry, rz: rotation of the joint
-        :param min: minimum value of the joint rotation
-        :param max: maximum value of the joint rotation
-        :param port: port of the joint
-        :param axis: axis around which it revolves
-        :param parent: parent of the given node
-        '''
 
         super (InnerModelJoint, self).__init__ (id, 'static', tx, ty, tz, rx, ry, rz, 0, parent)
         self.min = min
@@ -46,6 +34,14 @@ class InnerModelJoint (InnerModelTransform):
             raise Exception ("internal error, no such axis %s" % axis)
         self.backl = None
         self.backh = None
+
+    def __repr__ (self):
+        s = "InnerModelJoint, id: {}, pos: [{}, {}, {}], orient: [{}, {}, {}], lower_limit: [{}], \
+            higher_limit: [{}], min: {}, max: {}, port: {}, axis: {}".format (self.id , self.tx, \
+            self.ty, self.tz, self.rx, self.ry, self.rz, self.backl, self.backh, self.min, \
+            self.max, self.port, self.axis)
+
+        return s
 
     def printT (self, verbose: bool):
         '''Print info about the given node'''

@@ -10,3 +10,9 @@ class InnerModelDifferentialRobot (InnerModelTransform):
         self.port = port
         self.noise = noise
         self.collide = collide
+
+    def __repr__ (self):
+        s = "InnerModelDifferentialRobot, id: {}, pos: [{}, {}, {}], orientation: [{}, {}, {}], \
+             port: {}, noise: {}".format (self.id, self.tx, self.ty, self.tz, self.rx, self.ry, \
+             self.rz, self.port, self.noise)
+        return s

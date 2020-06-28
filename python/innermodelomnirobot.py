@@ -9,3 +9,10 @@ class InnerModelOmniRobot (InnerModelTransform):
         self.port = port
         self.noise = noise
         self.collide = collide  # may be redundant
+
+    def __repr__ (self):
+        s = "InnerModelOmniRobot, id: {}, pos: [{}, {}, {}], orient: [{}, {}, {}], port: {}, noise: \
+            {}".format (self.id, self.tx, self.ty, self.tz, self.rx, self.ry, self.rz, self.port, \
+            self.noise)
+
+        return s
