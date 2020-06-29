@@ -44,12 +44,11 @@ class InnerModelJoint (InnerModelTransform):
 
         return s
 
-    def printT (self, verbose: bool): # redundant
+    def print (self, verbose: bool): # redundant
         '''Print info about the given node'''
 
-        print ("Joint: %s" % self.id)
         if verbose:
-            print (self.rtmat)
+            print (self)
 
     def save (self, out, tabs: int):
         s = ""

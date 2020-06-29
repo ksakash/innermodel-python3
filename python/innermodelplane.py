@@ -30,12 +30,11 @@ class InnerModelPlane (InnerModelNode):
               self.height, self.depth)
         return ret
 
-    def printT (self, verbose: bool): # redundant
+    def print (self, verbose: bool): # redundant
         '''Print info about the current node'''
 
         if verbose:
-            print ("Plane:", self.id)
-            print (self.normal)
+            print (self)
 
     def udpate (self, nx=None, ny=None, nz=None, px=None, py=None, pz=None):
         '''Update paramters of the current node'''

@@ -39,9 +39,9 @@ class InnerModelMesh (InnerModelNode):
              "\" rz=\"" + "%.3f" % self.rz + "\" collide=\"" + "%.3f" % self.collidable + "\" />\n"
         out.write (s)
 
-    def printT (self, verbose): # may be redundant
+    def print (self, verbose): # may be redundant
         if (verbose):
-            print ("Mesh:", self.id)
+            print (self)
 
     def setScale (self, x, y, z):
         self.scalex = x

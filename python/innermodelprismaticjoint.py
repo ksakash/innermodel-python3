@@ -20,10 +20,9 @@ class InnerModelPrismaticJoint (InnerModelTransform):
             , self.ry, self.rz)
         return s
 
-    def printT (self, verbose): # redundant
-        print ("Prismatic Joint: %s" % self.id)
+    def print (self, verbose): # redundant
         if verbose:
-            print (self.rtmat)
+            print (self)
 
     def save (self, out, tabs: int):
         s = ""

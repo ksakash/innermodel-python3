@@ -35,12 +35,11 @@ class InnerModelTransform(InnerModelNode):
         return ret
 
     # print the rt matrix
-    def printT (self, verbose): # redundant if __repr__ is used
+    def print (self, verbose): # redundant if __repr__ is used
         '''Print info about object'''
 
         if verbose:
-            print ("{} {}".format(self.id, self.rtmat.shape))
-            print (self.rtmat)
+            print (self)
 
     def save (self, out, tabs):
         '''Save info to a doc'''
@@ -112,5 +111,4 @@ class InnerModelTransform(InnerModelNode):
         if rz is not None:
             self.rz = rz
 
-        self.rtmat.set (ox=self.rx, oy=self.ry, oz=self.rz,
-                        x=self.tx, y=self.ty, z=self.tz)
+        self.rtmat.set (ox=self.rx, oy=self.ry, oz=self.rz, x=self.tx, y=self.ty, z=self.tz)

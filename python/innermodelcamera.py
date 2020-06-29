@@ -4,7 +4,6 @@ import copy
 
 from innermodelnode import InnerModelNode
 from innermodelvector import InnerModelVector
-# from innermodel import InnerModel
 from innermodelcam import InnerModelCam
 from innermodelmatrix import InnerModelMatrix
 
@@ -27,10 +26,9 @@ class InnerModelCamera (InnerModelNode):
                                                                             self.height, self.focal)
         return s
 
-    def printT (self, verbose): # redundant
+    def print (self, verbose): # redundant
         if verbose:
-            print ("Camera: ", self.id)
-            print (self.camera.qmat)
+            print (self)
 
     def save (self, out, tabs):
         s = ""

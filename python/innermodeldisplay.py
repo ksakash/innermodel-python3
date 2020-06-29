@@ -31,14 +31,22 @@ class InnerModelDisplay (InnerModelNode):
     def updateTexture (self, texture: str):
         self.texture = texture
 
-    def printT (self, verbose: bool): # redundant
+    def print (self, verbose: bool): # redundant
         if verbose:
-            print ("Display: ", self.id)
-            print (self.normal)
+            print (self)
 
-    # TODO
     def save (self, out, tabs: int):
-        pass
+        s = ""
+        for _ in range (tabs):
+            s += "\t"
+        s += "<display id=\"" + self.id + "\" texture=\"" + self.texture + "\" size=\"" + \
+             "%.3f" % self.width + "," + "%.3f" % self.height + "," + "%.3f" % self.depth + \
+             "\" repeat=\"" + "%.3f" % self.repeat + "\" nx=\"" + "%.3f" % self.normal[0] + \
+             "\" ny=\"" + "%.3f" % self.normal[1] + "\" nz=\"" + "%.3f" % self.normal[2] + \
+             "\" px=\"" + "%.3f" % self.point[0] + "\" py=\"" + "%.3f" % self.point[1] + \
+             "\" pz=\"" + "%.3f" % self.point[2] + "\" collide=\"" + "%.3f" % self.collidable + \
+             "\"" + " port=\"" + self.port + "\" />\n"
+        out.write (s)
 
     def update (self, nx: float = None, ny: float = None, nz: float = None, px: float = None,
                 py: float = None, pz: float = None):

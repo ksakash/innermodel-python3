@@ -1,39 +1,39 @@
-"""
+'''
 Classes for Rotation Matrices: Rx, Ry, Rz, R = Rx x Ry x Rz
 Author: ksakash@github.com (Akash Kumar Singh)
-"""
+'''
 
 import math
 import numpy as np
 from innermodelmatrix import InnerModelMatrix
 
 class Rot3DOnAxis(InnerModelMatrix):
-    """Base class for all the rotation matrices"""
+    '''Base class for all the rotation matrices'''
 
     def __new__(cls, *args, **kwargs):
         return super(Rot3DOnAxis, cls).__new__(cls, *args, **kwargs)
 
     def __init__(self, *args, **kwargs):
-        """Takes the same argument as numpy.ndarray"""
+        '''Takes the same argument as numpy.ndarray'''
 
         self.ang = 0
 
     def update (self, alpha: float):
-        """To implemented by the derived classes"""
+        '''To implemented by the derived classes'''
 
         pass
 
     def getAlpha (self) -> float:
-        """Returns the angle of rotation of the rotation matrix"""
+        '''Returns the angle of rotation of the rotation matrix'''
 
         return self.ang
 
 class Rot3DOX(Rot3DOnAxis):
-    """3D Rotation matrix around the x axis CCW"""
+    '''3D Rotation matrix around the x axis CCW'''
 
     @staticmethod
     def getRot3DOX(alpha: float = 0, m : 'Rot3DOX' = None) -> 'Rot3DOX':
-        """Resturns an instantiation of 'Rot3DOX' class with the given angle of rotation"""
+        '''Resturns an instantiation of 'Rot3DOX' class with the given angle of rotation'''
 
         if m is not None:
             a = m.getAlpha()
@@ -52,7 +52,7 @@ class Rot3DOX(Rot3DOnAxis):
         return x
 
     def update (self, alpha: float):
-        """Update the matrix with change in angle of rotaion"""
+        '''Update the matrix with change in angle of rotaion'''
 
         self[1][1] = math.cos(alpha)
         self[1][2] = -math.sin(alpha)
@@ -62,11 +62,11 @@ class Rot3DOX(Rot3DOnAxis):
 
 # redundant
 class Rot3DCOX(Rot3DOnAxis):
-    """3D Rotation matrix around the x axis CW"""
+    '''3D Rotation matrix around the x axis CW'''
 
     @staticmethod
     def getRot3DCOX(alpha: float = 0, m : 'Rot3DCOX'= None) -> 'Rot3DCOX':
-        """Returns an instantion of 'Rot3DCOX with the given angle of roation"""
+        '''Returns an instantion of 'Rot3DCOX with the given angle of roation'''
 
         if m is not None:
             alpha = m.getAlpha()
@@ -85,7 +85,7 @@ class Rot3DCOX(Rot3DOnAxis):
         return x
 
     def update (self, alpha: float):
-        """Update the matrix with change in angle of rotaion"""
+        '''Update the matrix with change in angle of rotaion'''
 
         self[1][1] = math.cos(alpha)
         self[1][2] = math.sin(alpha)
@@ -94,11 +94,11 @@ class Rot3DCOX(Rot3DOnAxis):
         self.ang = alpha
 
 class Rot3DOY(Rot3DOnAxis):
-    """3D Rotation matrix around the y axis CCW"""
+    '''3D Rotation matrix around the y axis CCW'''
 
     @staticmethod
     def getRot3DOY(alpha: float = 0, m : 'Rot3DOY' = None) -> 'Rot3DOY':
-        """Returns an instantion of 'Rot3DOY with the given angle of roation"""
+        '''Returns an instantion of 'Rot3DOY with the given angle of roation'''
 
         if m is not None:
             alpha = m.getAlpha()
@@ -117,7 +117,7 @@ class Rot3DOY(Rot3DOnAxis):
         return y
 
     def update (self, alpha: float):
-        """Update the matrix with change in angle of rotaion"""
+        '''Update the matrix with change in angle of rotaion'''
 
         self[0][0] = math.cos(alpha)
         self[0][2] = math.sin(alpha)
@@ -127,11 +127,11 @@ class Rot3DOY(Rot3DOnAxis):
 
 # redundant
 class Rot3DCOY(Rot3DOnAxis):
-    """3D Rotation matrix around the x axis CW"""
+    '''3D Rotation matrix around the x axis CW'''
 
     @staticmethod
     def getRot3DCOY(alpha: float = 0, m : 'Rot3DCOY' = None) -> 'Rot3DCOY':
-        """Returns an instantion of 'Rot3DCOY with the given angle of roation"""
+        '''Returns an instantion of 'Rot3DCOY with the given angle of roation'''
 
         if m is not None:
             alpha = m.getAlpha()
@@ -150,7 +150,7 @@ class Rot3DCOY(Rot3DOnAxis):
         return y
 
     def update (self, alpha: float):
-        """Update the matrix with change in angle of rotaion"""
+        '''Update the matrix with change in angle of rotaion'''
 
         self[0][0] = math.cos(alpha)
         self[0][2] = -math.sin(alpha)
@@ -159,11 +159,11 @@ class Rot3DCOY(Rot3DOnAxis):
         self.ang = alpha
 
 class Rot3DOZ(Rot3DOnAxis):
-    """3D Rotation matrix around the z axis CCW"""
+    '''3D Rotation matrix around the z axis CCW'''
 
     @staticmethod
     def getRot3DOZ(alpha: float = 0, m : 'Rot3DOZ' = None) -> 'Rot3DOZ':
-        """Returns an instantion of 'Rot3DOZ with the given angle of roation"""
+        '''Returns an instantion of 'Rot3DOZ with the given angle of roation'''
 
         if m is not None:
             alpha = m.getAlpha()
@@ -182,7 +182,7 @@ class Rot3DOZ(Rot3DOnAxis):
         return z
 
     def update (self, alpha: float):
-        """Update the matrix with change in angle of rotaion"""
+        '''Update the matrix with change in angle of rotaion'''
 
         self[0][0] = math.cos(alpha)
         self[0][1] = -math.sin(alpha)
@@ -192,11 +192,11 @@ class Rot3DOZ(Rot3DOnAxis):
 
 # redundant
 class Rot3DCOZ(Rot3DOnAxis):
-    """3D Rotation matrix around the x axis CW"""
+    '''3D Rotation matrix around the x axis CW'''
 
     @staticmethod
     def getRot3DCOZ(alpha: float = 0, m : 'Rot3DCOZ' = None) -> 'Rot3DCOZ':
-        """Returns an instantion of 'Rot3DCOZ with the given angle of roation"""
+        '''Returns an instantion of 'Rot3DCOZ with the given angle of roation'''
 
         if m is not None:
             alpha = m.getAlpha()
@@ -215,7 +215,7 @@ class Rot3DCOZ(Rot3DOnAxis):
         return z
 
     def update (self, alpha: float):
-        """Update the matrix with change in angle of rotaion"""
+        '''Update the matrix with change in angle of rotaion'''
 
         self[0][0] = math.cos(alpha)
         self[0][1] = math.sin(alpha)
@@ -224,14 +224,14 @@ class Rot3DCOZ(Rot3DOnAxis):
         self.ang = alpha
 
 class Rot3D(InnerModelMatrix):
-    """Rotation matrix CCW"""
+    '''Rotation matrix CCW'''
 
     @staticmethod
     def getRot3D (ox: float = 0, oy: float = 0, oz: float = 0, ex = None) -> 'Rot3D':
-        """
+        '''
         Returns an instantion of the class 'Rot3D' with
         the given angle of rotation around all the axis
-        """
+        '''
 
         if ex is not None:
             mat = Rot3D(ex.shape)
@@ -255,14 +255,14 @@ class Rot3D(InnerModelMatrix):
         return super(Rot3D, cls).__new__(cls, *args, **kwargs)
 
     def __init__(self, *args, **kwargs):
-        """Initialisation of rotation matrices with the angle 0"""
+        '''Initialisation of rotation matrices with the angle 0'''
 
         self.RX = Rot3DOX.getRot3DOX(0)
         self.RY = Rot3DOY.getRot3DOY(0)
         self.RZ = Rot3DOZ.getRot3DOZ(0)
 
     def update (self, ox: float, oy: float, oz: float):
-        """Update the rotation matrices with the new rotation angles"""
+        '''Update the rotation matrices with the new rotation angles'''
 
         self.RX.update(ox)
         self.RY.update(oy)
@@ -272,14 +272,14 @@ class Rot3D(InnerModelMatrix):
 
 # redundant
 class Rot3DC(InnerModelMatrix):
-    """Rotation matrix CW"""
+    '''Rotation matrix CW'''
 
     @staticmethod
     def getRot3DC (ox: float = 0, oy: float = 0, oz: float = 0, ex = None) -> 'Rot3DC':
-        """
+        '''
         Returns an instantion of the class 'Rot3DC' with
         the given angle of rotation around all the axis
-        """
+        '''
 
         if ex is not None:
             mat = Rot3DC(ex.shape)
@@ -303,14 +303,14 @@ class Rot3DC(InnerModelMatrix):
         return super(Rot3DC, cls).__new__(cls, *args, **kwargs)
 
     def __init__(self, *args, **kwargs):
-        """Initialisation of the matrices with angle of rotation 0"""
+        '''Initialisation of the matrices with angle of rotation 0'''
 
         self.RX = Rot3DCOX.getRot3DCOX(0)
         self.RY = Rot3DCOY.getRot3DCOY(0)
         self.RZ = Rot3DCOZ.getRot3DCOZ(0)
 
     def update (self, ox: float, oy: float, oz: float):
-        """Update the rotation matrices with new angle of rotation"""
+        '''Update the rotation matrices with new angle of rotation'''
 
         self.RX.update(ox)
         self.RY.update(oy)
@@ -319,11 +319,11 @@ class Rot3DC(InnerModelMatrix):
         np.copyto(self, _m)
 
 class Rot2D(InnerModelMatrix):
-    """rotation in a plane CCW"""
+    '''rotation in a plane CCW'''
 
     @staticmethod
     def getRot2D(alpha: float) -> 'Rot2D':
-        """Returns an instantiation of 2D rotation matrix with the given angle"""
+        '''Returns an instantiation of 2D rotation matrix with the given angle'''
 
         mat = Rot2D((2,2))
         mat[0][0] = math.cos(alpha)
@@ -333,7 +333,7 @@ class Rot2D(InnerModelMatrix):
         return mat
 
     def update (self, alpha: float):
-        """Update the roation matrix with new angle of rotation"""
+        '''Update the roation matrix with new angle of rotation'''
 
         self[0][0] = math.cos(alpha)
         self[0][1] = math.sin(alpha)
@@ -342,11 +342,11 @@ class Rot2D(InnerModelMatrix):
 
 # redundant
 class Rot2DC(InnerModelMatrix):
-    """rotation in a plane CW"""
+    '''rotation in a plane CW'''
 
     @staticmethod
     def getRot2DC(alpha: float) -> 'Rot2DC':
-        """Returns an instantiation of 2D roation with the given angle"""
+        '''Returns an instantiation of 2D roation with the given angle'''
 
         mat = Rot2DC((2,2))
         mat[0][0] = math.cos(alpha)
@@ -356,7 +356,7 @@ class Rot2DC(InnerModelMatrix):
         return mat
 
     def update (self, alpha: float):
-        """Update the rotation matrix with new angle of rotation"""
+        '''Update the rotation matrix with new angle of rotation'''
 
         self[0][0] = math.cos(alpha)
         self[0][1] = -math.sin(alpha)

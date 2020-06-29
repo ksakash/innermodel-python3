@@ -29,15 +29,16 @@ class InnerModelNode (object):
     def printTree (self, s: str, verbose: bool):
         '''Print the whole tree from the current node'''
 
-        print (s, self.id, self.level, len(self.children))
+        print ("{} id: {}, level: {}, num_children: {}".format(s, self.id, self.level,
+                                                                                len(self.children)))
 
         for child in self.children:
             if verbose:
-                child.printT (verbose)
+                child.print (verbose)
             child.printTree (s, verbose)
 
     # abstract
-    def printT (self, verbose: bool):
+    def print (self, verbose: bool):
         '''Print info about the current node'''
 
         raise NotImplementedError

@@ -1,7 +1,7 @@
-"""
+'''
 Classes for Transformation matrices
 Author: ksakash@github.com (Akash Kumar Singh)
-"""
+'''
 
 import numpy as np
 from innermodelvector import InnerModelVector
@@ -10,12 +10,12 @@ from innermodelrotmatrix import Rot3DOX, Rot3DOY, Rot3DOZ
 from innermodelrotmatrix import Rot3DCOX, Rot3DCOY, Rot3DCOZ
 
 class InnerModelRTMat(InnerModelMatrix):
-    """Class for transformation matrix CCW"""
+    '''Class for transformation matrix CCW'''
 
     @staticmethod
     def getInnerModelRTMat(tx: float, ty: float, tz: float,
                             rx: float, ry: float, rz: float) -> 'InnerModelRTMat':
-        """Get an instance of this class with translation as well as the rotation angle given"""
+        '''Get an instance of this class with translation as well as the rotation angle given'''
 
         mat = InnerModelRTMat((4,4))
         mat.Rx = Rot3DOX.getRot3DOX(alpha=rx)
@@ -31,7 +31,7 @@ class InnerModelRTMat(InnerModelMatrix):
         return super(InnerModelRTMat, cls).__new__(cls, *args, **kwargs)
 
     def __init__(self, *args, **kwargs):
-        """Initialise all the rotation matrices with angle of rotation 0 and translation 0 vector"""
+        '''Initialise all the rotation matrices with angle of rotation 0 and translation 0 vector'''
 
         self.Rx = Rot3DOX.getRot3DOX(alpha=0)
         self.Ry = Rot3DOY.getRot3DOY(alpha=0)
@@ -41,10 +41,10 @@ class InnerModelRTMat(InnerModelMatrix):
         self.do_inject()
 
     def do_inject (self):
-        """
+        '''
         Copies the rotation matrix as well as the
         translation vector into the transformation matrix
-        """
+        '''
 
         np.copyto (self[:3, :3], self.R)
         np.copyto (self[:3, 3], self.Tr)
@@ -54,7 +54,7 @@ class InnerModelRTMat(InnerModelMatrix):
         self[3][3] = 1.
 
     def set(self, ox: float, oy: float, oz: float, x: float, y: float, z: float):
-        """Change the rotation angle as well as the translation vector"""
+        '''Change the rotation angle as well as the translation vector'''
 
         self.Tr[0] = x
         self.Tr[1] = y
@@ -69,7 +69,7 @@ class InnerModelRTMat(InnerModelMatrix):
         self.do_inject()
 
     def setR(self, ox: float, oy: float, oz: float, rot: InnerModelMatrix = None):
-        """Update rotation from the new rotation angles"""
+        '''Update rotation from the new rotation angles'''
 
         if rot is not None:
             assert (self.R.shape == rot.shape)
@@ -83,7 +83,7 @@ class InnerModelRTMat(InnerModelMatrix):
         self.do_inject()
 
     def setRX(self, ox: float):
-        """Update roation matrix around x"""
+        '''Update roation matrix around x'''
 
         self.Rx.update(ox)
         R = self.Rx.dot(self.Ry.dot(self.Rz))
@@ -91,7 +91,7 @@ class InnerModelRTMat(InnerModelMatrix):
         self.do_inject()
 
     def setRY(self, oy: float):
-        """Update roation matrix around y"""
+        '''Update roation matrix around y'''
 
         self.Ry.update(oy)
         R = self.Rx.dot(self.Ry.dot(self.Rz))
@@ -99,7 +99,7 @@ class InnerModelRTMat(InnerModelMatrix):
         self.do_inject()
 
     def setRZ(self, oz: float):
-        """Update roation matrix around z"""
+        '''Update roation matrix around z'''
 
         self.Rz.update(oz)
         R = self.Rx.dot(self.Ry.dot(self.Rz))
@@ -107,14 +107,14 @@ class InnerModelRTMat(InnerModelMatrix):
         self.do_inject()
 
     def setTr(self, t: InnerModelVector = None):
-        """Set translation vector"""
+        '''Set translation vector'''
 
         if t is not None:
             np.copyto(self.Tr, t)
             self.do_inject()
 
     def setRT(self, ox: float, oy: float, oz: float, t: InnerModelVector):
-        """Set transformation with new rotation angles and new translation vector"""
+        '''Set transformation with new rotation angles and new translation vector'''
 
         self.Rx.update(ox)
         self.Ry.update(oy)
@@ -125,47 +125,47 @@ class InnerModelRTMat(InnerModelMatrix):
         self.do_inject()
 
     def getTr(self) -> 'InnerModelVector':
-        """Returns the translation vector"""
+        '''Returns the translation vector'''
 
         return self.Tr
 
     def getR(self) -> 'InnerModelMatrix':
-        """Returns the translation matrix"""
+        '''Returns the translation matrix'''
 
         return self.R
 
     def getRx(self) -> 'Rot3DOX':
-        """Returns rotation matrix around x axis"""
+        '''Returns rotation matrix around x axis'''
 
         return self.Rx
 
     def getRy(self) -> 'Rot3DOY':
-        """Returns rotation matrix around y axis"""
+        '''Returns rotation matrix around y axis'''
 
         return self.Ry
 
     def getRz(self) -> 'Rot3DOZ':
-        """Returns rotation matrix around z axis"""
+        '''Returns rotation matrix around z axis'''
 
         return self.Rz
 
     def getRxValue(self) -> float:
-        """Rotation angle around x"""
+        '''Rotation angle around x'''
 
         return self.Rx.getAlpha()
 
     def getRyValue(self) -> float:
-        """Rotation angle around y"""
+        '''Rotation angle around y'''
 
         return self.Ry.getAlpha()
 
     def getRzValue(self) -> float:
-        """Rotation angle around z"""
+        '''Rotation angle around z'''
 
         return self.Rz.getAlpha()
 
     def invert(self) -> 'InnerModelRTMat':
-        """Invert the transformation matrix"""
+        '''Invert the transformation matrix'''
 
         r = InnerModelRTMat(self.shape)
         np.copyto(r.R, self.R.transpose())

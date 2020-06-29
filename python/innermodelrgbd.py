@@ -1,5 +1,4 @@
 from innermodelcamera import InnerModelCamera
-# from innermodel import InnerModel
 
 class InnerModel (object):
     pass

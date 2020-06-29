@@ -13,14 +13,14 @@ class InnerModelTouchSensor (InnerModelNode):
 
     def __repr__ (self):
         s = "InnerModelTouchSensor, id: {}, normal: [{}, {}, {}], min: {}, max: {}, stype: {}, \
-            port: {}".format (self.id, self.nx, self.ny, self.nz, self.min, self.max, self.stype \
-            , self.port)
+            port: {}".format (self.id, self.nx, self.ny, self.nz, self.min, self.max, self.stype, \
+            self.port)
         return s
 
-    def printT (self, verbose: bool):
+    def print (self, verbose: bool): # redundant
         pass
 
-    def save (self, out, tabs: int):
+    def save (self, out, tabs: int): # redundant
         pass
 
     def getMeasure (self) -> float:
