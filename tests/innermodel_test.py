@@ -1,8 +1,7 @@
 import unittest
 import sys
 
-sys.path.append('.')
-sys.path.append('..')
+sys.path.append('../innermodel_python3')
 
 from innermodel import InnerModel
 

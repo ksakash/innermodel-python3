@@ -2,8 +2,8 @@ import unittest
 import numpy as np
 
 import sys
-sys.path.append('.')
-sys.path.append('..')
+
+sys.path.append('../innermodel_python3')
 
 from innermodelrotmatrix import Rot3DOX, Rot3DOY, Rot3DOZ
 from innermodelrotmatrix import Rot3DCOX, Rot3DCOY, Rot3DCOZ

@@ -2,8 +2,7 @@ import sys
 import unittest
 import numpy as np
 
-sys.path.append('.')
-sys.path.append('..')
+sys.path.append('../innermodel_python3')
 
 from innermodelvector import InnerModelVector
 from innermodelrtmatrix import InnerModelRTMat, InnerModelRTCMat

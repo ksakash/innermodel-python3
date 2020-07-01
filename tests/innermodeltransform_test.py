@@ -2,8 +2,7 @@ import unittest
 import sys
 import numpy as np
 
-sys.path.append('.')
-sys.path.append('..')
+sys.path.append('../innermodel_python3')
 
 from innermodeltransform import InnerModelTransform
 from innermodelrtmatrix import InnerModelRTMat

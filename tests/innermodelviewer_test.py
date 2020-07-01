@@ -2,8 +2,7 @@ import sys
 import time
 from math import cos, sin
 
-sys.path.append ('.')
-sys.path.append ('..')
+sys.path.append('../innermodel_python3')
 
 from innermodel import InnerModel
 from innermodelviewer import InnerModelViewer
