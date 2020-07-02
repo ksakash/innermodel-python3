@@ -11,8 +11,8 @@ class InnerModelOmniRobot (InnerModelTransform):
         self.collide = collide  # may be redundant
 
     def __repr__ (self):
-        s = "InnerModelOmniRobot, id: {}, pos: [{}, {}, {}], orient: [{}, {}, {}], port: {}, noise: \
-            {}".format (self.id, self.tx, self.ty, self.tz, self.rx, self.ry, self.rz, self.port, \
-            self.noise)
+        s1 = "InnerModelOmniRobot, id: {}, pos: [{}, {}, {}], orient: [{}, {}, {}]".format (self.id, \
+            self.tx, self.ty, self.tz, self.rx, self.ry, self.rz)
+        s2 = ", port: {}, noise: {}".format (self.port, self.noise)
 
-        return s
+        return s1 + s2

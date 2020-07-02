@@ -24,11 +24,12 @@ class InnerModelPlane (InnerModelNode):
         self.collidable = collidable # redundant
 
     def __repr__ (self):
-        ret = "InnerModelPlane, id: {}, normal: [{}, {}, {}], point: [{}, {}, {}], texture: {}, \
-              width: {}, height: {}, depth: {}".format (self.id, self.normal[0], self.normal[1], \
-              self.normal[2], self.point[0], self.point[1], self.point[2], self.texture, self.width,\
-              self.height, self.depth)
-        return ret
+        ret1 = "InnerModelPlane, id: {}, normal: [{}, {}, {}]".format (self.id, self.normal[0], \
+                self.normal[1], self.normal[2])
+        ret2 = ", point: [{}, {}, {}], texture: {}, width: {}, height: {}, depth: {}".format ( \
+                self.point[0], self.point[1], self.point[2], self.texture, self.width, self.height, \
+                self.depth)
+        return ret1 + ret2
 
     def print (self, verbose: bool): # redundant
         '''Print info about the current node'''

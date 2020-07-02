@@ -29,10 +29,10 @@ class InnerModelTransform(InnerModelNode):
         self.engine = engine # may be redundant
 
     def __repr__ (self):
-        ret = "InnerModelTransform, id: {}, mass: {}, tx: {}, ty: {}, tz: {}, rx: {}, ry: {}, \
-              rz: {}".format (self.id, self.mass, self.tx, self.ty, self.tz, self.rx, self.ry, \
-              self.rz)
-        return ret
+        ret1 = "InnerModelTransform, id: {}, mass: {}".format (self.id, self.mass)
+        ret2 = ", tx: {}, ty: {}, tz: {}, rx: {}, ry: {}, rz: {}".format (self.tx, self.ty, \
+                                                                self.tz, self.rx, self.ry, self.rz)
+        return ret1 + ret2
 
     # print the rt matrix
     def print (self, verbose): # redundant if __repr__ is used

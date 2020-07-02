@@ -14,11 +14,11 @@ class InnerModelPrismaticJoint (InnerModelTransform):
         self.setPosition (value)
 
     def __repr__ (self):
-        s = "InnerModelPrismaticJoint, id: {}, offset: {}, min: {}, max: {}, home: {}, port: {}, \
-            axis: {}, pos: [{}, {}, {}], orient: [{}, {}, {}]".format (self.id, self.offset, \
-            self.min, self.max, self.home, self.port, self.axis, self.tx, self.ty, self.tz, self.rx \
-            , self.ry, self.rz)
-        return s
+        s1 = "InnerModelPrismaticJoint, id: {}, offset: {}, min: {}, max: {}, home: {}, port: {}"\
+              .format (self.id, self.offset, self.min, self.max, self.home, self.port)
+        s2 = ", axis: {}, pos: [{}, {}, {}], orient: [{}, {}, {}]".format (self.axis, self.tx, \
+              self.ty, self.tz, self.rx, self.ry, self.rz)
+        return s1 + s2
 
     def print (self, verbose): # redundant
         if verbose:

@@ -75,7 +75,6 @@ class InnerModelCam (object):
         r[1] = r[1]/self.focusY
         return r
 
-    # TODO: use vector instead
     def polar3DToCamera (self, p: 'InnerModelMatrix') -> 'InnerModelMatrix':
         r = InnerModelMatrix ((3,1))
         r[2] = p[2]/(p[0]*p[0]/(self.focusX*self.focusY) + (p[1]*p[1]/(self.focusX*self.focusY) + 1))

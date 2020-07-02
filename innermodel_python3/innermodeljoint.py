@@ -37,12 +37,12 @@ class InnerModelJoint (InnerModelTransform):
             raise Exception ("internal error, no such axis %s" % axis)
 
     def __repr__ (self):
-        s = "InnerModelJoint, id: {}, pos: [{}, {}, {}], orient: [{}, {}, {}], lower_limit: [{}], \
-            higher_limit: [{}], min: {}, max: {}, port: {}, axis: {}".format (self.id , self.tx, \
-            self.ty, self.tz, self.rx, self.ry, self.rz, self.backl, self.backh, self.min, \
-            self.max, self.port, self.axis)
+        s1 = "InnerModelJoint, id: {}, pos: [{}, {}, {}], orient: [{}, {}, {}], lower_limit: {}," \
+            .format (self.id , self.tx, self.ty, self.tz, self.rx, self.ry, self.rz, self.backl)
+        s2 = " higher_limit: {}, min: {}, max: {}, port: {}, axis: {}".format (self.backh, self.min, \
+             self.max, self.port, self.axis)
 
-        return s
+        return s1 + s2
 
     def print (self, verbose: bool): # redundant
         '''Print info about the given node'''
