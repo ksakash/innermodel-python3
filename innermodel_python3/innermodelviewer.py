@@ -8,6 +8,7 @@ import time
 import numpy as np
 import pybullet as p
 import pybullet_data
+import cv2
 
 from innermodel import InnerModel
 from innermodelimu import InnerModelIMU
@@ -405,7 +406,7 @@ class InnerModelViewer (object):
         self.initialiseRender()
 
     def initPyBullet (self):
-        p.connect(p.GUI)
+        p.connect(p.DIRECT) # GUI or DIRECT
         p.setAdditionalSearchPath(pybullet_data.getDataPath())
 
         p.loadURDF("plane.urdf")
@@ -481,12 +482,8 @@ class InnerModelViewer (object):
 
     # github.com/bulletphysics/bullet3/blob/master/examples/pybullet/examples/pointCloudFromCameraImage.py
     def getPointCloud (self, near, far, width, height, stepX, stepY, depthImg):
-        '''Method to get point cloud from depth image
-        :params near, far: range of the fov,
-        :params width, height: dimensions of the GUI,
-        :param depthImg: depth image,
-        :params stepX, stepY: resolution of point cloud
-        '''
+        '''Method to get point cloud from depth image'''
+
         imgW = depthImg.shape[1]
         imgH = depthImg.shape[0]
         pointcloud = []
@@ -535,10 +532,27 @@ class InnerModelViewer (object):
                     viewMatrix = p.computeViewMatrix (cameraEyePosition=cameraEyePosition,
                                                       cameraTargetPosition=cameraTargetPosition,
                                                       cameraUpVector=cameraUpVector)
-                    _ = p.getCameraImage (width=body.cameras[i].cameraImageSize[0],
+                    images = p.getCameraImage (width=body.cameras[i].cameraImageSize[0],
                                           height=body.cameras[i].cameraImageSize[1],
                                           viewMatrix=viewMatrix,
                                           projectionMatrix=body.cameras[i].cameraProjectionMatrix)
+
+                    rgb_img = np.reshape(images[2], (body.cameras[i].cameraImageSize[1],
+                                            body.cameras[i].cameraImageSize[0], 4)) * (1. / 255.)
+
+                    opencv_img = rgb_img
+
+                    r = opencv_img[:,:,0]
+                    b = opencv_img[:,:,2]
+
+                    opencv_img[:,:,0] = b
+                    opencv_img[:,:,2] = r
+
+                    cv2.imshow (body.id+" camera no.: "+str(i), opencv_img)
+                    k = cv2.waitKey (0)
+                    if k == 27:
+                        cv2.destroyAllWindows ()
+
 
     def detectLaserCollisions (self):
         '''Detect collision of laser rays and render it on GUI'''
@@ -616,8 +630,34 @@ class InnerModelViewer (object):
         for body in self.bodies:
             body.updatePosAndOrient ()
 
+    def renderDebugWindow (self):
+        W = 1024
+        H = 768
+        VM = (0.642787516117096, -0.4393851161003113, 0.6275069713592529, 0.0, 0.766044557094574, \
+              0.36868777871131897, -0.5265407562255859, 0.0, -0.0, 0.8191521167755127, 0.5735764503479004, \
+              0.0, 2.384185791015625e-07, 2.384185791015625e-07, -5.000000476837158, 1.0)
+        PM = (0.7499999403953552, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, -1.0000200271606445, -1.0, \
+              0.0, 0.0, -0.02000020071864128, 0.0)
+
+        debug_images = p.getCameraImage (W, H, VM, PM)
+        debug_rgb = np.reshape(debug_images[2], (H, W, 4)) * (1. / 255.)
+
+        opencv_debug = debug_rgb
+
+        r = opencv_debug[:,:,0]
+        b = opencv_debug[:,:,2]
+
+        opencv_debug[:,:,0] = b
+        opencv_debug[:,:,2] = r
+
+        cv2.imshow ("debug_image", opencv_debug)
+        k = cv2.waitKey (0)
+        if k == 27:
+            cv2.destroyAllWindows ()
+
     def render(self):
         p.stepSimulation ()
         self.resetPosAndOrient ()
+        self.renderDebugWindow ()
         # self.renderImage ()
         # self.detectLaserCollisions ()
