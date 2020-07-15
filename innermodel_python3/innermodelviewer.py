@@ -537,18 +537,10 @@ class InnerModelViewer (object):
                                           viewMatrix=viewMatrix,
                                           projectionMatrix=body.cameras[i].cameraProjectionMatrix)
 
-                    rgb_img = np.reshape(images[2], (body.cameras[i].cameraImageSize[1],
-                                            body.cameras[i].cameraImageSize[0], 4)) * (1. / 255.)
+                    rgb_img = cv2.cvtColor (images[2], COLOR_BGR2RGB)
+                    rgb_img = (rgb_img) * (1. / 255.)
 
-                    opencv_img = rgb_img
-
-                    r = opencv_img[:,:,0]
-                    b = opencv_img[:,:,2]
-
-                    opencv_img[:,:,0] = b
-                    opencv_img[:,:,2] = r
-
-                    cv2.imshow (body.id+" camera no.: "+str(i), opencv_img)
+                    cv2.imshow (body.id+" camera no.: "+str(i), rgb_img)
                     k = cv2.waitKey (0)
                     if k == 27:
                         cv2.destroyAllWindows ()
@@ -640,17 +632,10 @@ class InnerModelViewer (object):
               0.0, 0.0, -0.02000020071864128, 0.0)
 
         debug_images = p.getCameraImage (W, H, VM, PM)
-        debug_rgb = np.reshape(debug_images[2], (H, W, 4)) * (1. / 255.)
+        debug_rgb = cv2.cvtColor (debug_images[2], cv2.COLOR_BGR2RGB)
+        debug_rgb = (debug_rgb) * (1. / 255.)
 
-        opencv_debug = debug_rgb
-
-        r = opencv_debug[:,:,0]
-        b = opencv_debug[:,:,2]
-
-        opencv_debug[:,:,0] = b
-        opencv_debug[:,:,2] = r
-
-        cv2.imshow ("debug_image", opencv_debug)
+        cv2.imshow ("debug_image", debug_rgb)
         k = cv2.waitKey (0)
         if k == 27:
             cv2.destroyAllWindows ()
@@ -659,5 +644,5 @@ class InnerModelViewer (object):
         p.stepSimulation ()
         self.resetPosAndOrient ()
         self.renderDebugWindow ()
-        # self.renderImage ()
-        # self.detectLaserCollisions ()
+        self.renderImage ()
+        self.detectLaserCollisions ()
