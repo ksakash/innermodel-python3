@@ -540,7 +540,7 @@ class InnerModelViewer (object):
                     rgb_img = cv2.cvtColor (images[2], COLOR_BGR2RGB)
 
                     cv2.imshow (body.id+" camera no.: "+str(i), rgb_img)
-                    k = cv2.waitKey (0)
+                    k = cv2.waitKey (1)
                     if k == 27:
                         cv2.destroyAllWindows ()
 
@@ -634,7 +634,7 @@ class InnerModelViewer (object):
         debug_rgb = cv2.cvtColor (debug_images[2], cv2.COLOR_BGR2RGB)
 
         cv2.imshow ("debug_image", debug_rgb)
-        k = cv2.waitKey (0)
+        k = cv2.waitKey (1)
         if k == 27:
             cv2.destroyAllWindows ()
 
