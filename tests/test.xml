@@ -23,7 +23,7 @@
 
 		<differentialrobot id="base"  tx="0" ty="0" tz="10" port="10004">
 			<mesh id="base_robex" rx="1.57" rz="-1.57" file="/home/robocomp/.local/lib/python3.6/site-packages/pybullet_data/duck.obj" scale="0.5" />
-			<!-- <transform id="palo2" ty="0.10">
+			<transform id="palo2" ty="0.10">
 				<transform id="pre_jointCodo" ry="1.5707963267948966" >
 					<joint id="r4" port="10067" >
 						<transform id="post_jointCodo" ry="-1.5707963267948966" >
@@ -33,13 +33,13 @@
 						</transform>
 					</joint>
 				</transform>
-			</transform> -->
+			</transform>
 			<translation id="laserPose" tx="-20" ty="40" tz="70">
-				<!-- <laser id="laser" port="10003" measures="100" min="100" max="1000" angle="3" ifconfig="10000" /> -->
+				<laser id="laser" port="10003" measures="100" min="100" max="1000" angle="3" ifconfig="10000" />
 				<plane id="sensorL" size="10,10,10" texture="#000000" />
 			</translation>
 			<transform id="camera" tx="0" ty="40" tz="70">
-				<!-- <rgbd id="rgbd" focal="490" width="640" height="480" port="10096" noise="0.00" ifconfig="40000,50000" /> -->
+				<rgbd id="rgbd" focal="490" width="640" height="480" port="10096" noise="0.00" ifconfig="40000,50000" />
 				<plane id="rgbd_mesh1" size="10,10,10" texture="#550055" />
 			</transform>
 		</differentialrobot>

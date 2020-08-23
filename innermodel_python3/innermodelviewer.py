@@ -537,7 +537,7 @@ class InnerModelViewer (object):
                                           viewMatrix=viewMatrix,
                                           projectionMatrix=body.cameras[i].cameraProjectionMatrix)
 
-                    rgb_img = cv2.cvtColor (images[2], COLOR_BGR2RGB)
+                    rgb_img = cv2.cvtColor (images[2], cv2.COLOR_BGR2RGB)
 
                     cv2.imshow (body.id+" camera no.: "+str(i), rgb_img)
                     k = cv2.waitKey (1)
